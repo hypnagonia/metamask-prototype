@@ -17,7 +17,7 @@ const options = {
 
 
 export const create = async (scheme: any) => {
-	const key = scheme[1][1] + scheme[2][1]
+	const key = scheme.signature
 	const body = JSON.stringify({ key, value: scheme })
 	const res = await fetch(`${backendUrl}/create`, { body, ...options }).then(r => r.json())
 	return res

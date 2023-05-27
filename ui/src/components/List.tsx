@@ -16,6 +16,7 @@ const createScheme = (o: any) => {
 	m.set('versionOrigin', o.versionOrigin)
 	m.set('checksum', o.checksum)
 	m.set('versionSignature', o.versionSignature)
+	m.set('timestamp', Date.now())
 
 	const jsonText = JSON.stringify(Array.from(m.entries()))
 	return jsonText
@@ -58,9 +59,11 @@ export default function List(props: any) {
 				return
 			}
 
-			const r = JSON.parse(scheme as any)
-			r.push(['signature', dataSign])
-			r.push(['address', account.address])
+			const r = {
+				signature: dataSign,
+				address: account.address,
+				scheme: scheme
+			}
 			await saveRecordToBackend(r as any)
 			alert('saved')
 		}
