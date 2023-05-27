@@ -14,7 +14,19 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { Post } from './Post'
 import { Web3Button } from '@web3modal/react'
 
-const isFeed = () => true // window.location.pathname.indexOf('/feed') !== -1
+const createScheme = (o: any) => {
+	// order
+	const m = new Map()
+	m.set('score', o.score)
+	m.set('snapId', o.snapId)
+	m.set('version', o.version)
+	m.set('versionOrigin', o.versionOrigin)
+	m.set('checksum', o.checksum)
+	m.set('versionSignature', o.versionSignature)
+
+	const jsonText = JSON.stringify(Array.from(m.entries()))
+	return jsonText
+}
 
 const dateToString = (d: string) => {
 	if (!d) {
@@ -35,7 +47,7 @@ export default function List(props: any) {
 	const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
 	const account = useAccount()
 
-	console.log({account})
+	console.log({ account })
 
 	const [data, setData] = useState([])
 
@@ -62,9 +74,6 @@ export default function List(props: any) {
 		console.log({ data: dataSign, error, isLoading, signMessage, variables })
 
 	}, [variables?.message])
-
-
-	console.log(Object.values(data))
 
 	return (
 		<main>
@@ -99,15 +108,13 @@ export default function List(props: any) {
 					</p>
 					*/}
 				</div>
-
-
-
 			</header>
 			<div className="container" style={{ marginTop: 30 }}>
-				<div onClick={()=>signMessage({message: 'fuck'})}>sign</div>
-				{/*JSON.stringify({address, isConnected})*/}<br/>
-				{JSON.stringify({ data: dataSign, error, isLoading, signMessage, variables } )}
-				
+
+				{dataSign && <div style={{margin: 20, backgroundColor: 'lightcyan', padding: 10}}>
+					Signature: <br />{dataSign}<br />
+					Address: <br />{account.address}<br />
+				</div>}
 
 				<div className="scroll">
 					<div className="profiles-container">
@@ -116,7 +123,7 @@ export default function List(props: any) {
 
 							return <div className="post">
 								<div>
-									<b>{e.meta[0]}</b><br />
+									<h2>{e.meta[0]}</h2><br />
 									{e.meta[1]}
 								</div>
 								<br />
@@ -132,8 +139,26 @@ export default function List(props: any) {
 										Checksum: {version[1]}<br />
 										Signature: {version[2]}<br />
 										Change Log: {version[3]}<br />
+
+										<div>
+											<b>Score:&nbsp;</b>
+											{[1, 2, 3, 4, 5].map(score => {
+												const message = createScheme({
+													score,
+													version: v,
+													versionOrigin: version[0],
+													checksum: version[1],
+													versionSignature: version[1],
+													snapId: i
+												}) as any
+												return <span
+													onClick={() => signMessage({ message })}
+													className="score-entry">{score}&nbsp;</span>
+											})}
+										</div>
 									</div>
 								})}
+
 
 								{/*JSON.stringify(e)*/}
 
