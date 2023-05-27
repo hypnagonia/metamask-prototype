@@ -1,17 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
-import {
-	getFeedPostsByName,
-	getSuggestedPostsByName,
-	PER_PAGE,
-	Profile
-} from '../api/api'
-
 import Pagination from './Pagination'
 import { explorerNFTURL, formatPrice, setWindowParam, getWindowParam, tweet } from '../utils'
 import { getSnaps } from '../api/registry'
 import { useSignMessage, useAccount } from 'wagmi'
+import { create as saveRecordToBackend } from '../api/api'
 
-import { Post } from './Post'
 import { Web3Button } from '@web3modal/react'
 
 const createScheme = (o: any) => {
@@ -47,18 +40,33 @@ export default function List(props: any) {
 	const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
 	const account = useAccount()
 
-	console.log({ account })
-
 	const [data, setData] = useState([])
+	const [scheme, setScheme] = useState(null)
 
 	const [page, setPage] = useState(getInitialPage())
 	const [search, setSearch] = useState(getWindowParam('strategy') || 'latest')
 
-	const filterData = useCallback((s: string) => {
-		setWindowParam('strategy', s)
-		setSearch(s)
-		setPage(1)
+	const saveData = useCallback((message: any) => {
+		console.log('saveData', {message})
+		setScheme(message as any)
+		signMessage({message})
 	}, [])
+
+	useEffect(() => {
+		const run = async () => {
+			if (!dataSign || !account.address) {
+				return
+			}
+
+			const r = JSON.parse(scheme as any)
+			r.push(['signature', dataSign])
+			r.push(['address', account.address])
+			await saveRecordToBackend(r as any)
+			alert('saved')
+		}
+
+		run()
+	}, [dataSign])
 
 
 	useEffect(() => {
@@ -111,13 +119,15 @@ export default function List(props: any) {
 			</header>
 			<div className="container" style={{ marginTop: 30 }}>
 
-				{dataSign && <div style={{margin: 20, backgroundColor: 'lightcyan', padding: 10}}>
+				{dataSign && <div style={{ margin: 20, backgroundColor: 'lightcyan', padding: 10 }}>
 					Signature: <br />{dataSign}<br />
 					Address: <br />{account.address}<br />
 				</div>}
 
 				<div className="scroll">
 					<div className="profiles-container">
+						{Object.values(data).length === 0 && <>Loading...</>}
+
 						{Object.values(data).map((e: any, i) => {
 							const isLast = data.length === i + 1
 
@@ -149,10 +159,13 @@ export default function List(props: any) {
 													versionOrigin: version[0],
 													checksum: version[1],
 													versionSignature: version[1],
-													snapId: i
+													snapId: i + 1
 												}) as any
 												return <span
-													onClick={() => signMessage({ message })}
+													onClick={() => {
+														saveData(message as any)
+													}}
+
 													className="score-entry">{score}&nbsp;</span>
 											})}
 										</div>
