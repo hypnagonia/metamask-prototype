@@ -65,7 +65,7 @@ export default function List(props: any) {
 				scheme: scheme
 			}
 			await saveRecordToBackend(r as any)
-			alert('saved')
+			window.alert('Saved!')
 		}
 
 		run()
@@ -137,7 +137,8 @@ export default function List(props: any) {
 							return <div className="post">
 								<div>
 									<h2>{e.meta[0]}</h2><br />
-									{e.meta[1]}
+									{e.meta[1]}<br/>
+									<a href={e.meta[4]} target="_blank">{e.meta[4]}</a>
 								</div>
 								<br />
 
