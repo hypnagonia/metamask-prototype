@@ -4,23 +4,11 @@ import { explorerNFTURL, formatPrice, setWindowParam, getWindowParam, tweet } fr
 import { getSnaps } from '../api/registry'
 import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend } from '../api/api'
+import { SnapCard } from './SnapCard'
 
 import { Web3Button } from '@web3modal/react'
 
-const createScheme = (o: any) => {
-	// order
-	const m = new Map()
-	m.set('score', o.score)
-	m.set('snapId', o.snapId)
-	m.set('version', o.version)
-	m.set('versionOrigin', o.versionOrigin)
-	m.set('checksum', o.checksum)
-	m.set('versionSignature', o.versionSignature)
-	m.set('timestamp', Date.now())
 
-	const jsonText = JSON.stringify(Array.from(m.entries()))
-	return jsonText
-}
 
 const dateToString = (d: string) => {
 	if (!d) {
@@ -39,37 +27,8 @@ const getInitialPage = () => {
 
 export default function List(props: any) {
 	const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
-	const account = useAccount()
 
 	const [data, setData] = useState([])
-	const [scheme, setScheme] = useState(null)
-
-	const [page, setPage] = useState(getInitialPage())
-	const [search, setSearch] = useState(getWindowParam('strategy') || 'latest')
-
-	const saveData = useCallback((message: any) => {
-		console.log('saveData', {message})
-		setScheme(message as any)
-		signMessage({message})
-	}, [])
-
-	useEffect(() => {
-		const run = async () => {
-			if (!dataSign || !account.address) {
-				return
-			}
-
-			const r = {
-				signature: dataSign,
-				address: account.address,
-				scheme: scheme
-			}
-			await saveRecordToBackend(r as any)
-			window.alert('Saved!')
-		}
-
-		run()
-	}, [dataSign])
 
 
 	useEffect(() => {
@@ -122,70 +81,21 @@ export default function List(props: any) {
 			</header>
 			<div className="container" style={{ marginTop: 30 }}>
 
-				{dataSign && <div style={{ margin: 20, backgroundColor: 'lightcyan', padding: 10 }}>
+				{/*dataSign && <div style={{ margin: 20, backgroundColor: 'lightcyan', padding: 10 }}>
 					Signature: <br />{dataSign}<br />
 					Address: <br />{account.address}<br />
-				</div>}
+				</div>*/}
 
 				<div className="scroll">
 					<div className="profiles-container">
 						{Object.values(data).length === 0 && <>Loading...</>}
 
 						{Object.values(data).map((e: any, i) => {
-							const isLast = data.length === i + 1
 
-							return <div className="post">
-								<div>
-									<h2>{e.meta[0]}</h2><br />
-									{e.meta[1]}<br/>
-									<a href={e.meta[4]} target="_blank">{e.meta[4]}</a>
-								</div>
-								<br />
+							return <>
+								<SnapCard id={i + 1} snapData={e} /></>
+						})}
 
-								{e.versionList.length === 0 && <>No versions found</>}
-
-								{e.versionList.map((v: string) => {
-									const version = e.versions[v]
-
-									return <div style={{ marginTop: 10 }}>
-										Version: <b>{v}</b><br />
-										Origin: {version[0]}<br />
-										Checksum: {version[1]}<br />
-										Signature: {version[2]}<br />
-										Change Log: {version[3]}<br />
-
-										<div>
-											<b>Score:&nbsp;</b>
-											{[1, 2, 3, 4, 5].map(score => {
-												const message = createScheme({
-													score,
-													version: v,
-													versionOrigin: version[0],
-													checksum: version[1],
-													versionSignature: version[1],
-													snapId: i + 1
-												}) as any
-												return <span
-													onClick={() => {
-														saveData(message as any)
-													}}
-
-													className="score-entry">{score}&nbsp;</span>
-											})}
-										</div>
-									</div>
-								})}
-
-
-								{/*JSON.stringify(e)*/}
-
-								<div style={{ borderBottom: '1px solid gray', marginBottom: 15, marginTop: 15 }}></div>
-							</div>
-
-
-						})
-
-						}
 						<div>
 							{data.length === 0 && <div></div>}
 						</div>

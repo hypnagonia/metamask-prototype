@@ -10,8 +10,10 @@ import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { goerli } from 'wagmi/chains'
-import {rpcUrl} from './api/registry'
+import { rpcUrl } from './api/registry'
 import { publicProvider } from 'wagmi/providers/public'
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 const chains = [goerli]
 const projectId = 'karma3labs'
@@ -33,7 +35,10 @@ function App() {
     <>
       <div className="App">
         <WagmiConfig config={wagmiConfig}>
-          <List />
+          <Routes>
+            <Route index path="/sign" element={<div>Hello</div>} />
+            <Route index path="/" element={<List />} />
+          </Routes>
         </WagmiConfig>
       </div>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
