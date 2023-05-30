@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend } from '../api/api'
-
+import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 
 import { Web3Button } from '@web3modal/react'
 
@@ -58,7 +58,7 @@ export const SnapCard = (props: any) => {
 
     return <><div className="post">
         <div>
-            <h2>{e.meta[0]}</h2><br />
+            <Link to={"/snap/" + id}> <h2>{e.meta[0]}</h2><br /></Link>
             {e.meta[1]}<br />
             <a href={e.meta[4]} target="_blank">{e.meta[4]}</a>
         </div>
@@ -85,7 +85,7 @@ export const SnapCard = (props: any) => {
                             versionOrigin: version[0],
                             checksum: version[1],
                             versionSignature: version[1],
-                            snapId: id + 1
+                            snapId: id 
                         }) as any
                         return <span
                             onClick={() => {

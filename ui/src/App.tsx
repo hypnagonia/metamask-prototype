@@ -1,5 +1,7 @@
 import './App.css';
 import List from './components/List'
+import SnapPage from './components/SnapPage'
+
 import { useEffect, useState } from 'react'
 // import { getStrategies } from './api/api';
 import { SearchAutocomplete } from './components/SearchAutocomplete'
@@ -13,7 +15,8 @@ import { goerli } from 'wagmi/chains'
 import { rpcUrl } from './api/registry'
 import { publicProvider } from 'wagmi/providers/public'
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
+import { Web3Button } from '@web3modal/react'
 
 const chains = [goerli]
 const projectId = 'karma3labs'
@@ -35,10 +38,32 @@ function App() {
     <>
       <div className="App">
         <WagmiConfig config={wagmiConfig}>
-          <Routes>
-            <Route index path="/sign" element={<div>Hello</div>} />
-            <Route index path="/" element={<List />} />
-          </Routes>
+          <header>
+            <div className="web3-btn">
+              <Web3Button />
+            </div>
+            <div className="logo-container" style={{ marginTop: 40 }}>
+              <a href="https://karma3labs.com/" target="_blank">
+                <img
+                  width="180px"
+                  className="logo"
+                  src="/logo.svg"
+                  draggable="false"
+                  alt="Karma3Labs Logo"
+                />
+              </a>
+            </div>
+
+
+            <div className="title">
+            </div>
+          </header>
+          <BrowserRouter>
+            <Routes>
+              <Route index path="/snap/:id" element={<SnapPage />} />
+              <Route index path="/" element={<List />} />
+            </Routes>
+          </BrowserRouter>
         </WagmiConfig>
       </div>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />

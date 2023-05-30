@@ -6,7 +6,6 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend } from '../api/api'
 import { SnapCard } from './SnapCard'
 
-import { Web3Button } from '@web3modal/react'
 
 
 
@@ -47,38 +46,6 @@ export default function List(props: any) {
 
 	return (
 		<main>
-			<header>
-				<div className="web3-btn">
-					<Web3Button />
-				</div>
-				<div className="logo-container" style={{ marginTop: 40 }}>
-					<a href="https://karma3labs.com/" target="_blank">
-						<img
-							width="180px"
-							className="logo"
-							src="/logo.svg"
-							draggable="false"
-							alt="Karma3Labs Logo"
-						/>
-
-					</a>
-
-
-				</div>
-
-
-				<div className="title">
-					{/* 
-					<h1>Content Feed</h1>
-					<p>
-						<small style={{ color: 'white' }}>
-							Open and Verifiable Content Feed powered by EigenTrust.
-							<a style={{ borderBottom: '1px solid white' }} href="https://karma3labs.notion.site/NFT-Reputation-EigenTrust-Scoring-public-6ec9ec4529854a0cabb6e1cb8fefa8cf#74d0793068df4cc19350d7b84175152c" target="_blank">&nbsp;Learn More.</a>
-						</small>
-					</p>
-					*/}
-				</div>
-			</header>
 			<div className="container" style={{ marginTop: 30 }}>
 
 				{/*dataSign && <div style={{ margin: 20, backgroundColor: 'lightcyan', padding: 10 }}>
