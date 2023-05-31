@@ -5,8 +5,8 @@
 // process.env.NODE_ENV === 'development'
 // 
 
-// const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://nft-api.k3l.io/metamask'
-const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000/metamask'
+const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://nft-api.k3l.io/metamask'
+// const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000/metamask'
 
 const options = {
 	method: 'POST',
