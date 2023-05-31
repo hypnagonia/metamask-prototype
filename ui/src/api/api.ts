@@ -25,5 +25,17 @@ export const create = async (scheme: any) => {
 
 export const getAll = async () => {
 	const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
-	return res
+	return res.map((r: any) => {
+
+		return {
+			...r,
+			scheme: JSON.parse(r.scheme)
+		}
+	})
+}
+
+export const reviewIndexes = {
+	score: 0,
+	snapId: 1,
+	version: 2
 }

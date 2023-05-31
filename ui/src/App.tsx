@@ -17,6 +17,7 @@ import { publicProvider } from 'wagmi/providers/public'
 
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
 import { Web3Button } from '@web3modal/react'
+import { getAll } from './api/api'
 
 const chains = [goerli]
 const projectId = 'karma3labs'
@@ -33,6 +34,18 @@ const ethereumClient = new EthereumClient(wagmiConfig, chains)
 
 
 function App() {
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    const run = async () => {
+      const d = await getAll()
+      setData(d)
+
+      console.log('all reviews', d)
+    }
+
+    run()
+  }, [])
 
   return (
     <>
@@ -60,8 +73,8 @@ function App() {
           </header>
           <BrowserRouter>
             <Routes>
-              <Route index path="/snap/:id" element={<SnapPage />} />
-              <Route index path="/" element={<List />} />
+              <Route index path="/snap/:id" element={<SnapPage reviews={data} />} />
+              <Route index path="/" element={<List reviews={data} />} />
             </Routes>
           </BrowserRouter>
         </WagmiConfig>

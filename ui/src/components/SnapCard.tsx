@@ -26,6 +26,8 @@ export const SnapCard = (props: any) => {
     const id = props.id
     const e = props.snapData
 
+    const reviewsForSnap = props.reviewsForSnap
+
     const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
     const account = useAccount()
 
@@ -58,7 +60,7 @@ export const SnapCard = (props: any) => {
 
     return <><div className="post">
         <div>
-            <Link to={"/snap/" + id}> <h2>{e.meta[0]}</h2><br /></Link>
+            <Link to={"/snap/" + id}> <h2>#{id} {e.meta[0]}</h2><br /></Link>
             {e.meta[1]}<br />
             <a href={e.meta[4]} target="_blank">{e.meta[4]}</a>
         </div>
@@ -69,6 +71,8 @@ export const SnapCard = (props: any) => {
         {e.versionList.map((v: string) => {
             const version = e.versions[v]
 
+            const r = reviewsForSnap.filter((a: any) => v === a.scheme[2][1])
+
             return <div style={{ marginTop: 10 }}>
                 Version: <b>{v}</b><br />
                 Origin: {version[0]}<br />
@@ -76,7 +80,32 @@ export const SnapCard = (props: any) => {
                 Signature: {version[2]}<br />
                 Change Log: {version[3]}<br />
 
+                {r && r.length > 0 && <div style={{ backgroundColor: 'lightcyan', padding: 15, margin: 15 }}>
+                    <h3>Reviews</h3>
+                    {r.map((e: any) => {
+
+                        return <>
+                            <div>
+                                Score:<br /> {e.scheme[0][1]}
+                            </div>
+                            <div>
+                                Snap ID:<br /> {e.scheme[1][1]}
+                            </div>
+                            <div>
+                                Version:<br /> {e.scheme[2][1]}
+                            </div>
+                            <div>
+                                Address:<br /> {e.address}
+                            </div>
+                            <div>
+                                Signature:<br /> {e.signature}
+                            </div>
+                        </>
+                    })}
+                </div>}
+
                 <div>
+                    <br />
                     <b>Score:&nbsp;</b>
                     {[1, 2, 3, 4, 5].map(score => {
                         const message = createScheme({
@@ -85,7 +114,7 @@ export const SnapCard = (props: any) => {
                             versionOrigin: version[0],
                             checksum: version[1],
                             versionSignature: version[1],
-                            snapId: id 
+                            snapId: id
                         }) as any
                         return <span
                             onClick={() => {
@@ -99,7 +128,6 @@ export const SnapCard = (props: any) => {
         })}
 
 
-        {/*JSON.stringify(e)*/}
 
         <div style={{ borderBottom: '1px solid gray', marginBottom: 15, marginTop: 15 }}></div>
     </div></>

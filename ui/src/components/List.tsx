@@ -26,6 +26,7 @@ const getInitialPage = () => {
 
 export default function List(props: any) {
 	const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
+	const reviews = props.reviews
 
 	const [data, setData] = useState([])
 
@@ -59,8 +60,10 @@ export default function List(props: any) {
 
 						{Object.values(data).map((e: any, i) => {
 
+							const reviewsForSnap = reviews.filter((r: any) => +r.scheme[1][1] === i + 1)
+
 							return <>
-								<SnapCard id={i + 1} snapData={e} /></>
+								<SnapCard id={i + 1} snapData={e} reviewsForSnap={reviewsForSnap} /></>
 						})}
 
 						<div>

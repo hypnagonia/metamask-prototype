@@ -10,9 +10,11 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 export default function SnapPage(props: any) {
     const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
 
+    const reviews = props.reviews
     const [data, setData] = useState([])
     const { id } = useParams() as any
-    console.log({id})
+
+    const reviewsForSnap = reviews.filter((r: any) => +r.scheme[1][1] === +id)
 
 
     useEffect(() => {
@@ -46,7 +48,9 @@ export default function SnapPage(props: any) {
                     <div className="profiles-container">
                         {Object.values(data).length === 0 && <>Loading...</>}
 
-                        <SnapCard id={id} snapData={data} />
+                        <SnapCard id={id} snapData={data} reviewsForSnap={reviewsForSnap} />
+
+                        
 
 
                         <div>
