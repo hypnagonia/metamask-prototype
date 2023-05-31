@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend } from '../api/api'
+import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 
 import { Web3Button } from '@web3modal/react'
@@ -17,11 +17,22 @@ const createScheme = (o: any) => {
     m.set('versionSignature', o.versionSignature)
     m.set('timestamp', Date.now())
 
-    const jsonText = JSON.stringify(Array.from(m.entries()))
+    const jsonText = Array.from(m.entries())
     return jsonText
 }
 
 export const SnapCard = (props: any) => {
+    const [votes, setVotes] = useState([])
+
+    useEffect(() => {
+      const run = async () => {
+        const d = await voteGetAll()
+        setVotes(d)
+      }
+  
+      run()
+    }, [])
+
 
     const id = props.id
     const e = props.snapData
@@ -33,11 +44,10 @@ export const SnapCard = (props: any) => {
 
     const [scheme, setScheme] = useState(null)
 
-
     const saveData = useCallback((message: any) => {
         console.log('saveData', { message })
         setScheme(message as any)
-        signMessage({ message })
+        signMessage({ message: JSON.stringify(message) })
     }, [])
 
     useEffect(() => {
@@ -51,7 +61,12 @@ export const SnapCard = (props: any) => {
                 address: account.address,
                 scheme: scheme
             }
-            await saveRecordToBackend(r as any)
+
+            if (scheme![0][0] === 'vote') {
+                await saveVoteRecordToBackend(r as any)
+            } else {
+                await saveRecordToBackend(r as any)
+            }
             window.alert('Saved!')
         }
 
@@ -80,19 +95,28 @@ export const SnapCard = (props: any) => {
                 Signature: {version[2]}<br />
                 Change Log: {version[3]}<br />
 
-                {r && r.length > 0 && <div style={{ backgroundColor: 'lightcyan', padding: 15, margin: 15 }}>
+                {r && r.length > 0 && <div style={{ backgroundColor: 'lightgray', padding: 15, margin: 15, borderRadius: 10 }}>
                     <h3>Reviews</h3>
                     {r.map((e: any) => {
+
+                        const upvotes = votes.filter((a: any)=> e.signature === a.scheme[2][1] && a.scheme[0][1] === 'upvote').length
+                        const downvotes = votes.filter((a: any)=> e.signature === a.scheme[2][1] && a.scheme[0][1] === 'downvote').length
+                        console.log({votes})
+                        const upvoteMessage = [
+                            ['vote', 'upvote'],
+                            ['address', e.address],
+                            ['signature', e.signature]
+                        ]
+
+                        const downvoteMessage = [
+                            ['vote', 'downvote'],
+                            ['address', e.address],
+                            ['signature', e.signature]
+                        ]
 
                         return <>
                             <div>
                                 Score:<br /> {e.scheme[0][1]}
-                            </div>
-                            <div>
-                                Snap ID:<br /> {e.scheme[1][1]}
-                            </div>
-                            <div>
-                                Version:<br /> {e.scheme[2][1]}
                             </div>
                             <div>
                                 Address:<br /> {e.address}
@@ -100,13 +124,26 @@ export const SnapCard = (props: any) => {
                             <div>
                                 Signature:<br /> {e.signature}
                             </div>
+                            <div style={{ color: 'black' }}>
+                                <span
+                                    onClick={() => {
+                                        saveData(upvoteMessage as any)
+                                    }}
+                                    className="btn">Upvote ({upvotes})</span>&nbsp;
+                                <span
+                                    onClick={() => {
+                                        saveData(downvoteMessage as any)
+                                    }}
+                                    className="btn">
+                                    Downvote  ({downvotes})</span>
+                            </div>
                         </>
                     })}
                 </div>}
 
                 <div>
                     <br />
-                    <b>Score:&nbsp;</b>
+                    <b>Rate&nbsp;</b>
                     {[1, 2, 3, 4, 5].map(score => {
                         const message = createScheme({
                             score,
@@ -117,11 +154,11 @@ export const SnapCard = (props: any) => {
                             snapId: id
                         }) as any
                         return <span
+                            className="btn"
+                            style={{ marginRight: 10 }}
                             onClick={() => {
                                 saveData(message as any)
-                            }}
-
-                            className="score-entry">{score}&nbsp;</span>
+                            }}>{score}&nbsp;</span>
                     })}
                 </div>
             </div>
