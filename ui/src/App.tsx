@@ -71,13 +71,17 @@ function App() {
             <div className="title">
             </div>
           </header>
-          <BrowserRouter>
-            <Routes>
-              <Route index path="/snap/:id" element={<SnapPage reviews={data} />} />
-              <Route index path="/" element={<List reviews={data} />} />
-            </Routes>
-          </BrowserRouter>
+
+          <div style={{ width: 700, margin: 'auto' }}>
+            <BrowserRouter>
+              <Routes>
+                <Route index path="/snap/:id" element={<SnapPage reviews={data} />} />
+                <Route index path="/" element={<List reviews={data} />} />
+              </Routes>
+            </BrowserRouter>
+          </div>
         </WagmiConfig>
+
       </div>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>

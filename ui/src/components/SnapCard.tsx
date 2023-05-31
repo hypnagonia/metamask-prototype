@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 
 import { Web3Button } from '@web3modal/react'
 
+import {shortenString} from '../utils'
 
 const createScheme = (o: any) => {
     // order
@@ -91,12 +92,12 @@ export const SnapCard = (props: any) => {
             return <div style={{ marginTop: 10 }}>
                 Version: <b>{v}</b><br />
                 Origin: {version[0]}<br />
-                Checksum: {version[1]}<br />
-                Signature: {version[2]}<br />
+                Checksum: {shortenString(version[1], 20)}<br />
+                Signature: {shortenString(version[2], 20)}<br />
                 Change Log: {version[3]}<br />
 
-                {r && r.length > 0 && <div style={{ backgroundColor: 'lightgray', padding: 15, margin: 15, borderRadius: 10 }}>
-                    <h3>Reviews</h3>
+                {r && r.length > 0 && <div style={{ backgroundColor: 'lightblue', padding: 15, margin: 15, borderRadius: 10 }}>
+                    <h3>Reviews</h3><br/>
                     {r.map((e: any) => {
 
                         const upvotes = votes.filter((a: any)=> e.signature === a.scheme[2][1] && a.scheme[0][1] === 'upvote').length
@@ -116,15 +117,16 @@ export const SnapCard = (props: any) => {
 
                         return <>
                             <div>
-                                Score:<br /> {e.scheme[0][1]}
+                                Score: {e.scheme[0][1]}
                             </div>
                             <div>
-                                Address:<br /> {e.address}
+                                Address: {e.address}
                             </div>
                             <div>
-                                Signature:<br /> {e.signature}
+                                Signature: {shortenString(e.signature)}
                             </div>
-                            <div style={{ color: 'black' }}>
+                            
+                            <div style={{ color: 'black', margin: 20 }}>
                                 <span
                                     onClick={() => {
                                         saveData(upvoteMessage as any)

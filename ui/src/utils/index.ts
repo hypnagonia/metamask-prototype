@@ -62,3 +62,14 @@ export const tweet = (text: string, url = window.location.href) => {
   const twitterUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`
   window.open(twitterUrl, '_blank');
 }
+
+export function shortenString(str: string, maxLength: number = 20) {
+  if (str.length <= maxLength) {
+    return str;
+  }
+
+  var halfLength = Math.floor((maxLength - 3) / 2);
+  var firstHalf = str.substr(0, halfLength);
+  var secondHalf = str.substr(str.length - halfLength);
+  return firstHalf + "..." + secondHalf;
+}

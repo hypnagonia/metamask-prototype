@@ -6,7 +6,7 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend } from '../api/api'
 import { SnapCard } from './SnapCard'
 
-
+import {shortenString} from '../utils'
 
 
 const dateToString = (d: string) => {
