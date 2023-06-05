@@ -39,12 +39,24 @@
 }
 
 .post {
+  text-align: left;
+  width: 325px;
+  height: 320px;
+  background-color: white;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
 
-  /*display: flex;*/
-  flex-direction: column;
-  align-items: center;
-
-  white-space: normal;
+.post-full {
+  text-align: left;
+  width: 600px;
+  background-color: white;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .post-component {
@@ -79,6 +91,11 @@
 }
 
 .profiles-container {
+  display: flex;
+  flex-wrap: wrap;
+  /* Allow cards to wrap to the next line */
+  justify-content: space-between;
+  /* Distribute cards evenly */
   /*border: 1px solid var(--posts-border-color);
   border-radius: 15px;
   width: var(--posts-width);*/
@@ -141,4 +158,83 @@
 
 a {
   text-decoration: none;
+  color: black;
+}
+
+.small-font {
+  font-size: 12px;
+}
+
+.blue-btn {
+
+/* Auto layout */
+color: white;
+font-weight: bold;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 0px 16px;
+cursor: pointer;
+width: 133px;
+height: 30px;
+font-size: 13px;
+
+/* blue/500 */
+
+background: #3182CE;
+border-radius: 6px;
+}
+
+.post-internal-container {
+  
+}
+
+
+.flex-end {
+  display: absolute;
+  top: 0px;
+}
+
+.delimiter {
+  border-bottom: 1px #EDF2F7 solid;
+  width:100%;
+}
+
+.review-container {
+  border-bottom: 1px #EDF2F7 solid;
+  border-radius: 4px;
+}
+
+.strategy-btn {
+  cursor: pointer;
+  align-items: center;
+  appearance: none;
+  background-color: #fff;
+  border-radius: 4px;
+  border-style: none;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px, rgba(0, 0, 0, .14) 0 6px 10px 0, rgba(0, 0, 0, .12) 0 1px 18px 0;
+  box-sizing: border-box;
+  color: #3c4043;
+  cursor: pointer;
+  display: inline-flex;
+  fill: currentcolor;
+  font-size: 12px;
+  height: 30px;
+  justify-content: center;
+  letter-spacing: .25px;
+  line-height: normal;
+  max-width: 100%;
+  overflow: visible;
+  padding: 10px 12px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1), opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: auto;
+  will-change: transform, opacity;
+  z-index: 0;
 }

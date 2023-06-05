@@ -1,6 +1,8 @@
 import './App.css';
 import List from './components/List'
 import SnapPage from './components/SnapPage'
+import { AuditorDetailPage } from './components/AuditorDetailPage'
+import {AuditorListPage} from './components/AuditorListPage'
 
 import { useEffect, useState } from 'react'
 // import { getStrategies } from './api/api';
@@ -15,7 +17,7 @@ import { goerli } from 'wagmi/chains'
 import { rpcUrl } from './api/registry'
 import { publicProvider } from 'wagmi/providers/public'
 
-import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { Web3Button } from '@web3modal/react'
 import { getAll } from './api/api'
 
@@ -40,8 +42,6 @@ function App() {
     const run = async () => {
       const d = await getAll()
       setData(d)
-
-      console.log('all reviews', d)
     }
 
     run()
@@ -49,41 +49,47 @@ function App() {
 
   return (
     <>
-      <div className="App">
-        <WagmiConfig config={wagmiConfig}>
-          <header>
-            <div className="web3-btn">
-              <Web3Button />
-            </div>
-            <div className="logo-container" style={{ marginTop: 40 }}>
-              <a href="https://karma3labs.com/" target="_blank">
-                <img
-                  width="180px"
-                  className="logo"
-                  src="/logo.svg"
-                  draggable="false"
-                  alt="Karma3Labs Logo"
-                />
-              </a>
-            </div>
+      <BrowserRouter>
+        <div className="App">
+          <WagmiConfig config={wagmiConfig}>
+            <header>
+              <div className="web3-btn">
+                <Web3Button />
+              </div>
+              <div className="logo-container" style={{ marginTop: 40 }}>
+                <Link to={'/'}>
+                  <img
+                    width="180px"
+                    className="logo"
+                    src="/logo.svg"
+                    draggable="false"
+                    alt="Karma3Labs Logo"
+                  />
+                </Link>
+              </div>
 
 
-            <div className="title">
-            </div>
-          </header>
+              <div className="title">
+              </div>
+            </header>
 
-          <div style={{ width: 700, margin: 'auto' }}>
-            <BrowserRouter>
+            <div style={{ width: 700, margin: 'auto' }}>
+
               <Routes>
                 <Route index path="/snap/:id" element={<SnapPage reviews={data} />} />
                 <Route index path="/" element={<List reviews={data} />} />
-              </Routes>
-            </BrowserRouter>
-          </div>
-        </WagmiConfig>
 
-      </div>
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+                <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />
+                <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
+                
+              </Routes>
+
+            </div>
+          </WagmiConfig>
+
+        </div>
+        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+      </BrowserRouter>
     </>
   );
 }

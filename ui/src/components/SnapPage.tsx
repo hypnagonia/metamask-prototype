@@ -5,6 +5,7 @@ import { getSnaps } from '../api/registry'
 import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend } from '../api/api'
 import { SnapCard } from './SnapCard'
+import { SnapDetailPage } from './SnapDetailPage'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 
 export default function SnapPage(props: any) {
@@ -48,7 +49,7 @@ export default function SnapPage(props: any) {
                     <div className="profiles-container">
                         {Object.values(data).length === 0 && <>Loading...</>}
 
-                        <SnapCard id={id} snapData={data} reviewsForSnap={reviewsForSnap} />
+                        <SnapDetailPage id={id} snapData={data} reviewsForSnap={reviewsForSnap} />
 
                         
 

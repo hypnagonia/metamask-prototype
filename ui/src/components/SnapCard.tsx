@@ -2,13 +2,13 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
+import {computeSnapScore} from '../api/mockCompute'
 
 import { Web3Button } from '@web3modal/react'
 
-import {shortenString} from '../utils'
+import { shortenString } from '../utils'
 
 const createScheme = (o: any) => {
-    // order
     const m = new Map()
     m.set('score', o.score)
     m.set('snapId', o.snapId)
@@ -26,12 +26,12 @@ export const SnapCard = (props: any) => {
     const [votes, setVotes] = useState([])
 
     useEffect(() => {
-      const run = async () => {
-        const d = await voteGetAll()
-        setVotes(d)
-      }
-  
-      run()
+        const run = async () => {
+            const d = await voteGetAll()
+            setVotes(d)
+        }
+
+        run()
     }, [])
 
 
@@ -74,101 +74,49 @@ export const SnapCard = (props: any) => {
         run()
     }, [dataSign])
 
+    const reviewsTotal = e.versionList.map((v: string) => {
+        const version = e.versions[v]
+
+        const r = reviewsForSnap.filter((a: any) => v === a.scheme[2][1])
+        return r.length
+    }).reduce((a: any, b:any) => a + b, 0)
+
+    console.log({ reviewsTotal })
+
+    const score = computeSnapScore(id, reviewsForSnap)
+    
+
     return <><div className="post">
-        <div>
-            <Link to={"/snap/" + id}> <h2>#{id} {e.meta[0]}</h2><br /></Link>
-            {e.meta[1]}<br />
-            <a href={e.meta[4]} target="_blank">{e.meta[4]}</a>
+        <div className="post-internal-container">
+            <Link to={"/snap/" + id}> <h3>{id} {e.meta[0]}<br />
+                <div style={{ color: 'orange' }}>
+                    {[...Array(~~score)].map((a:any)=><>&#11089;</>)}
+                    {score === 0 && <>?</>}
+                    </div>
+            </h3></Link>
+            <br />
+
+            <div className="small-font"> {e.meta[1]}<br />
+                <a href={e.meta[4]} target="_blank" style={{ color: '#2a2a72' }}>{e.meta[4]}</a>
+            </div>
+
+
+            <br />
+
+            <div className="small-font">
+                Score: <b>{score.toFixed(2)}</b><br/>
+                Developer: <b>{e.meta[2]}</b><br />
+                {e.versionList.length === 0 && <>No versions found<br /></>}
+                {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.join(', ')}</b><br /></>}
+                Reviews: <b>{reviewsTotal}</b><br />
+
+
+            </div>
+
+
         </div>
         <br />
-
-        {e.versionList.length === 0 && <>No versions found</>}
-
-        {e.versionList.map((v: string) => {
-            const version = e.versions[v]
-
-            const r = reviewsForSnap.filter((a: any) => v === a.scheme[2][1])
-
-            return <div style={{ marginTop: 10 }}>
-                Version: <b>{v}</b><br />
-                Origin: {version[0]}<br />
-                Checksum: {shortenString(version[1], 20)}<br />
-                Signature: {shortenString(version[2], 20)}<br />
-                Change Log: {version[3]}<br />
-
-                {r && r.length > 0 && <div style={{ backgroundColor: 'lightblue', padding: 15, margin: 15, borderRadius: 10 }}>
-                    <h3>Reviews</h3><br/>
-                    {r.map((e: any) => {
-
-                        const upvotes = votes.filter((a: any)=> e.signature === a.scheme[2][1] && a.scheme[0][1] === 'upvote').length
-                        const downvotes = votes.filter((a: any)=> e.signature === a.scheme[2][1] && a.scheme[0][1] === 'downvote').length
-                        console.log({votes})
-                        const upvoteMessage = [
-                            ['vote', 'upvote'],
-                            ['address', e.address],
-                            ['signature', e.signature]
-                        ]
-
-                        const downvoteMessage = [
-                            ['vote', 'downvote'],
-                            ['address', e.address],
-                            ['signature', e.signature]
-                        ]
-
-                        return <>
-                            <div>
-                                Score: {e.scheme[0][1]}
-                            </div>
-                            <div>
-                                Address: {e.address}
-                            </div>
-                            <div>
-                                Signature: {shortenString(e.signature)}
-                            </div>
-                            
-                            <div style={{ color: 'black', margin: 20 }}>
-                                <span
-                                    onClick={() => {
-                                        saveData(upvoteMessage as any)
-                                    }}
-                                    className="btn">Upvote ({upvotes})</span>&nbsp;
-                                <span
-                                    onClick={() => {
-                                        saveData(downvoteMessage as any)
-                                    }}
-                                    className="btn">
-                                    Downvote  ({downvotes})</span>
-                            </div>
-                        </>
-                    })}
-                </div>}
-
-                <div>
-                    <br />
-                    <b>Rate&nbsp;</b>
-                    {[1, 2, 3, 4, 5].map(score => {
-                        const message = createScheme({
-                            score,
-                            version: v,
-                            versionOrigin: version[0],
-                            checksum: version[1],
-                            versionSignature: version[1],
-                            snapId: id
-                        }) as any
-                        return <span
-                            className="btn"
-                            style={{ marginRight: 10 }}
-                            onClick={() => {
-                                saveData(message as any)
-                            }}>{score}&nbsp;</span>
-                    })}
-                </div>
-            </div>
-        })}
-
-
-
-        <div style={{ borderBottom: '1px solid gray', marginBottom: 15, marginTop: 15 }}></div>
+        {/*<div className="blue-btn flex-end">Show Details</div>*/}
     </div></>
 
 
