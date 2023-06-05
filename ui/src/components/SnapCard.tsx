@@ -88,7 +88,7 @@ export const SnapCard = (props: any) => {
 
     return <><div className="post">
         <div className="post-internal-container">
-            <Link to={"/snap/" + id}> <h3>{id} {e.meta[0]}<br />
+            <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
                 <span style={{ color: 'orange' }}>
                     {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
                     
@@ -98,7 +98,8 @@ export const SnapCard = (props: any) => {
                     
                 </span>
 
-                &nbsp;<b style={{fontSize: 13}}>{score === 0 ? score : score.toFixed(2)}</b>
+                &nbsp;<span style={{fontSize: 13}}>{score === 0 ? 
+                <span style={{color: 'gray'}}>Not Audited</span> : score.toFixed(2)}</span>
             </h3></Link>
             <br />
 
@@ -113,7 +114,7 @@ export const SnapCard = (props: any) => {
                 Developer: <b>{e.meta[2]}</b><br />
                 {e.versionList.length === 0 && <>No versions found<br /></>}
                 {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.join(', ')}</b><br /></>}
-                Reviews: <b>{reviewsTotal}</b><br />
+                Audits: <b>{reviewsTotal}</b><br />
 
 
             </div>

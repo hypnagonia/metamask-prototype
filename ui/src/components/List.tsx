@@ -6,8 +6,8 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend } from '../api/api'
 import { SnapCard } from './SnapCard'
 
-import {shortenString} from '../utils'
-
+import { shortenString } from '../utils'
+import { computeSnapScore } from '../api/mockCompute'
 
 const dateToString = (d: string) => {
 	if (!d) {
@@ -41,7 +41,6 @@ export default function List(props: any) {
 	}, [])
 
 	useEffect(() => {
-		console.log({ data: dataSign, error, isLoading, signMessage, variables })
 
 	}, [variables?.message])
 
@@ -49,10 +48,6 @@ export default function List(props: any) {
 		<main>
 			<div className="container" style={{ marginTop: 30 }}>
 
-				{/*dataSign && <div style={{ margin: 20, backgroundColor: 'lightcyan', padding: 10 }}>
-					Signature: <br />{dataSign}<br />
-					Address: <br />{account.address}<br />
-				</div>*/}
 
 				<div className="scroll">
 					<div className="profiles-container">
@@ -60,11 +55,22 @@ export default function List(props: any) {
 
 						{Object.values(data).map((e: any, i) => {
 
-							const reviewsForSnap = reviews.filter((r: any) => +r.scheme[1][1] === i + 1)
 
-							return <>
-								<SnapCard id={i + 1} snapData={e} reviewsForSnap={reviewsForSnap} /></>
-						})}
+							const reviewsForSnap = reviews.filter((r: any) => +r.scheme[1][1] === i + 1)
+							const score = computeSnapScore(i + 1, reviewsForSnap)
+
+
+							const component = () => {
+								return <><SnapCard id={i + 1} snapData={e} reviewsForSnap={reviewsForSnap} /></>
+							}
+
+							return {
+								score,
+								component
+							}
+						})
+							.sort((b, a) => a.score - b.score)
+							.map((a: any) => a.component())}
 
 						<div>
 							{data.length === 0 && <div></div>}

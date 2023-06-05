@@ -76,7 +76,7 @@ export const SnapDetailPage = (props: any) => {
 
     return <><div>
         <div className="post-full">
-            <Link to={"/snap/" + id}> <h3>{id} {e.meta[0]}<br />
+            <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
                 <span style={{ color: 'orange' }}>
                     {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
@@ -137,8 +137,7 @@ export const SnapDetailPage = (props: any) => {
                         return <>
 
                             <div>
-                                {/*${e.address} */}
-                                Address: <Link to={`/auditor/`}><b style={{ color: '#2a2a72' }}>{e.address}</b></Link>
+                                Auditor: <Link to={`/auditor/${e.address}`}><b style={{ color: '#2a2a72' }}>{e.address}</b></Link>
                             </div>
                             <div>
                                 Signature: <b>{shortenString(e.signature)}</b>
