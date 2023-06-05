@@ -76,14 +76,21 @@ export const SnapDetailPage = (props: any) => {
 
     return <><div>
         <div className="post-full">
-            <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
-                <div style={{ color: 'orange' }}>
+            <Link to={"/snap/" + id}> <h3>{id} {e.meta[0]}<br />
+                <span style={{ color: 'orange' }}>
                     {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
-                    {score === 0 && <>?</>}
-                </div>
-            </h3></Link><br />
+
+                </span>
+                <span style={{ color: 'lightgrey' }}>
+                    {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
+
+                </span>
+
+                &nbsp;<b style={{ fontSize: 13 }}>{score === 0 ? score : score.toFixed(2)}</b>
+            </h3></Link>
+
+            <br />
             <div className="small-font">
-                Score: <b>{score.toFixed(2)}</b><br />
                 {e.meta[1]}<br />
                 <a href={e.meta[4]} target="_blank">{e.meta[4]}</a><br />
 
@@ -98,7 +105,7 @@ export const SnapDetailPage = (props: any) => {
             const r = reviewsForSnap.filter((a: any) => v === a.scheme[2][1])
 
             return <div className="post-full"><div className="small-font">
-               <h3>Version: <b>{v}</b></h3> <br />
+                <h3>Version: <b>{v}</b></h3> <br />
 
                 Origin:  <b>{version[0]}</b><br />
 

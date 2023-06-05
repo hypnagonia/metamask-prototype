@@ -29,7 +29,7 @@ export const AuditorListPage = (props: any) => {
     const auditorList = Array.from(auditors)
 
 
-    return <>{
+    return <div style={{ marginTop: 30 }}>{
         auditorList.map((a: any) => {
 
             const id = a
@@ -40,9 +40,9 @@ export const AuditorListPage = (props: any) => {
             const thumbsUpTotal = votes.filter((e: any) => e.scheme[0][1] === 'upvote' && e.scheme[1][1] === id).length
             const thumbsDownTotal = votes.filter((e: any) => e.scheme[0][1] === 'downvote' && e.scheme[1][1] === id).length
 
-        
 
-            return <><div className="container" style={{ marginTop: 30 }}>
+
+            return <>
 
                 <div className="post-full small-font">
                     <h3>{id}</h3><br />
@@ -51,14 +51,14 @@ export const AuditorListPage = (props: any) => {
                         Auditor Score: <b>{auditorScore}</b><br />
                         Reviews: <b>{reviewsCount}</b><br />
                         Thumbsup: <b>{thumbsUpTotal}</b><br />
-                        Thumbsdown: <b>{thumbsDownTotal}</b><br />
+                        Thumbsdown: <b>{thumbsDownTotal}</b>
                     </div>
 
 
                 </div>
-            </div></>
+            </>
 
 
-        })}</>
+        })}</div>
 }
 

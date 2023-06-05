@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
-import {computeSnapScore} from '../api/mockCompute'
+import { computeSnapScore } from '../api/mockCompute'
 
 import { Web3Button } from '@web3modal/react'
 
@@ -79,20 +79,26 @@ export const SnapCard = (props: any) => {
 
         const r = reviewsForSnap.filter((a: any) => v === a.scheme[2][1])
         return r.length
-    }).reduce((a: any, b:any) => a + b, 0)
+    }).reduce((a: any, b: any) => a + b, 0)
 
     console.log({ reviewsTotal })
 
     const score = computeSnapScore(id, reviewsForSnap)
-    
+
 
     return <><div className="post">
         <div className="post-internal-container">
             <Link to={"/snap/" + id}> <h3>{id} {e.meta[0]}<br />
-                <div style={{ color: 'orange' }}>
-                    {[...Array(~~score)].map((a:any)=><>&#11089;</>)}
-                    {score === 0 && <>?</>}
-                    </div>
+                <span style={{ color: 'orange' }}>
+                    {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
+                    
+                </span>
+                <span style={{ color: 'lightgrey' }}>
+                    {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
+                    
+                </span>
+
+                &nbsp;<b style={{fontSize: 13}}>{score === 0 ? score : score.toFixed(2)}</b>
             </h3></Link>
             <br />
 
@@ -104,7 +110,6 @@ export const SnapCard = (props: any) => {
             <br />
 
             <div className="small-font">
-                Score: <b>{score.toFixed(2)}</b><br/>
                 Developer: <b>{e.meta[2]}</b><br />
                 {e.versionList.length === 0 && <>No versions found<br /></>}
                 {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.join(', ')}</b><br /></>}
