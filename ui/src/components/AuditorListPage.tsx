@@ -49,9 +49,9 @@ export const AuditorListPage = (props: any) => {
                     <div>
                         Address: <b style={{ color: '#2a2a72' }}>{id}</b><br />
                         Auditor Score: <b>{auditorScore}</b><br />
-                        Reviews: <b>{reviewsCount}</b><br />
-                        Thumbsup: <b>{thumbsUpTotal}</b><br />
-                        Thumbsdown: <b>{thumbsDownTotal}</b>
+                        Audits Issued: <b>{reviewsCount}</b><br />
+                        Upvotes: <b>{thumbsUpTotal}</b><br />
+                        Downvotes: <b>{thumbsDownTotal}</b>
                     </div>
 
 

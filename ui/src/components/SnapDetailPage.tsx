@@ -151,13 +151,13 @@ export const SnapDetailPage = (props: any) => {
                                     onClick={() => {
                                         saveData(upvoteMessage as any)
                                     }}
-                                    className="strategy-btn">&#128077; ({upvotes})</span>&nbsp;
+                                    className="strategy-btn">&#128077; {upvotes}</span>&nbsp;
                                 <span
                                     onClick={() => {
                                         saveData(downvoteMessage as any)
                                     }}
                                     className="strategy-btn" style={{ marginLeft: 10 }}>
-                                    &#128078; ({downvotes})</span>
+                                    &#128078; {downvotes}</span>
 
                             </div><br />
                         </>

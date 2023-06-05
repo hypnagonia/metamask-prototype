@@ -2,7 +2,7 @@ import './App.css';
 import List from './components/List'
 import SnapPage from './components/SnapPage'
 import { AuditorDetailPage } from './components/AuditorDetailPage'
-import {AuditorListPage} from './components/AuditorListPage'
+import { AuditorListPage } from './components/AuditorListPage'
 
 import { useEffect, useState } from 'react'
 // import { getStrategies } from './api/api';
@@ -57,14 +57,20 @@ function App() {
                 <Web3Button />
               </div>
               <div className="logo-container" style={{ marginTop: 40 }}>
+                <div>
                 <Link to={'/'}>
-                  <img
+                <img
                     width="180px"
                     className="logo"
                     src="/logo.svg"
                     draggable="false"
                     alt="Karma3Labs Logo"
                   />
+                  </Link>
+                </div>
+                <Link to={'/'}>
+                 <span style={{color: 'white', fontSize: 26, fontWeight: 'bold', cursor: 'pointer'}}> MetaMask Snaps Reputation Explorer</span>
+                 
                 </Link>
               </div>
 
@@ -81,7 +87,7 @@ function App() {
 
                 <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />
                 <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
-                
+
               </Routes>
 
             </div>
