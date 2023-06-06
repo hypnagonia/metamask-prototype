@@ -91,17 +91,19 @@ export const SnapCard = (props: any) => {
             <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
                 <span style={{ color: 'orange' }}>
                     {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
-                    
+
                 </span>
                 <span style={{ color: 'lightgrey' }}>
                     {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
-                    
+
                 </span>
 
-                &nbsp;<span style={{fontSize: 13}}>{score === 0 ? 
-                <span style={{color: 'gray'}}>Not Audited</span> : score.toFixed(2)}</span>
+                &nbsp;<span style={{ fontSize: 13 }}>{score === 0 ?
+                    <span style={{ color: 'gray' }}>Not Audited</span> : score.toFixed(2)}</span>
             </h3></Link>
-            <br />
+
+            
+            <div className="delimiter" style={{marginTop: 15, marginBottom: 15}}></div>
 
             <div className="small-font"> {e.meta[1]}<br />
                 <a href={e.meta[4]} target="_blank" style={{ color: '#2a2a72' }}>{e.meta[4]}</a>

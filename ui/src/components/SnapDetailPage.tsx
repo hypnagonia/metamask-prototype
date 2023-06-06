@@ -163,7 +163,9 @@ export const SnapDetailPage = (props: any) => {
                         </>
                     })}
                 </div>}
-                {r && r.length > 0 && <br />}
+
+                {r && r.length > 0 && <><div className="delimiter"></div><br /></>}
+
                 <div>
 
 

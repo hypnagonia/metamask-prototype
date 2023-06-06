@@ -58,19 +58,24 @@ function App() {
               </div>
               <div className="logo-container" style={{ marginTop: 40 }}>
                 <div>
-                <Link to={'/'}>
-                <img
-                    width="180px"
-                    className="logo"
-                    src="/logo.svg"
-                    draggable="false"
-                    alt="Karma3Labs Logo"
-                  />
+                  <Link to={'/'}>
+                    <img
+                      width="180px"
+                      className="logo"
+                      src="/logo.svg"
+                      draggable="false"
+                      alt="Karma3Labs Logo"
+                    />
                   </Link>
                 </div>
                 <Link to={'/'}>
-                 <span style={{color: 'white', fontSize: 26, fontWeight: 'bold', cursor: 'pointer'}}> MetaMask Snaps Reputation Explorer</span>
-                 
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', height: 40 }}>
+
+                    <img src={'/metamask-icon.svg'} style={{ width: 30, height: 40, marginRight: 10 }} />
+
+                    <div style={{ color: 'white', fontSize: 26, fontWeight: 'bold', cursor: 'pointer' }}>
+                      Permissionless Snaps Store</div>
+                  </div>
                 </Link>
               </div>
 

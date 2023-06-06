@@ -227,7 +227,7 @@ header {
 }
 
 .logo {
-	position: fixed;
+	position: absolute;
 	top: 20px;
 	left: 20px;
 	margin-bottom: 20px;
@@ -327,7 +327,7 @@ header form {
 }
 
 .scroll {
-	overflow-x: scroll;
+	overflow-x: hidden;
 	/*transform: rotateX(180deg);*/
 }
 

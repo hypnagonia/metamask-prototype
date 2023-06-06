@@ -4,7 +4,7 @@ import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, v
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../api/mockCompute'
 import { Web3Button } from '@web3modal/react'
-import {Audits} from './Audits'
+import { Audits } from './Audits'
 import { shortenString } from '../utils'
 
 
@@ -56,13 +56,15 @@ export const AuditorDetailPage = (props: any) => {
                     Audits Issued: <b>{reviewsCount}</b><br />
                     Upvotes: <b>{thumbsUpTotal}</b><br />
                     Downvotes: <b>{thumbsDownTotal}</b><br />
+                    <br />
+                    <div className="strategy-btn" style={{ cursor: 'no-drop' }}>Follow</div>
                 </div>
 
             </div>
 
         </div>
 
-        <Audits auditorAddress={id} reviews={reviews}/>
+        <Audits auditorAddress={id} reviews={reviews} />
     </div></>
 
 

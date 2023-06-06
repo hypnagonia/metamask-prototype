@@ -54,7 +54,6 @@ export const AuditorListPage = (props: any) => {
                         Downvotes: <b>{thumbsDownTotal}</b>
                     </div>
 
-
                 </div>
             </>
 
