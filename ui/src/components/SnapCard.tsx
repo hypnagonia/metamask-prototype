@@ -88,22 +88,29 @@ export const SnapCard = (props: any) => {
 
     return <><div className="post">
         <div className="post-internal-container">
-            <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
-                <span style={{ color: 'orange' }}>
-                    {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
-                </span>
-                <span style={{ color: 'lightgrey' }}>
-                    {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div style={{ width: '80%' }}>
+                    <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
+                        <span style={{ color: 'orange' }}>
+                            {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
-                </span>
+                        </span>
+                        <span style={{ color: 'lightgrey' }}>
+                            {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
 
-                &nbsp;<span style={{ fontSize: 13 }}>{score === 0 ?
-                    <span style={{ color: 'gray' }}>Not Audited</span> : score.toFixed(2)}</span>
-            </h3></Link>
+                        </span>
 
-            
-            <div className="delimiter" style={{marginTop: 15, marginBottom: 15}}></div>
+                        &nbsp;<span style={{ fontSize: 13 }}>{score === 0 ?
+                            <span style={{ color: 'gray' }}>Not Audited</span> : score.toFixed(2)}</span>
+                    </h3></Link>
+                </div>
+                <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>
+                    <img src={'/shield.svg'} style={{ width: 26, height: 26 }} />
+                </div>
+            </div>
+
+            <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
             <div className="small-font"> {e.meta[1]}<br />
                 <a href={e.meta[4]} target="_blank" style={{ color: '#2a2a72' }}>{e.meta[4]}</a>

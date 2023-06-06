@@ -76,20 +76,27 @@ export const SnapDetailPage = (props: any) => {
 
     return <><div>
         <div className="post-full">
-            <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
-                <span style={{ color: 'orange' }}>
-                    {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div style={{ width: '80%' }}>
+                    <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
+                        <span style={{ color: 'orange' }}>
+                            {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
-                </span>
-                <span style={{ color: 'lightgrey' }}>
-                    {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
+                        </span>
+                        <span style={{ color: 'lightgrey' }}>
+                            {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
 
-                </span>
+                        </span>
 
-                &nbsp;<b style={{ fontSize: 13 }}>{score === 0 ? score : score.toFixed(2)}</b>
-            </h3></Link>
+                        &nbsp;<b style={{ fontSize: 13 }}>{score === 0 ? score : score.toFixed(2)}</b>
+                    </h3></Link>
+                </div>
+                <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>
+                    <img src={'/shield.svg'} style={{ width: 26, height: 26 }} />
+                </div>
+            </div>
+            <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
-            <br />
             <div className="small-font">
                 {e.meta[1]}<br />
                 <a href={e.meta[4]} target="_blank">{e.meta[4]}</a><br />
