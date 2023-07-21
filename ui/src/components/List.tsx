@@ -1,9 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
-import Pagination from './Pagination'
 import { explorerNFTURL, formatPrice, setWindowParam, getWindowParam, tweet } from '../utils'
 import { getSnaps } from '../api/registry'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend } from '../api/api'
+
 import { SnapCard } from './SnapCard'
 
 import { shortenString } from '../utils'

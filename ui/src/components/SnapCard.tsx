@@ -4,9 +4,6 @@ import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, v
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { computeSnapScore } from '../api/mockCompute'
 
-import { Web3Button } from '@web3modal/react'
-
-import { shortenString } from '../utils'
 
 const createScheme = (o: any) => {
     const m = new Map()

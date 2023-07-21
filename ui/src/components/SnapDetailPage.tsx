@@ -2,8 +2,6 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
-
-import { Web3Button } from '@web3modal/react'
 import { computeSnapScore } from '../api/mockCompute'
 import { shortenString } from '../utils'
 
@@ -43,9 +41,11 @@ export const SnapDetailPage = (props: any) => {
     const account = useAccount()
 
     const [scheme, setScheme] = useState(null)
+    const [isApproveformVisible, setIsApproveformVisible] = useState({} as any)
+    const [isReviewformVisible, setIsReviewformVisible] = useState({} as any)
 
     const saveData = useCallback((message: any) => {
-
+        console.log('saveData', { message })
         setScheme(message as any)
         signMessage({ message: JSON.stringify(message) })
     }, [])
@@ -176,23 +176,67 @@ export const SnapDetailPage = (props: any) => {
                 <div>
 
 
-                    <h3>Submit Score</h3><br />
-                    {[1, 2, 3, 4, 5].map(score => {
-                        const message = createScheme({
-                            score,
-                            version: v,
-                            versionOrigin: version[0],
-                            checksum: version[1],
-                            versionSignature: version[1],
-                            snapId: id
-                        }) as any
-                        return <span
-                            className="strategy-btn"
-                            style={{ marginRight: 10 }}
-                            onClick={() => {
-                                saveData(message as any)
-                            }}>{score}&nbsp;</span>
-                    })}
+
+                    <span
+                        onClick={() => setIsApproveformVisible({ ...isApproveformVisible, [version]: !isApproveformVisible[version] })}
+                        className="strategy-btn">Approve with a Score of 1-5</span><br />
+
+
+                    {isApproveformVisible[version] && <>
+                        <br />
+                        <div className="delimiter"></div><br />
+                        <h3>Audit</h3><br />
+                        {[1, 2, 3, 4, 5].map(score => {
+                            const message = createScheme({
+                                score,
+                                version: v,
+                                versionOrigin: version[0],
+                                checksum: version[1],
+                                versionSignature: version[1],
+                                snapId: id
+                            }) as any
+                            return <span
+                                className="strategy-btn"
+                                style={{ marginRight: 10 }}
+                                onClick={() => {
+                                    saveData(message as any)
+                                }}>{score}&nbsp;</span>
+                        })}
+                        < br />
+                        <textarea style={{ marginTop: 20, marginBottom: 20 }} placeholder="Report" className="text-input"></textarea>
+                        <br />
+                        <div className="delimiter"></div><br />
+                    </>}
+
+                    <span
+                        onClick={() => setIsReviewformVisible({ ...isReviewformVisible, [version]: !isReviewformVisible[version] })}
+                        className="strategy-btn" style={{ marginTop: 10 }}>Leave a Review along with score of 1-5</span><br />
+
+                    {isReviewformVisible[version] && <>
+                        <br />
+                        <div className="delimiter"></div><br />
+                        <h3>Review</h3><br />
+                        {[1, 2, 3, 4, 5].map(score => {
+                            const message = createScheme({
+                                score,
+                                version: v,
+                                versionOrigin: version[0],
+                                checksum: version[1],
+                                versionSignature: version[1],
+                                snapId: id
+                            }) as any
+                            return <span
+                                className="strategy-btn"
+                                style={{ marginRight: 10 }}
+                                onClick={() => {
+                                    saveData(message as any)
+                                }}>{score}&nbsp;</span>
+                        })}
+                        < br />
+                        <textarea style={{ marginTop: 20, marginBottom: 20 }} placeholder="Report" className="text-input"></textarea>
+                        <br />
+                        <div className="delimiter"></div><br />
+                    </>}
                 </div>
             </div>
             </div>

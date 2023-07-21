@@ -3,7 +3,7 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../api/mockCompute'
-import { Web3Button } from '@web3modal/react'
+
 import { Audits } from './Audits'
 import { shortenString } from '../utils'
 
@@ -57,7 +57,7 @@ export const AuditorDetailPage = (props: any) => {
                     Upvotes: <b>{thumbsUpTotal}</b><br />
                     Downvotes: <b>{thumbsDownTotal}</b><br />
                     <br />
-                    <div className="strategy-btn" style={{ cursor: 'no-drop' }}>Follow</div>
+                    <div className="strategy-btn">Follow</div>
                 </div>
 
             </div>
