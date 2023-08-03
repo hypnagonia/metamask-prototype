@@ -1,0 +1,35 @@
+[debug] [2023-08-03T03:18:34.911Z] ----------------------------------------------------------------------
+[debug] [2023-08-03T03:18:34.913Z] Command:       /usr/local/bin/firebase /Users/jenya/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase deploy
+[debug] [2023-08-03T03:18:34.913Z] CLI Version:   8.9.2
+[debug] [2023-08-03T03:18:34.913Z] Platform:      darwin
+[debug] [2023-08-03T03:18:34.913Z] Node Version:  v12.18.1
+[debug] [2023-08-03T03:18:34.921Z] Time:          Thu Aug 03 2023 00:18:34 GMT-0300 (Brasilia Standard Time)
+[debug] [2023-08-03T03:18:34.922Z] ----------------------------------------------------------------------
+[debug] [2023-08-03T03:18:34.922Z] 
+[debug] [2023-08-03T03:18:34.937Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-08-03T03:18:34.938Z] > authorizing via signed-in user
+[debug] [2023-08-03T03:18:34.938Z] [iam] checking project karma-metamask for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-08-03T03:18:34.945Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2023-08-03T03:18:34.945Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2023-08-03T03:18:35.239Z] <<< HTTP RESPONSE 200 {"cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","date":"Thu, 03 Aug 2023 03:18:35 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2023-08-03T03:18:35.258Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/karma-metamask:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-08-03T03:18:36.284Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 03 Aug 2023 03:18:36 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=743","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2023-08-03T03:18:36.286Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/karma-metamask  
+ 
+[debug] [2023-08-03T03:18:36.821Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 03 Aug 2023 03:18:37 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2023-08-03T03:18:36.822Z] [WARNING] Unable to fetch default resources. Falling back to project id (karma-metamask)
+[info] 
+[info] === Deploying to 'karma-metamask'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2023-08-03T03:18:36.826Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/karma-metamask/versions  
+ {"config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2023-08-03T03:18:38.258Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 03 Aug 2023 03:18:38 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  hosting[karma-metamask]: beginning deploy... 
+[info] i  hosting[karma-metamask]: found 56 files in build 
+[debug] [2023-08-03T03:18:39.036Z] [hosting] hash cache [YnVpbGQ] stored for 56 files
+[debug] [2023-08-03T03:18:39.037Z] [hosting][hash queue][FINAL] {"max":646,"min":31,"avg":95.125,"active":0,"complete":56,"success":56,"errored":0,"retried":0,"total":56,"elapsed":746}
+[debug] [2023-08-03T03:18:39.037Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/karma-metamask/versions/68ff424773334225:populateFiles  
+ <request body omitted>
