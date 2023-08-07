@@ -63,7 +63,7 @@ export const tweet = (text: string, url = window.location.href) => {
   window.open(twitterUrl, '_blank');
 }
 
-export function shortenString(str: string, maxLength: number = 20) {
+export function shortenString(str = '', maxLength: number = 20) {
   if (str.length <= maxLength) {
     return str;
   }

@@ -1,22 +1,12 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
+import { create as saveRecordToBackend } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { computeSnapScore } from '../api/mockCompute'
 import { shortenString } from '../utils'
 
 const createScheme = (o: any) => {
-    const m = new Map()
-    m.set('score', o.score)
-    m.set('snapId', o.snapId)
-    m.set('version', o.version)
-    m.set('versionOrigin', o.versionOrigin)
-    m.set('checksum', o.checksum)
-    m.set('versionSignature', o.versionSignature)
-    m.set('timestamp', Date.now())
-
-    const jsonText = Array.from(m.entries())
-    return jsonText
+    return o
 }
 
 export const SnapDetailPage = (props: any) => {
@@ -24,8 +14,8 @@ export const SnapDetailPage = (props: any) => {
 
     useEffect(() => {
         const run = async () => {
-            const d = await voteGetAll()
-            setVotes(d)
+            // const d = await voteGetAll()
+            // setVotes(d)
         }
 
         run()
@@ -62,11 +52,9 @@ export const SnapDetailPage = (props: any) => {
                 scheme: scheme
             }
 
-            if (scheme![0][0] === 'vote') {
-                await saveVoteRecordToBackend(r as any)
-            } else {
-                await saveRecordToBackend(r as any)
-            }
+
+           // await saveRecordToBackend(r as any)
+
             window.alert('Saved!')
         }
 
@@ -74,11 +62,13 @@ export const SnapDetailPage = (props: any) => {
     }, [dataSign])
     const score = computeSnapScore(id, reviewsForSnap)
 
+    console.log({e})
+
     return <><div>
         <div className="post-full">
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '80%' }}>
-                    <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
+                    <Link to={"/snap/" + id}> <h3>{e.meta.name}<br />
                         <span style={{ color: 'orange' }}>
                             {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
@@ -98,28 +88,29 @@ export const SnapDetailPage = (props: any) => {
             <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
             <div className="small-font">
-                {e.meta[1]}<br />
+                {e.meta.description}<br />
                 <a href={e.meta[4]} target="_blank">{e.meta[4]}</a><br />
 
             </div>
         </div>
 
+        
         {e.versionList.length === 0 && <>No versions found</>}
 
         {e.versionList.map((v: string) => {
             const version = e.versions[v]
 
-            const r = reviewsForSnap.filter((a: any) => v === a.scheme[2][1])
+            const r = [] as any
 
             return <div className="post-full"><div className="small-font">
                 <h3>Version: <b>{v}</b></h3> <br />
 
-                Origin:  <b>{version[0]}</b><br />
+                Origin:  <b>{version.versionNumber}</b><br />
 
-                Checksum:  <b>{shortenString(version[1], 20)}</b><br />
+                Checksum:  <b>{shortenString(version.shasum, 20)}</b><br />
 
-                Signature:  <b>{shortenString(version[2], 20)}</b><br />
-                Change Log:  <b>{version[3]}</b><br />
+                Signature:  <b>{shortenString('', 20)}</b><br />
+                Change Log:  <b>{shortenString(version.changeLog, 20)}</b><br />
                 <br />
                 <div className="delimiter"></div><br />
                 {r && r.length > 0 && <div className="review-container">
@@ -189,10 +180,8 @@ export const SnapDetailPage = (props: any) => {
                         {[1, 2, 3, 4, 5].map(score => {
                             const message = createScheme({
                                 score,
-                                version: v,
-                                versionOrigin: version[0],
-                                checksum: version[1],
-                                versionSignature: version[1],
+                                version: version.versionNumber,
+                                checksum: version.checksum,
                                 snapId: id
                             }) as any
                             return <span

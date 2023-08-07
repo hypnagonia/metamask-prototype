@@ -22,7 +22,7 @@ export const getSnaps = async () => {
         console.log({ cached })
 
         if (cached) {
-            return cached
+            // return cached
         }
     } catch (e) { }
 
@@ -54,9 +54,18 @@ export const getSnapData = async () => {
     for (let i = 1; i <= count; i++) {
         snaps[i] = {} as any
         const meta = await registry.getSnap('' + i)
-        console.log('getSnap ' + i, meta)
-        snaps[i].meta = meta
-
+        
+        snaps[i].meta = {
+            id: i,
+            name: meta[0],
+            description: meta[1],
+            author: meta[2],
+            category: meta[3],
+            docUrl: meta[4],
+            publisher: meta[5],
+            creationTime: meta[6],
+        }
+        console.log('getSnap ' + i, snaps[i].meta)
     }
 
     for (let i = 1; i <= count; i++) {
@@ -67,7 +76,13 @@ export const getSnapData = async () => {
 
         for (let v of versions) {
             const versionData = await registry.getSnapVersion(v)
-            snaps[i].versions[v] = versionData
+            console.log({versionData})
+            snaps[i].versions[v] = {
+                shasum: versionData[0],
+                versionNumber: versionData[2],
+                changeLog: versionData[3],
+                publisher: versionData[6]
+            }
         }
     }
 

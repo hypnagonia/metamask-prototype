@@ -15,7 +15,7 @@ export default function SnapPage(props: any) {
     const [data, setData] = useState([])
     const { id } = useParams() as any
 
-    const reviewsForSnap = reviews.filter((r: any) => +r.scheme[1][1] === +id)
+    const reviewsForSnap = [] as any // reviews.filter((r: any) => +r.scheme[1][1] === +id)
 
 
     useEffect(() => {

@@ -5,25 +5,46 @@ import { AuditorDetailPage } from './components/AuditorDetailPage'
 import { AuditorListPage } from './components/AuditorListPage'
 
 import { useEffect, useState } from 'react'
-// import { getStrategies } from './api/api';
-import { SearchAutocomplete } from './components/SearchAutocomplete'
-import { getWindowParam, setWindowParam } from './utils';
-import { useCallback } from 'react'
 
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
+
+import { EthereumClient, w3mConnectors } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { goerli } from 'wagmi/chains'
-import { rpcUrl } from './api/registry'
+
 import { publicProvider } from 'wagmi/providers/public'
 
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { Web3Button } from '@web3modal/react'
 import { getAll } from './api/api'
+import FollowersPage from './components/followers/FollowersPage';
 
-const chains = [goerli]
-const projectId = 'karma3labs'
+const harmonyOneTestnet = {
+  id: 1666700000,
+  name: "Harmony One Testnet",
+  network: "harmony",
+  nativeCurrency: {
+    name: "Harmony",
+    symbol: "ONE",
+    decimals: 18,
+  },
+  rpcUrls: {
+    public: {
+      http: ["https://api.s0.b.hmny.io"]
+    },
+    default: {
+      http: ["https://api.s0.b.hmny.io"]
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Harmony Explorer",
+      url: "https://explorer.pops.one"
+    },
+  }
+}
 
+const chains = [harmonyOneTestnet]
+const projectId = '38b351b40e21b5c081bd0a25d34dfac4'
 
 const { publicClient } = configureChains(chains, [publicProvider()])
 const wagmiConfig = createConfig({
@@ -92,6 +113,7 @@ function App() {
 
                 <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />
                 <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
+                <Route index path="/followers/" element={<FollowersPage reviews={data} />} />
 
               </Routes>
 

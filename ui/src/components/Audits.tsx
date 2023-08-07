@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
+import { create as saveRecordToBackend  } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../api/mockCompute'
 import { Web3Button } from '@web3modal/react'
@@ -14,10 +14,10 @@ export const Audits = (props: any) => {
 
     useEffect(() => {
         const run = async () => {
-            const d = await voteGetAll()
+            // const d = await voteGetAll()
             const snaps = await getSnaps()
             setSnaps(snaps)
-            setVotes(d)
+            // setVotes(d)
         }
 
         run()

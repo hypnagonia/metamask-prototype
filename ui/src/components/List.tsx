@@ -55,8 +55,8 @@ export default function List(props: any) {
 						{Object.values(data).map((e: any, i) => {
 
 
-							const reviewsForSnap = reviews.filter((r: any) => +r.scheme[1][1] === i + 1)
-							const score = computeSnapScore(i + 1, reviewsForSnap)
+							const reviewsForSnap = [] as any // reviews.filter((r: any) => +r.scheme[1][1] === i + 1)
+							const score = 1 // computeSnapScore(i + 1, reviewsForSnap)
 
 
 							const component = () => {

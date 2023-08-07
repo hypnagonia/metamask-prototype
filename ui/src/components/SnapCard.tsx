@@ -1,35 +1,14 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend, voteCreate as saveVoteRecordToBackend, voteGetAll } from '../api/api'
+import { create as saveRecordToBackend, createAttestation } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { computeSnapScore } from '../api/mockCompute'
 
 
-const createScheme = (o: any) => {
-    const m = new Map()
-    m.set('score', o.score)
-    m.set('snapId', o.snapId)
-    m.set('version', o.version)
-    m.set('versionOrigin', o.versionOrigin)
-    m.set('checksum', o.checksum)
-    m.set('versionSignature', o.versionSignature)
-    m.set('timestamp', Date.now())
 
-    const jsonText = Array.from(m.entries())
-    return jsonText
-}
 
 export const SnapCard = (props: any) => {
     const [votes, setVotes] = useState([])
-
-    useEffect(() => {
-        const run = async () => {
-            const d = await voteGetAll()
-            setVotes(d)
-        }
-
-        run()
-    }, [])
 
 
     const id = props.id
@@ -60,11 +39,9 @@ export const SnapCard = (props: any) => {
                 scheme: scheme
             }
 
-            if (scheme![0][0] === 'vote') {
-                await saveVoteRecordToBackend(r as any)
-            } else {
-                await saveRecordToBackend(r as any)
-            }
+            const attestation = scheme
+            const signature = dataSign
+            // await saveRecordToBackend(attestation, extraData, signature)
             window.alert('Saved!')
         }
 
@@ -88,7 +65,7 @@ export const SnapCard = (props: any) => {
 
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '80%' }}>
-                    <Link to={"/snap/" + id}> <h3>{e.meta[0]}<br />
+                    <Link to={"/snap/" + id}> <h3>{e.meta.name}<br />
                         <span style={{ color: 'orange' }}>
                             {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
@@ -109,15 +86,13 @@ export const SnapCard = (props: any) => {
 
             <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
-            <div className="small-font"> {e.meta[1]}<br />
+            <div className="small-font"> {e.meta.description}<br />
                 <a href={e.meta[4]} target="_blank" style={{ color: '#2a2a72' }}>{e.meta[4]}</a>
             </div>
-
-
             <br />
 
             <div className="small-font">
-                Developer: <b>{e.meta[2]}</b><br />
+                Developer: <b>{e.meta.author}</b><br />
                 {e.versionList.length === 0 && <>No versions found<br /></>}
                 {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.join(', ')}</b><br /></>}
                 Audits: <b>{reviewsTotal}</b><br />
