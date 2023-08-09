@@ -14,36 +14,66 @@ const options = {
 	}
 }
 
+export const getType = (schema: string) => {
+	let meta = {} as any
+	switch (schema) {
+		case process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA:
+			meta.name = 'Audit'
+			break;
+		case process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_SCHEMA:
+			meta.name = 'Audit Approval'
+			break;
+		case process.env.REACT_APP_REVIEW_ATTESTOR_SCHEMA:
+			meta.name = 'Review'
+			break;
+		case process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_SCHEMA:
+			meta.name = 'Review Approval'
+			break;
+		case process.env.REACT_APP_FOLLOWERS_ATTESTOR_SCHEMA:
+			meta.name = 'Follow'
+			break;
+		default: throw new Error(`type ${schema} does not exist`)
+	}
+
+	return meta
+}
+
 export const createAttestation = (type: string, attestation: any) => {
 	const extraDataField = "0x"
 	let address
 	let schema
 	let extraData
+	let meta = {} as any
 	switch (type) {
 		case 'audit':
 			address = process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS
 			schema = process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA
 			extraData = [extraDataField, extraDataField]
+			meta.name = 'Audit'
 			break;
 		case 'auditApprove':
 			address = process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_ADDRESS
 			schema = process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_SCHEMA
 			extraData = [extraDataField]
+			meta.name = 'Audit Approval'
 			break;
 		case 'review':
 			address = process.env.REACT_APP_REVIEW_ATTESTOR_ADDRESS
 			schema = process.env.REACT_APP_REVIEW_ATTESTOR_SCHEMA
 			extraData = [extraDataField]
+			meta.name = 'Review'
 			break;
 		case 'reviewApprove':
 			address = process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_ADDRESS
 			schema = process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_SCHEMA
 			extraData = [extraDataField]
+			meta.name = 'Review Approval'
 			break;
 		case 'follow':
 			address = process.env.REACT_APP_FOLLOWERS_ATTESTOR_ADDRESS
 			schema = process.env.REACT_APP_FOLLOWERS_ATTESTOR_SCHEMA
-			extraData = [extraDataField, extraDataField]
+			extraData = [extraDataField]
+			meta.name = 'Follow'
 			break;
 		default: throw new Error(`type ${type} does not exist`)
 	}
@@ -51,7 +81,7 @@ export const createAttestation = (type: string, attestation: any) => {
 	attestation.schemaId = schema
 	attestation.attestor = address
 
-	return { attestation, extraData }
+	return { attestation, extraData, meta }
 }
 
 export const create = async (
@@ -118,7 +148,7 @@ export const getAllByType = async (type: string) => {
 export const getAttestationHash = async (attestation: any) => {
 	const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_PROVIDER_URL)
 	const a = new ethers.Contract(process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS || '', karmaAttestorABI.abi, provider)
-	
+
 	console.log({ attestation })
 	const hash = await a.getStructHash(attestation)
 	return hash

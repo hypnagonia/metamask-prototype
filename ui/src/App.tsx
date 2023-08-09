@@ -16,7 +16,8 @@ import { publicProvider } from 'wagmi/providers/public'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { Web3Button } from '@web3modal/react'
 import { getAll } from './api/api'
-import FollowersPage from './components/followers/FollowersPage';
+import FollowersPage from './components/followers/FollowersPage'
+import ExplorerPage from './components/explorer/ExplorerPage'
 
 const harmonyOneTestnet = {
   id: 1666700000,
@@ -114,6 +115,7 @@ function App() {
                 <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />
                 <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
                 <Route index path="/followers/" element={<FollowersPage reviews={data} />} />
+                <Route index path="/explorer/" element={<ExplorerPage reviews={data} />} />
 
               </Routes>
 
