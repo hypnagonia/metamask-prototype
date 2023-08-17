@@ -103,7 +103,8 @@ function App() {
                   </Link>
                   <div className="logo-menu">
                     <Link to={'/'} style={{ color: 'white' }}>Snaps</Link>&nbsp;&nbsp;
-                    <Link to={'/explorer'} style={{ color: 'white' }}>Explorer</Link>
+                    <Link to={'/explorer'} style={{ color: 'white' }}>Explorer</Link>&nbsp;&nbsp;
+                    <Link to={'/explorer'} style={{ color: 'white' }}>Community</Link>&nbsp;&nbsp;
 
                   </div>
                 </div>
