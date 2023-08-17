@@ -40,8 +40,13 @@ export const getSnaps = async () => {
 }
 
 
-export const getSnapData = async () => {
-    console.log('getting snaps')
+let cachedData: any
+
+export const getSnapData = async (ignoreCache = false) => {
+    if (!ignoreCache && cachedData) {
+        return cachedData
+    }
+
     let count
     try {
         // count = await registry.snapsIndex()
@@ -86,6 +91,7 @@ export const getSnapData = async () => {
         }
     }
 
+    cachedData = snaps
     return snaps
 }
 

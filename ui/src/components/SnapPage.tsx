@@ -46,7 +46,7 @@ export default function SnapPage(props: any) {
 				</div>*/}
 
                 <div className="scroll">
-                    <div className="profiles-container">
+                    <div>
                         {Object.values(data).length === 0 && <>Loading...</>}
 
                         <SnapDetailPage id={id} snapData={data} reviewsForSnap={reviewsForSnap} />

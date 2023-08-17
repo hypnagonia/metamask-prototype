@@ -14,11 +14,11 @@ export default function FollowersCard(props: any) {
 					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<div>
 
-						<Link to={`/auditor/${data.attester}`}>
+						<Link to={`/followers/${data.attester}`}>
 							<b style={{ color: '#2a2a72' }}>{data.attester}</b>
 						</Link>
 						&nbsp;&rarr;&nbsp;
-						<Link to={`/auditor/${data.attestee}`}>
+						<Link to={`/followers/${data.attestee}`}>
 							<b style={{ color: '#2a2a72' }}>{data.attestee}</b>
 						</Link>
 					</div>

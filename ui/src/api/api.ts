@@ -92,14 +92,25 @@ export const create = async (
 	return res
 }
 
-export const getAll = async () => {
+let cachedEvents: any
+
+export const getAll = async (ignoreCache = false) => {
+	if (!ignoreCache && cachedEvents) {
+		return cachedEvents
+	}
+
 	const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
-
+	console.log({ res })
 	const events = res
-
-		.map((r: any) => JSON.parse(r))
-		.filter((r: any) => r.length && Array.isArray(r))
 		.map((r: any) => {
+			const o = JSON.parse(r)
+			console.log({ o })
+			o.attestation = JSON.parse(o.attestation)
+			return o
+		})
+		.filter((r: any) => r.attestation.length && Array.isArray(r.attestation))
+		.map((res: any) => {
+			const r = res.attestation
 			return {
 				attestationId: r[0],
 				schemaId: r[1],
@@ -112,10 +123,12 @@ export const getAll = async () => {
 				expirationDate: r[8], // The expiration date of the attestation.
 				isPrivate: r[9],
 				revoked: r[10],
-				attestationData: r[11]
+				attestationData: r[11],
+				transactionHash: res.data.transactionHash
 			}
 		}).sort((a: any, b: any) => b.attestedDate - a.attestedDate)
-
+		
+	cachedEvents = events
 	return events
 }
 

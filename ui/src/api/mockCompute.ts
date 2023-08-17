@@ -1,6 +1,6 @@
 export const getAuditorScore = (address: string) => {
     const score = +address % 10
-    return score
+    return score || 1
 }
 
 export const computeSnapScore = (snapId: number, reviews: any) => {

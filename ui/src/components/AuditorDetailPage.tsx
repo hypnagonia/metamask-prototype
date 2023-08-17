@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend} from '../api/api'
+import { create as saveRecordToBackend, getAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../api/mockCompute'
+import ExplorerList from './explorer/ExplorerList'
 
 import { Audits } from './Audits'
 import { shortenString } from '../utils'
@@ -10,16 +11,21 @@ import { shortenString } from '../utils'
 
 export const AuditorDetailPage = (props: any) => {
     const [votes, setVotes] = useState([])
+    const { id } = useParams() as any
+    const [attestations, setAttestations] = useState([])
 
     useEffect(() => {
         const run = async () => {
+            const d = await getAll()
+            console.log({d})
+            const filtered = d.filter((a: any) => a.attester.toLowerCase() === id.toLowerCase())
+            setAttestations(filtered)
         }
 
         run()
-    }, [])
+    }, [id])
 
 
-    const { id } = useParams() as any
     const reviews = props.reviews
     const auditorScore = getAuditorScore(id)
 
@@ -51,7 +57,8 @@ export const AuditorDetailPage = (props: any) => {
                 <div style={{ marginLeft: 20, width: '70%' }}>
                     {/*Address: <b style={{ color: '#2a2a72' }}>{id}</b><br />*/}
 
-                    Audits Issued: <b>{reviewsCount}</b><br />
+                    Audits: <b>{reviewsCount}</b><br />
+                    Reviews: <b>{reviewsCount}</b><br />
                     Upvotes: <b>{thumbsUpTotal}</b><br />
                     Downvotes: <b>{thumbsDownTotal}</b><br />
                     <br />
@@ -61,9 +68,11 @@ export const AuditorDetailPage = (props: any) => {
             </div>
 
         </div>
-
-        <Audits auditorAddress={id} reviews={reviews} />
-    </div></>
+    </div>
+        <div className="container" >
+            <ExplorerList attestations={attestations} />
+        </div>
+    </>
 
 
 }

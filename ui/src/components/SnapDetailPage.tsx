@@ -1,15 +1,29 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend } from '../api/api'
+import { create as saveRecordToBackend, getAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { computeSnapScore } from '../api/mockCompute'
-import { shortenString } from '../utils'
+import { shortenString, hexAsciiToAsciiString } from '../utils'
+import ExplorerList from './explorer/ExplorerList'
+import { ethers } from 'ethers'
 
 const createScheme = (o: any) => {
     return o
 }
 
 export const SnapDetailPage = (props: any) => {
+    const [attestations, setAttestations] = useState([])
+
+    useEffect(() => {
+        const run = async () => {
+            const d = await getAll()
+            setAttestations(d)
+        }
+
+        run()
+    }, [])
+
+
     const [votes, setVotes] = useState([])
 
     useEffect(() => {
@@ -35,7 +49,6 @@ export const SnapDetailPage = (props: any) => {
     const [isReviewformVisible, setIsReviewformVisible] = useState({} as any)
 
     const saveData = useCallback((message: any) => {
-        console.log('saveData', { message })
         setScheme(message as any)
         signMessage({ message: JSON.stringify(message) })
     }, [])
@@ -53,7 +66,7 @@ export const SnapDetailPage = (props: any) => {
             }
 
 
-           // await saveRecordToBackend(r as any)
+            // await saveRecordToBackend(r as any)
 
             window.alert('Saved!')
         }
@@ -62,9 +75,9 @@ export const SnapDetailPage = (props: any) => {
     }, [dataSign])
     const score = computeSnapScore(id, reviewsForSnap)
 
-    console.log({e})
 
-    return <><div>
+
+    return <>
         <div className="post-full">
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '80%' }}>
@@ -90,149 +103,65 @@ export const SnapDetailPage = (props: any) => {
             <div className="small-font">
                 {e.meta.description}<br />
                 <a href={e.meta[4]} target="_blank">{e.meta[4]}</a><br />
+                <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
+                Developer: <b>{e.meta.author}</b><br />
+                {e.versionList.length === 0 && <>No versions found<br /></>}
+                {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.length}</b><br /></>}
+                Audits: <b>{0}</b><br />
+                Reviews: <b>{0}</b><br />
 
             </div>
         </div>
+        <div style={{ width: '100%', textAlign: 'left', fontSize: 13, marginBottom: 15, fontWeight: 'bold' }}>
 
-        
+            <span style={{ textDecoration: 'underline' }}>Versions</span>&nbsp;&nbsp;
+            <span style={{ textDecoration: 'underline' }}>Reviews</span>
+        </div>
+
         {e.versionList.length === 0 && <>No versions found</>}
 
         {e.versionList.map((v: string) => {
             const version = e.versions[v]
-
             const r = [] as any
 
-            return <div className="post-full"><div className="small-font">
-                <h3>Version: <b>{v}</b></h3> <br />
+            const versionAttestations = attestations
+                .filter((a: any) => a.attestationData[0] ===
+                    ethers.hexlify(ethers.toUtf8Bytes(version.shasum)))
+                .filter((a: any) => a.schemaId === process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA)
 
-                Origin:  <b>{version.versionNumber}</b><br />
+            return <>
+                <div className="post-full"><div className="small-font">
+                    <h3>Version: <b>{v}</b></h3> <br />
 
-                Checksum:  <b>{shortenString(version.shasum, 20)}</b><br />
+                    Origin:  <b>{version.versionNumber}</b><br />
 
-                Signature:  <b>{shortenString('', 20)}</b><br />
-                Change Log:  <b>{shortenString(version.changeLog, 20)}</b><br />
-                <br />
-                <div className="delimiter"></div><br />
-                {r && r.length > 0 && <div className="review-container">
-                    <h3>Audit Scores</h3><br />
-                    {r.map((e: any) => {
+                    Checksum:  <b>{shortenString(version.shasum, 20)}</b><br />
 
-                        const upvotes = votes.filter((a: any) => e.signature === a.scheme[2][1] && a.scheme[0][1] === 'upvote').length
-                        const downvotes = votes.filter((a: any) => e.signature === a.scheme[2][1] && a.scheme[0][1] === 'downvote').length
+                    Signature:  <b>{shortenString('', 20)}</b><br />
+                    Change Log:  <b>{shortenString(version.changeLog, 20)}</b><br />
+                    <br />
+                    <div className="delimiter"></div><br />
 
-                        const upvoteMessage = [
-                            ['vote', 'upvote'],
-                            ['address', e.address],
-                            ['signature', e.signature]
-                        ]
-
-                        const downvoteMessage = [
-                            ['vote', 'downvote'],
-                            ['address', e.address],
-                            ['signature', e.signature]
-                        ]
-
-                        return <>
-
-                            <div>
-                                Auditor: <Link to={`/auditor/${e.address}`}><b style={{ color: '#2a2a72' }}>{e.address}</b></Link>
-                            </div>
-                            <div>
-                                Signature: <b>{shortenString(e.signature)}</b>
-                            </div>
-                            <div>
-                                Score: <b>{e.scheme[0][1]}</b>
-                            </div>
-                            <br />
-                            <div style={{ marginBottom: 20 }}>
-                                <span
-                                    onClick={() => {
-                                        saveData(upvoteMessage as any)
-                                    }}
-                                    className="strategy-btn">&#128077; {upvotes}</span>&nbsp;
-                                <span
-                                    onClick={() => {
-                                        saveData(downvoteMessage as any)
-                                    }}
-                                    className="strategy-btn" style={{ marginLeft: 10 }}>
-                                    &#128078; {downvotes}</span>
-
-                            </div><br />
-                        </>
-                    })}
-                </div>}
-
-                {r && r.length > 0 && <><div className="delimiter"></div><br /></>}
-
-                <div>
-
-
-
-                    <span
-                        onClick={() => setIsApproveformVisible({ ...isApproveformVisible, [version]: !isApproveformVisible[version] })}
-                        className="strategy-btn">Approve with a Score of 1-5</span><br />
-
-
-                    {isApproveformVisible[version] && <>
-                        <br />
-                        <div className="delimiter"></div><br />
-                        <h3>Audit</h3><br />
-                        {[1, 2, 3, 4, 5].map(score => {
-                            const message = createScheme({
-                                score,
-                                version: version.versionNumber,
-                                checksum: version.checksum,
-                                snapId: id
-                            }) as any
-                            return <span
-                                className="strategy-btn"
-                                style={{ marginRight: 10 }}
-                                onClick={() => {
-                                    saveData(message as any)
-                                }}>{score}&nbsp;</span>
-                        })}
-                        < br />
-                        <textarea style={{ marginTop: 20, marginBottom: 20 }} placeholder="Report" className="text-input"></textarea>
-                        <br />
-                        <div className="delimiter"></div><br />
-                    </>}
-
-                    <span
-                        onClick={() => setIsReviewformVisible({ ...isReviewformVisible, [version]: !isReviewformVisible[version] })}
-                        className="strategy-btn" style={{ marginTop: 10 }}>Leave a Review along with score of 1-5</span><br />
-
-                    {isReviewformVisible[version] && <>
-                        <br />
-                        <div className="delimiter"></div><br />
-                        <h3>Review</h3><br />
-                        {[1, 2, 3, 4, 5].map(score => {
-                            const message = createScheme({
-                                score,
-                                version: v,
-                                versionOrigin: version[0],
-                                checksum: version[1],
-                                versionSignature: version[1],
-                                snapId: id
-                            }) as any
-                            return <span
-                                className="strategy-btn"
-                                style={{ marginRight: 10 }}
-                                onClick={() => {
-                                    saveData(message as any)
-                                }}>{score}&nbsp;</span>
-                        })}
-                        < br />
-                        <textarea style={{ marginTop: 20, marginBottom: 20 }} placeholder="Report" className="text-input"></textarea>
-                        <br />
-                        <div className="delimiter"></div><br />
-                    </>}
+                    <div>
+                        <span
+                            onClick={() => setIsApproveformVisible({ ...isApproveformVisible, [version]: !isApproveformVisible[version] })}
+                            className="strategy-btn">Approve</span>&nbsp;&nbsp;
+                       {/* <span
+                            onClick={() => setIsReviewformVisible({ ...isReviewformVisible, [version]: !isReviewformVisible[version] })}
+                            className="strategy-btn" style={{ marginTop: 10 }}>Leave a Review along with score of 1-5</span><br />
+        */}
+                    </div>
                 </div>
-            </div>
-            </div>
+
+                </div>
+
+                <ExplorerList attestations={versionAttestations} />
+
+            </>
         })}
 
 
-    </div></>
+    </>
 
 
 }

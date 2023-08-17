@@ -73,3 +73,13 @@ export function shortenString(str = '', maxLength: number = 20) {
   var secondHalf = str.substr(str.length - halfLength);
   return firstHalf + "..." + secondHalf;
 }
+
+export function hexAsciiToAsciiString(hexAscii: string) {
+  let asciiString = ''
+  for (let i = 2; i < hexAscii.length; i += 4) {
+    const hexByte = hexAscii.substr(i, 4)
+    const asciiChar = String.fromCharCode(parseInt(hexByte, 16))
+    asciiString += asciiChar
+  }
+  return asciiString;
+}

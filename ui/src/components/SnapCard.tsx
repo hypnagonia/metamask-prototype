@@ -5,12 +5,8 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { computeSnapScore } from '../api/mockCompute'
 
 
-
-
 export const SnapCard = (props: any) => {
     const [votes, setVotes] = useState([])
-
-
     const id = props.id
     const e = props.snapData
 
@@ -76,7 +72,7 @@ export const SnapCard = (props: any) => {
                         </span>
 
                         &nbsp;<span style={{ fontSize: 13 }}>{score === 0 ?
-                            <span style={{ color: 'gray' }}>Not Audited</span> : score.toFixed(2)}</span>
+                            <span style={{ color: 'gray' }}>&nbsp;Not Audited</span> : score.toFixed(2)}</span>
                     </h3></Link>
                 </div>
                 <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>
@@ -94,8 +90,9 @@ export const SnapCard = (props: any) => {
             <div className="small-font">
                 Developer: <b>{e.meta.author}</b><br />
                 {e.versionList.length === 0 && <>No versions found<br /></>}
-                {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.join(', ')}</b><br /></>}
+                {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.length}</b><br /></>}
                 Audits: <b>{reviewsTotal}</b><br />
+                Reviews: <b>{reviewsTotal}</b><br />
 
 
             </div>
@@ -103,6 +100,12 @@ export const SnapCard = (props: any) => {
 
         </div>
         <br />
+        <Link to={"/snap/" + id}>
+            <span
+                className="strategy-btn"
+                style={{ marginRight: 20, backgroundColor: '#009ffd', color: 'white' }}
+            >Show Details</span>
+        </Link>
         {/*<div className="blue-btn flex-end">Show Details</div>*/}
     </div></>
 

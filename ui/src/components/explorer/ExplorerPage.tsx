@@ -19,8 +19,9 @@ export default function ExplorerPage(props: any) {
             <div>
                 <h2>Explorer</h2>
             </div>
+            <br/>
             <div>
-                <ExplorerList attestations={attestations}/>
+                <ExplorerList attestations={attestations} type='table'/>
             </div>
             <br/>
         </div>

@@ -5,7 +5,7 @@ import { AuditorDetailPage } from './components/AuditorDetailPage'
 import { AuditorListPage } from './components/AuditorListPage'
 
 import { useEffect, useState } from 'react'
-
+import { useSignMessage, useAccount } from 'wagmi'
 
 import { EthereumClient, w3mConnectors } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
@@ -18,6 +18,7 @@ import { Web3Button } from '@web3modal/react'
 import { getAll } from './api/api'
 import FollowersPage from './components/followers/FollowersPage'
 import ExplorerPage from './components/explorer/ExplorerPage'
+import AuditDetailsPage from './components/attestations/AuditDetailsPage'
 
 const harmonyOneTestnet = {
   id: 1666700000,
@@ -55,10 +56,10 @@ const wagmiConfig = createConfig({
 })
 const ethereumClient = new EthereumClient(wagmiConfig, chains)
 
-
-
 function App() {
   const [data, setData] = useState([])
+  const account = useAccount()
+
 
   useEffect(() => {
     const run = async () => {
@@ -77,6 +78,17 @@ function App() {
             <header>
               <div className="web3-btn">
                 <Web3Button />
+                <br />
+                {/* active only if wallet connected */}
+                <div style={{ width: 200, textAlign: 'right' }}>
+                  {account && account.isConnected && <span
+                    className="strategy-btn"
+                    style={{ marginRight: 20, marginTop: 15, width: 100 }}
+                    onClick={() => {
+
+                    }}>Invite</span>}
+
+                </div>
               </div>
               <div className="logo-container" style={{ marginTop: 40 }}>
                 <div>
@@ -89,6 +101,11 @@ function App() {
                       alt="Karma3Labs Logo"
                     />
                   </Link>
+                  <div className="logo-menu">
+                    <Link to={'/'} style={{ color: 'white' }}>Snaps</Link>&nbsp;&nbsp;
+                    <Link to={'/explorer'} style={{ color: 'white' }}>Explorer</Link>
+
+                  </div>
                 </div>
                 <Link to={'/'}>
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', height: 40 }}>
@@ -115,7 +132,10 @@ function App() {
                 <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />
                 <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
                 <Route index path="/followers/" element={<FollowersPage reviews={data} />} />
+                <Route index path="/followers/:attestor" element={<FollowersPage reviews={data} />} />
                 <Route index path="/explorer/" element={<ExplorerPage reviews={data} />} />
+
+                <Route index path="/audit/:id" element={<AuditDetailsPage />} />
 
               </Routes>
 
@@ -123,7 +143,8 @@ function App() {
           </WagmiConfig>
 
         </div>
-        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} /><br />
+
       </BrowserRouter>
     </>
   );
