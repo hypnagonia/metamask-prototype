@@ -12,7 +12,7 @@ export default function ExplorerList(props: any) {
 	const handleInputChange = useCallback((event: any) => {
 		setInputValue(event.target.value.toLowerCase())
 	}, [])
-	
+
 	const filteredAttestations =
 		inputValue ?
 			attestations.filter((a: any) => {
@@ -24,6 +24,9 @@ export default function ExplorerList(props: any) {
 			})
 			: attestations
 
+	if (attestations.length === 0) {
+		return <>No records found</>
+	}
 
 	const searchComponent = showSearch ? <>
 		<div className="post-full small-font">

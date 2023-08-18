@@ -31,8 +31,8 @@ export default function ReviewNew(props: any) {
 						{[1, 2, 3, 4, 5].map((s: number) => {
 							return <span
 								key={s}
-								className="strategy-btn"
-								style={{ marginRight: 10, backgroundColor: score === s ? 'orange' : 'white' }}
+								className={'strategy-btn ' + (score === s ? ' secondary' : '')}
+								style={{ marginRight: 10 }}
 								onClick={() => {
 									setScore(s)
 								}}>{s}</span>
@@ -53,7 +53,7 @@ export default function ReviewNew(props: any) {
 					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<div>
 						<span
-							className="strategy-btn"
+							className="strategy-btn primary"
 							style={{ marginRight: 10 }}
 							onClick={() => {
 								createAttestation()

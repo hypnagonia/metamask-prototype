@@ -55,7 +55,7 @@ export default function AttestationNew(props: any) {
 					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<div>
 						<span
-							className="strategy-btn"
+							className="strategy-btn primary"
 							style={{ marginRight: 10 }}
 							onClick={() => {
 								createAttestation()

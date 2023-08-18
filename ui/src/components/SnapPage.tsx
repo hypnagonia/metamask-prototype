@@ -40,11 +40,9 @@ export default function SnapPage(props: any) {
                     <div>
                         {Object.values(snaps).length === 0 && <>Loading...</>}
 
-                        <SnapDetailPage id={id} />
+                        <SnapDetailPage id={id} versionShasum={versionShasum}/>
 
                         
-
-
                         <div>
                             {snaps.length === 0 && <div></div>}
                         </div>

@@ -53,14 +53,11 @@ export default function List(props: any) {
 						{Object.values(data).length === 0 && <>Loading...</>}
 
 						{Object.values(data).map((e: any, i) => {
-
-
-							const reviewsForSnap = [] as any // reviews.filter((r: any) => +r.scheme[1][1] === i + 1)
 							const score = 1 // computeSnapScore(i + 1, reviewsForSnap)
 
 
 							const component = () => {
-								return <><SnapCard id={i + 1} snapData={e} reviewsForSnap={reviewsForSnap} /></>
+								return <><SnapCard id={i + 1} snapData={e} /></>
 							}
 
 							return {

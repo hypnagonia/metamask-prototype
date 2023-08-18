@@ -36,7 +36,7 @@ export default function ExplorerTable(props: any) {
                 let attesteeLink = `/auditor/${a.attestee}`
 
 
-                if (meta.name === 'Audit') {
+                if (meta.name === 'Audit' || meta.name === 'Review') {
                     const shasum = ethers.toUtf8String(a.attestationData[0])
 
                     const snap = Object.values(snaps).find((s: any) => s.versionList.includes(shasum)) as any
@@ -44,7 +44,7 @@ export default function ExplorerTable(props: any) {
                         const version = snap.versions[shasum]
 
                         attestee = snap.meta.name + ' ' + version.versionNumber
-                        attesteeLink = `/snap/${snap.meta.id}`
+                        attesteeLink = `/snap/${snap.meta.id}/${version.shasum}`
                     }
                 }
 

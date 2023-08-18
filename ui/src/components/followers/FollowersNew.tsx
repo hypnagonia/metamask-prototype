@@ -135,7 +135,7 @@ export default function FollowersNew(props: any) {
 					<br />
 					<div>
 						<span
-							className="strategy-btn"
+							className="strategy-btn primary"
 							style={{ marginRight: 10 }}
 							onClick={() => {
 								createFollowAttestation()

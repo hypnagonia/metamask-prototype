@@ -142,6 +142,7 @@ function App() {
 
               <Routes>
                 <Route index path="/snap/:id" element={<SnapPage reviews={data} />} />
+                <Route index path="/snap/:id/:versionShasum" element={<SnapPage reviews={data} />} />
                 <Route index path="/" element={<List reviews={data} />} />
 
                 <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />

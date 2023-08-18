@@ -27,15 +27,14 @@ export default function ExplorerPage(props: any) {
             </div>
             <div style={{ width: '100%', textAlign: 'left' }}>
                 <span
-                    className="strategy-btn"
-                    style={{ backgroundColor: gridView === 'table' ? 'orange' : 'white' }}
+                    className={'strategy-btn ' + (gridView === 'table' ? ' primary' : '')}
+
                     onClick={() => {
                         setGridView('table')
                     }}>Table</span>
                 &nbsp;&nbsp;
                 <span
-                    className="strategy-btn"
-                    style={{ backgroundColor: gridView !== 'table' ? 'orange' : 'white' }}
+                    className={'strategy-btn ' + (gridView !== 'table' ? ' primary' : '')}
                     onClick={() => {
                         setGridView('cards')
                     }}>Cards</span>

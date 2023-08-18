@@ -63,9 +63,9 @@ export const AuditorDetailPage = (props: any) => {
                     Upvotes: <b>{getCounts(a).auditApprovals + getCounts(a).reviewApprovals}</b><br />
                     Downvotes: <b>{getCounts(a).auditDisapprovals + getCounts(a).reviewDisapprovals}</b><br />
                     <br />
-                    <div className="strategy-btn"
+                    <div className="strategy-btn secondary"
                         onClick={createFollowAttestation}
-                    >Follow</div>
+                    ><b>&#43;</b>&nbsp;Follow</div>
                 </div>
 
             </div>
@@ -75,15 +75,13 @@ export const AuditorDetailPage = (props: any) => {
         {attestations.length ? <>
             <div style={{ width: '100%', textAlign: 'left' }}>
                 <span
-                    className="strategy-btn"
-                    style={{ backgroundColor: gridView === 'table' ? 'orange' : 'white' }}
+                    className={'strategy-btn ' + (gridView === 'table' ? ' primary' : '')}
                     onClick={() => {
                         setGridView('table')
                     }}>Table</span>
                 &nbsp;&nbsp;
                 <span
-                    className="strategy-btn"
-                    style={{ backgroundColor: gridView !== 'table' ? 'orange' : 'white' }}
+                    className={'strategy-btn ' + (gridView !== 'table' ? ' primary' : '')}
                     onClick={() => {
                         setGridView('cards')
                     }}>Cards</span>

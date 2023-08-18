@@ -10,7 +10,7 @@ import { useSnaps } from './hooks/UseSnaps'
 import { UseCounts } from './hooks/UseCounts'
 
 export const SnapDetailPage = (props: any) => {
-    const {getCounts} = UseCounts()
+    const { getCounts } = UseCounts()
     const [attestations, setAttestations] = useState([])
     const [tab, setTab] = useState('audits')
     const { snaps } = useSnaps()
@@ -38,8 +38,8 @@ export const SnapDetailPage = (props: any) => {
 
     const versionsArr = Object.values(snap.versions)
     const version: any = versionShasum ? versionsArr.find((a: any) => a.shasum === versionShasum) : versionsArr[versionsArr.length - 1]
-    const versionsAll = versionsArr.map((a: any) => a.versionNumber)
 
+    console.log({ version, snap })
     const filteredAttestations = attestations
         .filter((a: any) => {
             if (ethers.toUtf8String(a.attestationData[0]) !== version.shasum) {
@@ -64,7 +64,7 @@ export const SnapDetailPage = (props: any) => {
         <div className="post-full">
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '80%' }}>
-                    <Link to={"/snap/" + id}> <h3>{snap.meta.name}<br />
+                    <Link to={"/snap/" + id}> <h3>{snap.meta.name}<span style={{ color: 'lightgrey', fontWeight: 'normal' }}>&nbsp;|&nbsp;</span>{version.versionNumber}<br />
                         <span style={{ color: 'orange' }}>
                             {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
@@ -88,9 +88,11 @@ export const SnapDetailPage = (props: any) => {
 
                 <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
                 Developer: <b>{snap.meta.author}</b><br />
-                {versionsAll.length === 0 && <>No versions found<br /></>}
-                {versionsAll.length > 0 && <>
-                    Versions: <b>{versionsAll.join(', ')}</b><br />
+                {versionsArr.length === 0 && <>No versions found<br /></>}
+                {versionsArr.length > 0 && <>
+                    Versions: <b>{versionsArr.map((v: any) => <>
+                        <Link to={`/snap/${id}/${v.shasum}`} style={{ textDecoration: 'underline' }}>{v.versionNumber}</Link>&nbsp;&nbsp;
+                    </>)}</b><br />
                 </>}
                 Audits: <b>{getCounts(version.shasum).audits}</b><br />
                 Reviews: <b>{getCounts(version.shasum).reviews}</b><br />
@@ -109,13 +111,13 @@ export const SnapDetailPage = (props: any) => {
 
                     <div><Link to={`/attestation/new/${version.shasum}`}>
                         <span
-                            className="strategy-btn">Audit</span>&nbsp;&nbsp;
+                            className="strategy-btn secondary"><b>&#43;</b>&nbsp;Audit</span>&nbsp;&nbsp;
                     </Link>
 
                         &nbsp;&nbsp;
                         <Link to={`/review/new/${version.shasum}`}>
                             <span
-                                className="strategy-btn">Review</span>&nbsp;&nbsp;
+                                className="strategy-btn secondary"><b>&#43;</b>&nbsp;Review</span>&nbsp;&nbsp;
                         </Link>
                     </div>
 
@@ -127,17 +129,17 @@ export const SnapDetailPage = (props: any) => {
         <div style={{ width: '100%', textAlign: 'left', fontSize: 13, marginBottom: 15 }}>
             <br />
             <span
-                className="strategy-btn"
-                style={{ marginRight: 10, backgroundColor: tab === 'audits' ? 'orange' : 'white' }}
+                className={'strategy-btn ' + (tab === 'audits' ? ' primary' : '')}
+                style={{ marginRight: 10 }}
                 onClick={() => {
                     setTab('audits')
-                }}>Audits</span>&nbsp;&nbsp;
+                }}>Audits ({getCounts(version.shasum).audits})</span>&nbsp;&nbsp;
             <span
-                className="strategy-btn"
-                style={{ marginRight: 10, backgroundColor: tab === 'reviews' ? 'orange' : 'white' }}
+                className={'strategy-btn ' + (tab === 'reviews' ? ' primary' : '')}
+                style={{ marginRight: 10 }}
                 onClick={() => {
                     setTab('reviews')
-                }}>Reviews</span>&nbsp;&nbsp;
+                }}>Reviews ({getCounts(version.shasum).reviews})</span>&nbsp;&nbsp;
         </div>
         <div>
             <ExplorerList attestations={filteredAttestations} type='' showSearch={false} />

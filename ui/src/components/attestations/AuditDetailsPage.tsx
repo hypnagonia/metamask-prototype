@@ -28,7 +28,7 @@ export default function AuditDetailsPage(props: any) {
             </div>
             <br/>
             <div>
-                <ExplorerList attestations={attestations}/>
+                <ExplorerList attestations={attestations} showSearch={false} />
             </div>
             
             <div>
@@ -36,7 +36,7 @@ export default function AuditDetailsPage(props: any) {
             </div>
             <br/>
             <div>
-                <ExplorerList attestations={attestations}/>
+                <ExplorerList attestations={attestations } showSearch={false} />
             </div>
         </div>
     )

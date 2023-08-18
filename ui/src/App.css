@@ -267,3 +267,13 @@ table.table-1 td, th {
   padding-bottom: 10px;
   border-bottom: 1px #EDF2F7 solid;
 }
+
+.primary {
+  background-color: #009ffd;
+  color: white;
+}
+
+.secondary {
+  background-color: orange;
+  color: white;
+}

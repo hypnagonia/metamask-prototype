@@ -18,7 +18,6 @@ export function UseCreateAttestations() {
             return
         }
 
-
         const attestationInit = {
             attestee: attestee || account.address,
             // attester: account.address,
@@ -36,15 +35,12 @@ export function UseCreateAttestations() {
             attestationData: a.attestationData
         }
 
-
         console.log({attestationFullStructure})
-        // todo
+        // todo get hash of the structure from the contract's method or geenrate offchain
         const message = ethers.keccak256(ethers.solidityPacked(
             ["bytes32", "bytes32", "address", "address", "uint64", "bytes[]"],
             [attestationFullStructure.schemaId, attestationFullStructure.parentId, attestationFullStructure.attestor, attestationFullStructure.attestee, attestationFullStructure.expirationDate, attestationFullStructure.attestationData]
         ))
-
-        
 
         signMessage({ message: JSON.stringify(message) })
 
