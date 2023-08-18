@@ -4,12 +4,13 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../../api/mockCompute'
 
 import { shortenString } from '../../utils'
-
+import { UseCounts } from '../hooks/UseCounts'
 
 export const UserCard = (props: any) => {
-    const address = props.address
+    const address = props.address.toLowerCase()
     const reviews = [] as any // props.reviews
     const auditorScore = getAuditorScore(address)
+    const { getCounts } = UseCounts()
 
     const reviewsCount = reviews.filter((e: any) => address === e.address).length
 
@@ -34,10 +35,10 @@ export const UserCard = (props: any) => {
                 <div style={{ marginLeft: 20, width: '70%' }}>
                     {/*Address: <b style={{ color: '#2a2a72' }}>{id}</b><br />*/}
 
-                    Audits: <b>{reviewsCount}</b><br />
-                    Reviews: <b>{reviewsCount}</b><br />
-                    Upvotes: <b>{thumbsUpTotal}</b><br />
-                    Downvotes: <b>{thumbsDownTotal}</b><br />
+                    Audits: <b>{getCounts(address).audits}</b><br />
+                    Reviews: <b>{getCounts(address).reviews}</b><br />
+                    Upvotes: <b>{getCounts(address).auditApprovals + getCounts(address).reviewApprovals}</b><br />
+                    Downvotes: <b>{getCounts(address).auditDisapprovals + getCounts(address).reviewDisapprovals}</b><br />
                     <br />
                     <div className="strategy-btn">Follow</div>
                 </div>

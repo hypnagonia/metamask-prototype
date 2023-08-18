@@ -17,8 +17,14 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { Web3Button } from '@web3modal/react'
 import { getAll } from './api/api'
 import FollowersPage from './components/followers/FollowersPage'
+import FollowersNew from './components/followers/FollowersNew'
 import ExplorerPage from './components/explorer/ExplorerPage'
 import AuditDetailsPage from './components/attestations/AuditDetailsPage'
+import CommunityTable from './components/community/CommunityTable'
+import AttestationNew from './components/forms/AttestationNew'
+import ReviewNew from './components/forms/ReviewNew'
+
+import { UseCreateAttestations } from './components/hooks/UseCreateAttestation'
 
 const harmonyOneTestnet = {
   id: 1666700000,
@@ -58,8 +64,14 @@ const ethereumClient = new EthereumClient(wagmiConfig, chains)
 
 function App() {
   const [data, setData] = useState([])
+  // const { issueAttestation } = UseCreateAttestations()
+
   const account = useAccount()
 
+  const createFollowAttestation = () => {
+    // issueAttestation('follow', )
+  }
+  
 
   useEffect(() => {
     const run = async () => {
@@ -81,12 +93,14 @@ function App() {
                 <br />
                 {/* active only if wallet connected */}
                 <div style={{ width: 200, textAlign: 'right' }}>
-                  {account && account.isConnected && <span
+                  {account && account.isConnected && <>
+                    <Link to={'/followers/new'} style={{ color: 'white' }}>
+                  <span
                     className="strategy-btn"
-                    style={{ marginRight: 20, marginTop: 15, width: 100 }}
-                    onClick={() => {
-
-                    }}>Invite</span>}
+                    style={{ marginRight: 28, marginTop: 15, width: 100 }}
+                    onClick={createFollowAttestation}><b>&#43;</b>&nbsp;Invite</span>
+                    </Link></>
+                    }
 
                 </div>
               </div>
@@ -104,7 +118,7 @@ function App() {
                   <div className="logo-menu">
                     <Link to={'/'} style={{ color: 'white' }}>Snaps</Link>&nbsp;&nbsp;
                     <Link to={'/explorer'} style={{ color: 'white' }}>Explorer</Link>&nbsp;&nbsp;
-                    <Link to={'/explorer'} style={{ color: 'white' }}>Community</Link>&nbsp;&nbsp;
+                    <Link to={'/community'} style={{ color: 'white' }}>Community</Link>&nbsp;&nbsp;
 
                   </div>
                 </div>
@@ -133,10 +147,16 @@ function App() {
                 <Route index path="/auditor/" element={<AuditorListPage reviews={data} />} />
                 <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
                 <Route index path="/followers/" element={<FollowersPage reviews={data} />} />
+                <Route index path="/followers/new" element={<FollowersNew />} />
+                
                 <Route index path="/followers/:attestor" element={<FollowersPage reviews={data} />} />
                 <Route index path="/explorer/" element={<ExplorerPage reviews={data} />} />
-
+                <Route index path="/community/" element={<CommunityTable/>} />
+                
                 <Route index path="/audit/:id" element={<AuditDetailsPage />} />
+                <Route index path="/attestation/new/:shasum" element={<AttestationNew />} />
+                <Route index path="/review/new/:shasum" element={<ReviewNew />} />
+                
 
               </Routes>
 

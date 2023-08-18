@@ -4,20 +4,30 @@ import { create as saveRecordToBackend, getAll } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../api/mockCompute'
 import ExplorerList from './explorer/ExplorerList'
-
+import { UseCounts } from './hooks/UseCounts'
 import { Audits } from './Audits'
 import { shortenString } from '../utils'
-
+import { UseCreateAttestations } from './hooks/UseCreateAttestation'
 
 export const AuditorDetailPage = (props: any) => {
-    const [votes, setVotes] = useState([])
     const { id } = useParams() as any
+    const a = id.toLowerCase()
+    const [gridView, setGridView] = useState('table')
+
     const [attestations, setAttestations] = useState([])
+    const { getCounts } = UseCounts()
+
+    const { issueAttestation } = UseCreateAttestations()
+
+
+    const createFollowAttestation = () => {
+        issueAttestation('follow', id, ["1"])
+    }
 
     useEffect(() => {
         const run = async () => {
             const d = await getAll()
-            console.log({d})
+
             const filtered = d.filter((a: any) => a.attester.toLowerCase() === id.toLowerCase())
             setAttestations(filtered)
         }
@@ -25,17 +35,8 @@ export const AuditorDetailPage = (props: any) => {
         run()
     }, [id])
 
-
-    const reviews = props.reviews
     const auditorScore = getAuditorScore(id)
 
-    const reviewsCount = reviews.filter((e: any) => id === e.address).length
-
-    const thumbsUpTotal = votes.filter((e: any) => e.scheme[0][1] === 'upvote' && e.scheme[1][1] === id).length
-    const thumbsDownTotal = votes.filter((e: any) => e.scheme[0][1] === 'downvote' && e.scheme[1][1] === id).length
-
-    const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
-    const account = useAccount()
 
 
     return <><div className="container" style={{ marginTop: 30 }}>
@@ -57,21 +58,45 @@ export const AuditorDetailPage = (props: any) => {
                 <div style={{ marginLeft: 20, width: '70%' }}>
                     {/*Address: <b style={{ color: '#2a2a72' }}>{id}</b><br />*/}
 
-                    Audits: <b>{reviewsCount}</b><br />
-                    Reviews: <b>{reviewsCount}</b><br />
-                    Upvotes: <b>{thumbsUpTotal}</b><br />
-                    Downvotes: <b>{thumbsDownTotal}</b><br />
+                    Audits: <b>{getCounts(a).audits}</b><br />
+                    Reviews: <b>{getCounts(a).reviews}</b><br />
+                    Upvotes: <b>{getCounts(a).auditApprovals + getCounts(a).reviewApprovals}</b><br />
+                    Downvotes: <b>{getCounts(a).auditDisapprovals + getCounts(a).reviewDisapprovals}</b><br />
                     <br />
-                    <div className="strategy-btn">Follow</div>
+                    <div className="strategy-btn"
+                        onClick={createFollowAttestation}
+                    >Follow</div>
                 </div>
 
             </div>
 
         </div>
+
+        {attestations.length ? <>
+            <div style={{ width: '100%', textAlign: 'left' }}>
+                <span
+                    className="strategy-btn"
+                    style={{ backgroundColor: gridView === 'table' ? 'orange' : 'white' }}
+                    onClick={() => {
+                        setGridView('table')
+                    }}>Table</span>
+                &nbsp;&nbsp;
+                <span
+                    className="strategy-btn"
+                    style={{ backgroundColor: gridView !== 'table' ? 'orange' : 'white' }}
+                    onClick={() => {
+                        setGridView('cards')
+                    }}>Cards</span>
+            </div>
+            <br />
+        </> : null}
     </div>
-        <div className="container" >
-            <ExplorerList attestations={attestations} />
-        </div>
+
+        {attestations.length ? <>
+            <div className="container" >
+                <ExplorerList attestations={attestations} showSearch={false} type={gridView} />
+            </div>
+        </> : null}
     </>
 
 

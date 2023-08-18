@@ -263,7 +263,7 @@ a {
 }
 
 table.table-1 td, th {
-  border-bottom: 1px #EDF2F7 solid;
   padding-top: 10px;
   padding-bottom: 10px;
+  border-bottom: 1px #EDF2F7 solid;
 }

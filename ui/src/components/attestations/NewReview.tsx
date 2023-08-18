@@ -6,7 +6,6 @@ import { getType } from '../../api/api'
 export default function NewReview(props: any) {
 	const data = props.data
 	const date = new Date(data.attestedDate * 1000);
-	console.log({ data })
 	const meta = getType(data.schemaId)
 
 

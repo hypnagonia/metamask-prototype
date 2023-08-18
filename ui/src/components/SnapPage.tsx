@@ -7,32 +7,23 @@ import { create as saveRecordToBackend } from '../api/api'
 import { SnapCard } from './SnapCard'
 import { SnapDetailPage } from './SnapDetailPage'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
+import { useSnaps } from './hooks/UseSnaps'
 
 export default function SnapPage(props: any) {
     const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
-
-    const reviews = props.reviews
-    const [data, setData] = useState([])
+    const { snaps } = useSnaps()
     const { id } = useParams() as any
+    const { versionShasum = '' } = useParams() as any
 
-    const reviewsForSnap = [] as any // reviews.filter((r: any) => +r.scheme[1][1] === +id)
 
-
-    useEffect(() => {
-        const run = async () => {
-            const d = await getSnaps()
-            setData(d[id])
-        }
-
-        run()
-    }, [])
+  
 
     useEffect(() => {
         console.log({ data: dataSign, error, isLoading, signMessage, variables })
 
     }, [variables?.message])
 
-    if (data.length === 0) {
+    if (snaps.length === 0) {
         return null
     }
 
@@ -47,15 +38,15 @@ export default function SnapPage(props: any) {
 
                 <div className="scroll">
                     <div>
-                        {Object.values(data).length === 0 && <>Loading...</>}
+                        {Object.values(snaps).length === 0 && <>Loading...</>}
 
-                        <SnapDetailPage id={id} snapData={data} reviewsForSnap={reviewsForSnap} />
+                        <SnapDetailPage id={id} />
 
                         
 
 
                         <div>
-                            {data.length === 0 && <div></div>}
+                            {snaps.length === 0 && <div></div>}
                         </div>
                         {/*<Pagination
 							numberOfPages={Math.ceil(data.count / PER_PAGE)}

@@ -14,22 +14,31 @@ const options = {
 	}
 }
 
+
+export const schemas = {
+	KarmaAuditAttestorSchemaId: process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA || '0x8ec3f8cea0dbf766e5867704ca5d40fd150b77dc24f0cfa67d5b32ba15899e8c',
+	KarmaAuditApprovalAttestorSchemaId: process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_SCHEMA || '0x00413b97266b39391c1096e2382acb8bcf02bb8ddcd76fadd83f7fadb570bc4c',
+	KarmaReviewAttestorSchemaId: process.env.REACT_APP_REVIEW_ATTESTOR_SCHEMA || '0xa441f5cadbdf1734d712dd2fac3349b8f202d88a6b296191fb52e2121539036b',
+	KarmaReviewApprovalAttestorSchemaId: process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_SCHEMA || '0x74301e44c78bb3d82e6c93dd78dffcbc58ec424c4ff0d9a9fc5be2cc522b13d1',
+	KarmaFollowersAttestorSchemaId: process.env.REACT_APP_FOLLOWERS_ATTESTOR_SCHEMA || '0x01699f6044e8d50455877de61a800dab739d66151ce3891bccf583bcf0203290'
+}
+
 export const getType = (schema: string) => {
 	let meta = {} as any
 	switch (schema) {
-		case process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA:
+		case schemas.KarmaAuditAttestorSchemaId:
 			meta.name = 'Audit'
 			break;
-		case process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_SCHEMA:
+		case schemas.KarmaAuditApprovalAttestorSchemaId:
 			meta.name = 'Audit Approval'
 			break;
-		case process.env.REACT_APP_REVIEW_ATTESTOR_SCHEMA:
+		case schemas.KarmaReviewAttestorSchemaId:
 			meta.name = 'Review'
 			break;
-		case process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_SCHEMA:
+		case schemas.KarmaReviewApprovalAttestorSchemaId:
 			meta.name = 'Review Approval'
 			break;
-		case process.env.REACT_APP_FOLLOWERS_ATTESTOR_SCHEMA:
+		case schemas.KarmaFollowersAttestorSchemaId:
 			meta.name = 'Follow'
 			break;
 		default: throw new Error(`type ${schema} does not exist`)
@@ -37,6 +46,9 @@ export const getType = (schema: string) => {
 
 	return meta
 }
+
+
+
 
 export const createAttestation = (type: string, attestation: any) => {
 	const extraDataField = "0x"
@@ -47,31 +59,31 @@ export const createAttestation = (type: string, attestation: any) => {
 	switch (type) {
 		case 'audit':
 			address = process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS
-			schema = process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA
+			schema = schemas.KarmaAuditAttestorSchemaId
 			extraData = [extraDataField, extraDataField]
 			meta.name = 'Audit'
 			break;
 		case 'auditApprove':
 			address = process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_ADDRESS
-			schema = process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_SCHEMA
+			schema = schemas.KarmaAuditApprovalAttestorSchemaId
 			extraData = [extraDataField]
 			meta.name = 'Audit Approval'
 			break;
 		case 'review':
 			address = process.env.REACT_APP_REVIEW_ATTESTOR_ADDRESS
-			schema = process.env.REACT_APP_REVIEW_ATTESTOR_SCHEMA
+			schema = schemas.KarmaReviewAttestorSchemaId
 			extraData = [extraDataField]
 			meta.name = 'Review'
 			break;
 		case 'reviewApprove':
 			address = process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_ADDRESS
-			schema = process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_SCHEMA
+			schema = schemas.KarmaReviewApprovalAttestorSchemaId
 			extraData = [extraDataField]
 			meta.name = 'Review Approval'
 			break;
 		case 'follow':
 			address = process.env.REACT_APP_FOLLOWERS_ATTESTOR_ADDRESS
-			schema = process.env.REACT_APP_FOLLOWERS_ATTESTOR_SCHEMA
+			schema = schemas.KarmaFollowersAttestorSchemaId
 			extraData = [extraDataField]
 			meta.name = 'Follow'
 			break;
@@ -100,11 +112,11 @@ export const getAll = async (ignoreCache = false) => {
 	}
 
 	const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
-	console.log({ res })
+	
 	const events = res
 		.map((r: any) => {
 			const o = JSON.parse(r)
-			console.log({ o })
+			
 			o.attestation = JSON.parse(o.attestation)
 			return o
 		})
@@ -116,8 +128,8 @@ export const getAll = async (ignoreCache = false) => {
 				schemaId: r[1],
 				parentId: r[2],// The unique identifier of the parent attestation (see DAG).
 				attester: r[3],
-				attestor: r[4], // The Attestor smart contract address.
-				attestee: r[5], // The Attestee address (receiving attestation).
+				attestee: r[4], // The Attestee address (receiving attestation).
+				attestor: r[5], // The Attestor smart contract address.
 				attestedDate: r[6], // The expiration date of the attestation.
 				updatedDate: r[7], // The expiration date of the attestation.
 				expirationDate: r[8], // The expiration date of the attestation.
@@ -127,10 +139,12 @@ export const getAll = async (ignoreCache = false) => {
 				transactionHash: res.data.transactionHash
 			}
 		}).sort((a: any, b: any) => b.attestedDate - a.attestedDate)
-		
+
 	cachedEvents = events
 	return events
 }
+
+
 
 export const getAllByType = async (type: string) => {
 	const res = await getAll()
@@ -138,19 +152,19 @@ export const getAllByType = async (type: string) => {
 	let schema: any
 	switch (type) {
 		case 'audit':
-			schema = process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA
+			schema = schemas.KarmaAuditAttestorSchemaId
 			break;
 		case 'auditApprove':
-			schema = process.env.REACT_APP_ATTESTATION_APPROVAL_ATTESTOR_SCHEMA
+			schema = schemas.KarmaAuditApprovalAttestorSchemaId
 			break;
 		case 'review':
-			schema = process.env.REACT_APP_REVIEW_ATTESTOR_SCHEMA
+			schema = schemas.KarmaReviewAttestorSchemaId
 			break;
 		case 'reviewApprove':
-			schema = process.env.REACT_APP_REVIEW_APPROVAL_ATTESTOR_SCHEMA
+			schema = schemas.KarmaFollowersAttestorSchemaId
 			break;
 		case 'follow':
-			schema = process.env.REACT_APP_FOLLOWERS_ATTESTOR_SCHEMA
+			schema = schemas.KarmaReviewApprovalAttestorSchemaId
 			break;
 		default: throw new Error(`type ${type} does not exist`)
 	}
@@ -162,7 +176,7 @@ export const getAttestationHash = async (attestation: any) => {
 	const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_PROVIDER_URL)
 	const a = new ethers.Contract(process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS || '', karmaAttestorABI.abi, provider)
 
-	console.log({ attestation })
+	
 	const hash = await a.getStructHash(attestation)
 	return hash
 }

@@ -8,7 +8,7 @@ import { UserCard } from './UserCard'
 export default function FollowersPage(props: any) {
     const [followers, setFollowers] = useState([])
     const { attestor = '' } = useParams() as any
-    console.log({ attestor })
+    
     useEffect(() => {
         const run = async () => {
             const d = await getAllByType('follow')

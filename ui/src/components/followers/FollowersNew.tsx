@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
 import { ethers } from "ethers"
 import { createAttestation, create, getAttestationHash } from '../../api/api'
+import { UseCreateAttestations } from '../hooks/UseCreateAttestation'
 
 const pk = '0xb60ea7fb50fe0cbccd48c5da92a9f9aefced0bbbd1a4f88392eff4f57372df5f'
 const addr = '0x033f61b44Bc0AEcA559E16864481B45e2B0DC73b'
@@ -16,6 +17,13 @@ export default function FollowersNew(props: any) {
 		setInputValue(event.target.value)
 	}, [])
 
+	const { issueAttestation } = UseCreateAttestations()
+
+    const createFollowAttestation = () => {
+        issueAttestation('follow', inputValue, ["1"])
+    }
+
+	/*
 	const newAttestation = useCallback(async () => {
 		if (!ethers.isAddress(inputValue.toLowerCase())) {
 			alert('invalid address ' + inputValue)
@@ -57,13 +65,13 @@ export default function FollowersNew(props: any) {
 			["\x19Ethereum Signed Message:\n32", message]
 		))
 
-		/*----*/
+		
 		const w = new ethers.Wallet(pk)
 
 		const signatureLocal = await w.signMessage(message)
 		const recoveredAddress = ethers.verifyMessage(message, signatureLocal)
 		console.log({ signatureLocal, recoveredAddress })
-		/*---*/
+		
 
 		// alert(message + ' ----- ' + prefixedMessageHash)
 		console.log({ message, prefixedMessageHash })
@@ -107,12 +115,13 @@ export default function FollowersNew(props: any) {
 
 		run()
 	}, [signatureReceived, attestation])
+	*/
 
 	return (
 		<>
 			<div className="container" style={{ marginTop: 30 }}>
 				<div className="post-full small-font" >
-					<b>Create Follow Attestation</b>
+					<b>New Follow Attestation</b>
 					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<div>
 						<input
@@ -129,8 +138,8 @@ export default function FollowersNew(props: any) {
 							className="strategy-btn"
 							style={{ marginRight: 10 }}
 							onClick={() => {
-								newAttestation()
-							}}>Create</span>
+								createFollowAttestation()
+							}}>Follow</span>
 					</div>
 
 				</div></div>

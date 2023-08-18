@@ -1,16 +1,18 @@
 import { useEffect, useState, useCallback } from 'react'
 import ExplorerCard from './ExplorerCard'
 import ExplorerTable from './ExplorerTable'
+import { useSnaps } from '../hooks/UseSnaps'
 
 export default function ExplorerList(props: any) {
 	const attestations = props.attestations || []
 	const gridType = props.type || ''
-
+	const showSearch = props.showSearch !== undefined ? props.showSearch : true
+	const { snaps } = useSnaps()
 	const [inputValue, setInputValue] = useState('')
 	const handleInputChange = useCallback((event: any) => {
 		setInputValue(event.target.value.toLowerCase())
 	}, [])
-
+	
 	const filteredAttestations =
 		inputValue ?
 			attestations.filter((a: any) => {
@@ -23,7 +25,7 @@ export default function ExplorerList(props: any) {
 			: attestations
 
 
-	const searchComponent = <>
+	const searchComponent = showSearch ? <>
 		<div className="post-full small-font">
 			<div>
 				<input
@@ -33,27 +35,23 @@ export default function ExplorerList(props: any) {
 					className="normal-input"
 				/>
 			</div>
-
-
-		</div></>
+		</div></> : null
 
 	if (gridType === 'table') {
 		return <>
 			{searchComponent}
 			<div className="post-full small-font" >
-				<ExplorerTable attestations={filteredAttestations} />
+				<ExplorerTable attestations={filteredAttestations} snaps={snaps} />
 			</div>
 		</>
 	}
 
 	return (<>
-		<div className="container" style={{ marginTop: 30 }}>
-
-		</div>
+		{searchComponent}
 		<div>
 			{filteredAttestations.map((r: any) => {
 				return (
-					<div key={r.attestationId}>
+					<div>
 						<ExplorerCard data={r} />
 					</div>
 				)

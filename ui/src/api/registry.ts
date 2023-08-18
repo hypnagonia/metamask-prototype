@@ -19,10 +19,9 @@ export const getSnaps = async () => {
 
     try {
         const cached = JSON.parse(localStorage.getItem(registryKey) as any)
-        console.log({ cached })
 
         if (cached) {
-            // return cached
+            return cached
         }
     } catch (e) { }
 
@@ -35,7 +34,7 @@ export const getSnaps = async () => {
     )))
 
     localStorage.setItem(registryKey, JSON.stringify(r))
-    console.log({ r, res })
+    
     return r
 }
 
@@ -54,7 +53,7 @@ export const getSnapData = async (ignoreCache = false) => {
     } catch (e) {
         count = await registry.getSnapTotalSupply()//.then(r => r.toString())
     }
-    console.log('snaps total', count)
+    // console.log('snaps total', count)
     const snaps = {} as any
     for (let i = 1; i <= count; i++) {
         snaps[i] = {} as any
@@ -70,18 +69,18 @@ export const getSnapData = async (ignoreCache = false) => {
             publisher: meta[5],
             creationTime: meta[6],
         }
-        console.log('getSnap ' + i, snaps[i].meta)
+        // console.log('getSnap ' + i, snaps[i].meta)
     }
 
     for (let i = 1; i <= count; i++) {
         const versions = Object.values(await registry.getSnapVersions(i)) as string[]
-        console.log('getSnapVersions ' + i, versions)
+        
         snaps[i].versionList = versions
         snaps[i].versions = {} as any
 
         for (let v of versions) {
             const versionData = await registry.getSnapVersion(v)
-            console.log({versionData})
+            
             snaps[i].versions[v] = {
                 shasum: versionData[0],
                 versionNumber: versionData[2],

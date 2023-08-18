@@ -1,18 +1,19 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend, getAll } from '../api/api'
+import { create as saveRecordToBackend, getAll, schemas } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { computeSnapScore } from '../api/mockCompute'
 import { shortenString, hexAsciiToAsciiString } from '../utils'
 import ExplorerList from './explorer/ExplorerList'
 import { ethers } from 'ethers'
-
-const createScheme = (o: any) => {
-    return o
-}
+import { useSnaps } from './hooks/UseSnaps'
+import { UseCounts } from './hooks/UseCounts'
 
 export const SnapDetailPage = (props: any) => {
+    const {getCounts} = UseCounts()
     const [attestations, setAttestations] = useState([])
+    const [tab, setTab] = useState('audits')
+    const { snaps } = useSnaps()
 
     useEffect(() => {
         const run = async () => {
@@ -24,64 +25,46 @@ export const SnapDetailPage = (props: any) => {
     }, [])
 
 
-    const [votes, setVotes] = useState([])
 
-    useEffect(() => {
-        const run = async () => {
-            // const d = await voteGetAll()
-            // setVotes(d)
-        }
+    const id = +(props.id)
 
-        run()
-    }, [])
+    const snap: any = Object.values(snaps).find((a: any) => a.meta.id === id)
 
+    if (!snap) {
+        return null
+    }
 
-    const id = props.id
-    const e = props.snapData
+    const versionShasum = props.versionShasum || ''
 
-    const reviewsForSnap = props.reviewsForSnap
+    const versionsArr = Object.values(snap.versions)
+    const version: any = versionShasum ? versionsArr.find((a: any) => a.shasum === versionShasum) : versionsArr[versionsArr.length - 1]
+    const versionsAll = versionsArr.map((a: any) => a.versionNumber)
 
-    const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
-    const account = useAccount()
-
-    const [scheme, setScheme] = useState(null)
-    const [isApproveformVisible, setIsApproveformVisible] = useState({} as any)
-    const [isReviewformVisible, setIsReviewformVisible] = useState({} as any)
-
-    const saveData = useCallback((message: any) => {
-        setScheme(message as any)
-        signMessage({ message: JSON.stringify(message) })
-    }, [])
-
-    useEffect(() => {
-        const run = async () => {
-            if (!dataSign || !account.address) {
-                return
+    const filteredAttestations = attestations
+        .filter((a: any) => {
+            if (ethers.toUtf8String(a.attestationData[0]) !== version.shasum) {
+                return false
             }
 
-            const r = {
-                signature: dataSign,
-                address: account.address,
-                scheme: scheme
+            if (tab === 'audits' && a.schemaId !== schemas.KarmaAuditAttestorSchemaId) {
+                return false
             }
 
+            if (tab === 'reviews' && a.schemaId !== schemas.KarmaReviewAttestorSchemaId) {
+                return false
+            }
 
-            // await saveRecordToBackend(r as any)
-
-            window.alert('Saved!')
+            return true
         }
-
-        run()
-    }, [dataSign])
-    const score = computeSnapScore(id, reviewsForSnap)
-
+        )
+    const score: number = 5
 
 
     return <>
         <div className="post-full">
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '80%' }}>
-                    <Link to={"/snap/" + id}> <h3>{e.meta.name}<br />
+                    <Link to={"/snap/" + id}> <h3>{snap.meta.name}<br />
                         <span style={{ color: 'orange' }}>
                             {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
@@ -101,39 +84,21 @@ export const SnapDetailPage = (props: any) => {
             <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
             <div className="small-font">
-                {e.meta.description}<br />
-                <a href={e.meta[4]} target="_blank">{e.meta[4]}</a><br />
+                {snap.meta.description}<br />
+
                 <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
-                Developer: <b>{e.meta.author}</b><br />
-                {e.versionList.length === 0 && <>No versions found<br /></>}
-                {e.versionList.length > 0 && <>     Versions: <b>{e.versionList.length}</b><br /></>}
-                Audits: <b>{0}</b><br />
-                Reviews: <b>{0}</b><br />
+                Developer: <b>{snap.meta.author}</b><br />
+                {versionsAll.length === 0 && <>No versions found<br /></>}
+                {versionsAll.length > 0 && <>
+                    Versions: <b>{versionsAll.join(', ')}</b><br />
+                </>}
+                Audits: <b>{getCounts(version.shasum).audits}</b><br />
+                Reviews: <b>{getCounts(version.shasum).reviews}</b><br />
 
-            </div>
-        </div>
-        <div style={{ width: '100%', textAlign: 'left', fontSize: 13, marginBottom: 15, fontWeight: 'bold' }}>
+                <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
-            <span style={{ textDecoration: 'underline' }}>Versions</span>&nbsp;&nbsp;
-            <span style={{ textDecoration: 'underline' }}>Reviews</span>
-        </div>
-
-        {e.versionList.length === 0 && <>No versions found</>}
-
-        {e.versionList.map((v: string) => {
-            const version = e.versions[v]
-            const r = [] as any
-
-            const versionAttestations = attestations
-                .filter((a: any) => a.attestationData[0] ===
-                    ethers.hexlify(ethers.toUtf8Bytes(version.shasum)))
-                .filter((a: any) => a.schemaId === process.env.REACT_APP_ATTESTATION_ATTESTOR_SCHEMA)
-
-            return <>
-                <div className="post-full"><div className="small-font">
-                    <h3>Version: <b>{v}</b></h3> <br />
-
-                    Origin:  <b>{version.versionNumber}</b><br />
+                <div className="small-font">
+                    Version:  <b>{version.versionNumber}</b><br />
 
                     Checksum:  <b>{shortenString(version.shasum, 20)}</b><br />
 
@@ -142,23 +107,41 @@ export const SnapDetailPage = (props: any) => {
                     <br />
                     <div className="delimiter"></div><br />
 
-                    <div>
+                    <div><Link to={`/attestation/new/${version.shasum}`}>
                         <span
-                            onClick={() => setIsApproveformVisible({ ...isApproveformVisible, [version]: !isApproveformVisible[version] })}
-                            className="strategy-btn">Approve</span>&nbsp;&nbsp;
-                       {/* <span
-                            onClick={() => setIsReviewformVisible({ ...isReviewformVisible, [version]: !isReviewformVisible[version] })}
-                            className="strategy-btn" style={{ marginTop: 10 }}>Leave a Review along with score of 1-5</span><br />
-        */}
+                            className="strategy-btn">Audit</span>&nbsp;&nbsp;
+                    </Link>
+
+                        &nbsp;&nbsp;
+                        <Link to={`/review/new/${version.shasum}`}>
+                            <span
+                                className="strategy-btn">Review</span>&nbsp;&nbsp;
+                        </Link>
                     </div>
-                </div>
+
 
                 </div>
 
-                <ExplorerList attestations={versionAttestations} />
-
-            </>
-        })}
+            </div>
+        </div>
+        <div style={{ width: '100%', textAlign: 'left', fontSize: 13, marginBottom: 15 }}>
+            <br />
+            <span
+                className="strategy-btn"
+                style={{ marginRight: 10, backgroundColor: tab === 'audits' ? 'orange' : 'white' }}
+                onClick={() => {
+                    setTab('audits')
+                }}>Audits</span>&nbsp;&nbsp;
+            <span
+                className="strategy-btn"
+                style={{ marginRight: 10, backgroundColor: tab === 'reviews' ? 'orange' : 'white' }}
+                onClick={() => {
+                    setTab('reviews')
+                }}>Reviews</span>&nbsp;&nbsp;
+        </div>
+        <div>
+            <ExplorerList attestations={filteredAttestations} type='' showSearch={false} />
+        </div>
 
 
     </>
