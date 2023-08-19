@@ -8,15 +8,15 @@ import { UseCounts } from './hooks/UseCounts'
 import { Audits } from './Audits'
 import { shortenString } from '../utils'
 import { UseCreateAttestations } from './hooks/UseCreateAttestation'
+import { useAttestations } from './hooks/UseAttestations'
 
 export const AuditorDetailPage = (props: any) => {
     const { id } = useParams() as any
     const a = id.toLowerCase()
     const [gridView, setGridView] = useState('table')
 
-    const [attestations, setAttestations] = useState([])
+    const { attestations } = useAttestations()
     const { getCounts } = UseCounts()
-
     const { issueAttestation } = UseCreateAttestations()
 
 
@@ -24,16 +24,7 @@ export const AuditorDetailPage = (props: any) => {
         issueAttestation('follow', id, ["1"])
     }
 
-    useEffect(() => {
-        const run = async () => {
-            const d = await getAll()
-
-            const filtered = d.filter((a: any) => a.attester.toLowerCase() === id.toLowerCase())
-            setAttestations(filtered)
-        }
-
-        run()
-    }, [id])
+    const filteredAttestations = attestations.filter((attestation: any) => attestation.attester.toLowerCase() === a)
 
     const auditorScore = getAuditorScore(id)
 
@@ -62,6 +53,7 @@ export const AuditorDetailPage = (props: any) => {
                     Reviews: <b>{getCounts(a).reviews}</b><br />
                     Upvotes: <b>{getCounts(a).auditApprovals + getCounts(a).reviewApprovals}</b><br />
                     Downvotes: <b>{getCounts(a).auditDisapprovals + getCounts(a).reviewDisapprovals}</b><br />
+                    Followers: <b>{getCounts(a).followers + getCounts(a).followers}</b><br />
                     <br />
                     <div className="strategy-btn secondary"
                         onClick={createFollowAttestation}
@@ -72,7 +64,7 @@ export const AuditorDetailPage = (props: any) => {
 
         </div>
 
-        {attestations.length ? <>
+        {filteredAttestations.length ? <>
             <div style={{ width: '100%', textAlign: 'left' }}>
                 <span
                     className={'strategy-btn ' + (gridView === 'table' ? ' primary' : '')}
@@ -90,9 +82,9 @@ export const AuditorDetailPage = (props: any) => {
         </> : null}
     </div>
 
-        {attestations.length ? <>
+        {filteredAttestations.length ? <>
             <div className="container" >
-                <ExplorerList attestations={attestations} showSearch={false} type={gridView} />
+                <ExplorerList attestations={filteredAttestations} showSearch={false} type={gridView} />
             </div>
         </> : null}
     </>

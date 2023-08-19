@@ -8,23 +8,13 @@ import ExplorerList from './explorer/ExplorerList'
 import { ethers } from 'ethers'
 import { useSnaps } from './hooks/UseSnaps'
 import { UseCounts } from './hooks/UseCounts'
+import { useAttestations } from './hooks/UseAttestations'
 
 export const SnapDetailPage = (props: any) => {
     const { getCounts } = UseCounts()
-    const [attestations, setAttestations] = useState([])
+    const { attestations } = useAttestations()
     const [tab, setTab] = useState('audits')
     const { snaps } = useSnaps()
-
-    useEffect(() => {
-        const run = async () => {
-            const d = await getAll()
-            setAttestations(d)
-        }
-
-        run()
-    }, [])
-
-
 
     const id = +(props.id)
 

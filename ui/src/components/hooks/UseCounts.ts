@@ -12,7 +12,8 @@ const initialCount = {
     auditDisapprovals: 0,
     reviewApprovals: 0,
     reviewDisapprovals: 0,
-    following: 0
+    following: 0,
+    followers: 0
 }
 
 export function UseCounts() {
@@ -107,9 +108,13 @@ export function UseCounts() {
             }
 
             if (a.schemaId === schemas.KarmaFollowersAttestorSchemaId) {
-                // todo
+                // todo followers and following
                 o[address] = o[address] || { ...initialCount }
                 o[address].following++
+
+                const attestee = a.attestee.toLowerCase()
+                o[attestee] = o[attestee] || { ...initialCount }
+                o[attestee].followers++
                 return
             }
         })

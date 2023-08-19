@@ -2,23 +2,13 @@ import { useEffect, useState, useCallback } from 'react'
 import ExplorerList from './ExplorerList'
 import { getAll, getAllByType } from '../../api/api'
 import { getSnaps } from '../../api/registry'
+import { useAttestations } from '../hooks/UseAttestations'
+import { useSnaps } from '../hooks/UseSnaps'
 
 export default function ExplorerPage(props: any) {
-    const [attestations, setAttestations] = useState([])
     const [gridView, setGridView] = useState('table')
-    const [snaps, setSnaps] = useState([])
-
-    useEffect(() => {
-        const run = async () => {
-            const d = await getAll()
-            setAttestations(d)
-            const snaps = await getSnaps()
-            setSnaps(snaps)
-        }
-
-        run()
-    }, [])
-
+    const { attestations } = useAttestations()
+    const { snaps } = useSnaps()
 
     return (
         <div className="container" style={{ marginTop: 30 }}>

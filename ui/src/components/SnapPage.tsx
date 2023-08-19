@@ -15,14 +15,6 @@ export default function SnapPage(props: any) {
     const { id } = useParams() as any
     const { versionShasum = '' } = useParams() as any
 
-
-  
-
-    useEffect(() => {
-        console.log({ data: dataSign, error, isLoading, signMessage, variables })
-
-    }, [variables?.message])
-
     if (snaps.length === 0) {
         return null
     }

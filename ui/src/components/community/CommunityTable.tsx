@@ -6,7 +6,6 @@ import { ethers } from 'ethers'
 import { useAttestations } from '../hooks/UseAttestations'
 
 export default function CommunityTable(props: any) {
-
     const { attestations } = useAttestations()
 
     const users = new Set() as any
@@ -19,7 +18,10 @@ export default function CommunityTable(props: any) {
 
     const u = [...users]
     return (<>
-        <div className="post-full small-font" style={{ marginTop: 30 }}>
+        <div style={{ marginTop: 30 }}>
+            <h2>Community</h2>
+        </div>
+        <div className="post-full small-font" style={{ marginTop: 15 }}>
             <table className="table-1">
                 <tr>
                     <th>Address</th>
