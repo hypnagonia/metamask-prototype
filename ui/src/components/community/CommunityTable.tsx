@@ -4,6 +4,7 @@ import { getType, schemas } from '../../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 import { useAttestations } from '../hooks/UseAttestations'
+import { Address } from '../common/Address'
 
 export default function CommunityTable(props: any) {
     const { attestations } = useAttestations()
@@ -36,7 +37,7 @@ export default function CommunityTable(props: any) {
                             <td>
                                 <Link to={`/auditor/${a}`}>
                                     <b style={{ color: '#2a2a72' }}>
-                                        {(a)}</b>
+                                        <Address address={a} /></b>
                                 </Link>
                             </td>
                             <td>

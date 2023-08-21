@@ -29,7 +29,6 @@ export const SnapDetailPage = (props: any) => {
     const versionsArr = Object.values(snap.versions)
     const version: any = versionShasum ? versionsArr.find((a: any) => a.shasum === versionShasum) : versionsArr[versionsArr.length - 1]
 
-    console.log({ version, snap })
     const filteredAttestations = attestations
         .filter((a: any) => {
             if (ethers.toUtf8String(a.attestationData[0]) !== version.shasum) {

@@ -9,6 +9,7 @@ import { Audits } from './Audits'
 import { shortenString } from '../utils'
 import { UseCreateAttestations } from './hooks/UseCreateAttestation'
 import { useAttestations } from './hooks/UseAttestations'
+import {Address} from './common/Address'
 
 export const AuditorDetailPage = (props: any) => {
     const { id } = useParams() as any
@@ -35,7 +36,7 @@ export const AuditorDetailPage = (props: any) => {
         <div className="post-full small-font" >
 
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <h3>{id}</h3>
+                <h3>{<Address address={id}/>}</h3>
 
                 <div style={{ textAlign: 'right', width: '100%', fontWeight: 'bold', fontSize: 15 }}>
                     <span> Score:&nbsp;</span>

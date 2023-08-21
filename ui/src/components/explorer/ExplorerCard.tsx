@@ -5,6 +5,7 @@ import { getType } from '../../api/api'
 import { UseCreateAttestations } from '../hooks/UseCreateAttestation'
 import { ethers } from 'ethers'
 import { UseCounts } from '../hooks/UseCounts'
+import {Address} from '../common/Address'
 
 export default function ExplorerCard(props: any) {
 	const { issueAttestation } = UseCreateAttestations()
@@ -87,11 +88,11 @@ export default function ExplorerCard(props: any) {
 				<div>
 					{meta.name !== 'Follow' && <>Attester:&nbsp;</>}
 					<Link to={`/auditor/${data.attester}`}>
-						<b style={{ color: '#2a2a72' }}>{data.attester}</b>
+						<b style={{ color: '#2a2a72' }}><Address address={data.attester}/></b>
 					</Link>
 					{meta.name === 'Follow' && <>&nbsp;&rarr;&nbsp;
 						<Link to={`/auditor/${data.attestee}`}>
-							<b style={{ color: '#2a2a72' }}>{data.attestee}</b>
+							<b style={{ color: '#2a2a72' }}><Address address={data.attestee}/></b>
 						</Link></>}
 				</div>
 				<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>

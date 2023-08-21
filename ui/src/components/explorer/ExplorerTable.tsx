@@ -4,6 +4,7 @@ import { getType } from '../../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 import { useSnaps } from '../hooks/UseSnaps'
+import {Address} from '../common/Address'
 
 export default function ExplorerTable(props: any) {
     const attestations = props.attestations || []
@@ -32,7 +33,7 @@ export default function ExplorerTable(props: any) {
             {attestations.map((a: any) => {
                 const date = new Date(a.attestedDate * 1000);
                 const meta = getType(a.schemaId)
-                let attestee = shortenString(a.attestee, 16)
+                let attestee: any = <Address shorten={true} address={a.attestee}/>
                 let attesteeLink = `/auditor/${a.attestee}`
 
 
@@ -59,12 +60,16 @@ export default function ExplorerTable(props: any) {
                         <td>
                             <Link to={`/auditor/${a.attester}`}>
                                 <b style={{ color: '#2a2a72' }}>
-                                    {shortenString(a.attester, 16)}</b>
+                                    {/* shortenString(a.attester, 16)*/}
+                                    <Address address={a.attester} shorten={true}/>
+                                    </b>
                             </Link>
                         </td>
                         <td>
                             <Link to={attesteeLink}>
-                                <b style={{ color: '#2a2a72' }}>{attestee}</b>
+                                <b style={{ color: '#2a2a72' }}>
+                                
+                                    {attestee}</b>
                             </Link>
                         </td>
                         <td>
