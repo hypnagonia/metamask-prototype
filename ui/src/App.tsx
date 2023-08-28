@@ -23,8 +23,9 @@ import AuditDetailsPage from './components/attestations/AuditDetailsPage'
 import CommunityTable from './components/community/CommunityTable'
 import AttestationNew from './components/forms/AttestationNew'
 import ReviewNew from './components/forms/ReviewNew'
-
+import { useLocation } from 'react-router-dom'
 import { UseCreateAttestations } from './components/hooks/UseCreateAttestation'
+
 
 const harmonyOneTestnet = {
   id: 1666700000,
@@ -71,7 +72,7 @@ function App() {
   const createFollowAttestation = () => {
     // issueAttestation('follow', )
   }
-  
+
 
   useEffect(() => {
     const run = async () => {
@@ -81,6 +82,10 @@ function App() {
 
     run()
   }, [])
+
+  const snapsIcon = <svg xmlns="http://www.w3.org/2000/svg" width="22" height="7" viewBox="0 0 22 7" fill="none">
+    <path d="M1 1L11 6L21 1" stroke="#7000FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 
   return (
     <>
@@ -95,42 +100,71 @@ function App() {
                 <div style={{ width: 200, textAlign: 'right' }}>
                   {account && account.isConnected && <>
                     <Link to={'/followers/new'} style={{ color: 'white' }}>
-                  <span
-                    className="strategy-btn"
-                    style={{ marginRight: 28, marginTop: 15, width: 100 }}
-                    onClick={createFollowAttestation}><b>&#43;</b>&nbsp;Invite</span>
+                      <span
+                        className="strategy-btn"
+                        style={{ marginRight: 28, marginTop: 15, width: 50, padding:0 }}
+                        onClick={createFollowAttestation}>
+                        <img style={{ width: 18, height: 18 }} src='/user-plus.svg' />
+                        
+                      </span>
                     </Link></>
-                    }
+                  }
 
                 </div>
               </div>
+
+              <div style={{ width: '400px', textAlign: 'center', margin: 'auto' }}>
+                <div className="logo-menu" style={{
+                  display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+                  width: 400,
+                  textAlign: 'center'
+                }}>
+                  <div style={{
+                    display: 'flex', flexDirection: 'row'
+                  }}>
+                    <img src={'/snaps.svg'} style={{ width: 24 }} />&nbsp;
+                    <Link to={'/'}>
+                      Snaps</Link>
+                  </div>
+                  <div style={{
+                    display: 'flex', flexDirection: 'row'
+                  }}>
+                    <img src={'/explorer.svg'} style={{ width: 24 }} />&nbsp;
+                    <Link to={'/explorer'}>Explorer</Link></div>
+                  <div style={{
+                    display: 'flex', flexDirection: 'row'
+                  }}>
+                    <img src={'/users.svg'} style={{ width: 24 }} />&nbsp;
+                    <Link to={'/community'}>Community</Link></div>
+                </div>
+              </div>
+
               <div className="logo-container" style={{ marginTop: 40 }}>
                 <div>
                   <Link to={'/'}>
-                    <img
+                    {/* <img
                       width="180px"
                       className="logo"
                       src="/logo.svg"
                       draggable="false"
                       alt="Karma3Labs Logo"
-                    />
+                />*/}
+                    <img
+                      className="logo"
+                      src={'/metamask-icon.svg'} style={{ width: 30, height: 40, marginRight: 10 }} />
                   </Link>
-                  <div className="logo-menu">
-                    <Link to={'/'} style={{ color: 'white' }}>Snaps</Link>&nbsp;&nbsp;
-                    <Link to={'/explorer'} style={{ color: 'white' }}>Explorer</Link>&nbsp;&nbsp;
-                    <Link to={'/community'} style={{ color: 'white' }}>Community</Link>&nbsp;&nbsp;
 
-                  </div>
+
+
+
+
                 </div>
-                <Link to={'/'}>
-                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', height: 40 }}>
 
-                    <img src={'/metamask-icon.svg'} style={{ width: 30, height: 40, marginRight: 10 }} />
 
-                    <div style={{ color: 'white', fontSize: 26, fontWeight: 'bold', cursor: 'pointer' }}>
-                      Permissionless Snaps Store</div>
-                  </div>
-                </Link>
+
+
+
+
               </div>
 
 
@@ -138,7 +172,7 @@ function App() {
               </div>
             </header>
 
-            <div style={{ width: 700, margin: 'auto' }}>
+            <div style={{ width: 850, margin: 'auto' }}>
 
               <Routes>
                 <Route index path="/snap/:id" element={<SnapPage reviews={data} />} />
@@ -149,15 +183,15 @@ function App() {
                 <Route index path="/auditor/:id" element={<AuditorDetailPage reviews={data} />} />
                 <Route index path="/followers/" element={<FollowersPage reviews={data} />} />
                 <Route index path="/followers/new" element={<FollowersNew />} />
-                
+
                 <Route index path="/followers/:attestor" element={<FollowersPage reviews={data} />} />
                 <Route index path="/explorer/" element={<ExplorerPage reviews={data} />} />
-                <Route index path="/community/" element={<CommunityTable/>} />
-                
+                <Route index path="/community/" element={<CommunityTable />} />
+
                 <Route index path="/audit/:id" element={<AuditDetailsPage />} />
                 <Route index path="/attestation/new/:shasum" element={<AttestationNew />} />
                 <Route index path="/review/new/:shasum" element={<ReviewNew />} />
-                
+
 
               </Routes>
 
@@ -166,10 +200,9 @@ function App() {
 
         </div>
         <Web3Modal projectId={projectId} ethereumClient={ethereumClient} /><br />
-
       </BrowserRouter>
     </>
   );
 }
 
-export default App;
+export default App

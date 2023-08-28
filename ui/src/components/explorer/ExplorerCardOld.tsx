@@ -5,9 +5,7 @@ import { getType } from '../../api/api'
 import { UseCreateAttestations } from '../hooks/UseCreateAttestation'
 import { ethers } from 'ethers'
 import { UseCounts } from '../hooks/UseCounts'
-import { Address } from '../common/Address'
-import { Avatar } from '../common/Avatar'
-import moment from 'moment'
+import {Address} from '../common/Address'
 
 export default function ExplorerCard(props: any) {
 	const { issueAttestation } = UseCreateAttestations()
@@ -26,26 +24,27 @@ export default function ExplorerCard(props: any) {
 
 	if (meta.name === 'Audit' || meta.name === 'Review') {
 		extraCard = <>
+			<b>({meta.name === 'Audit'
+				? getCounts(data.attestationId).auditApprovals
+				: getCounts(data.attestationId).reviewApprovals
+			})&nbsp;&nbsp;&nbsp;</b>
 			<span
-				className="strategy-btn small-btn"
+				className="strategy-btn"
 				style={{}}
 				onClick={() => {
 					createAttestation(meta.name, data.attestationId, true)
-				}}>👍&nbsp;{(meta.name === 'Audit'
-					? getCounts(data.attestationId).auditApprovals
-					: getCounts(data.attestationId).reviewApprovals) || ''
-				}</span>
+				}}>👍</span>
 			&nbsp;&nbsp;
-
+			<b>({meta.name === 'Audit'
+				? getCounts(data.attestationId).auditDisapprovals
+				: getCounts(data.attestationId).reviewDisapprovals
+			})&nbsp;&nbsp;&nbsp;</b>
 			<span
-				className="strategy-btn small-btn"
+				className="strategy-btn"
 				style={{}}
 				onClick={() => {
 					createAttestation(meta.name, data.attestationId, false)
-				}}>👎&nbsp;{(meta.name === 'Audit'
-					? getCounts(data.attestationId).auditDisapprovals
-					: getCounts(data.attestationId).reviewDisapprovals) || ''
-				}</span>
+				}}>👎</span>
 
 		</>
 	}
@@ -77,65 +76,9 @@ export default function ExplorerCard(props: any) {
 		</>
 	}
 
-	const attester = data.attester.toLowerCase()
-
-	let text = null
-
-	if (meta.name === 'Follow') {
-		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;followed&nbsp;<b><Address shorten={true} address={data.attestee} /></b>
-		</>
-	}
-
-	if (meta.name === 'Audit') {
-		const d = data.attestationData.map((a: any) => ethers.toUtf8String(a))
-		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;audited&nbsp;<b>{d[0]}</b>&nbsp;as&nbsp;<b>
-				{+d[3] ? 'Safe' : 'Unsafe'}</b><br />
-			{d[1]}
-		</>
-	}
-
-	if (meta.name === 'Review Approval') {
-		return null
-	}
-	if (meta.name === 'Audit Approval') {
-		return null
-	}
-
-	if (meta.name === 'Review') {
-		const d = data.attestationData.map((a: any) => ethers.toUtf8String(a))
-		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;reviewed&nbsp;<b>{d[0]}</b>&nbsp;as&nbsp;<b>
-				{d[2]}/5</b><br />
-			{d[1]}
-		</>
-	}
-
-	const ago = moment(date).fromNow(true)
-
 	return (
 		<>
-			<div style={{ marginBottom: 30 }}>
-				<div style={{
-					display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
-					marginBottom: 10,
-					alignItems: 'center', width: '100%'
-				}}>
-					<div >
-						<Link to={`/audit/${data.attestationId}`}>
-							<Avatar id={attester}></Avatar>
-						</Link>
-					</div>
-					<div style={{ fontSize: 14, color: '#543A69', textAlign: 'left', width: '70%', marginLeft: 10 }}>
-						{text}
-						
-					</div>
-					<div style={{ justifyContent: 'flex-end', display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
-						{/*date.toLocaleString()*/}
-						{ago}&nbsp;ago
-					</div>
-					{/*
+			<div className="post-full small-font" >
 				<b>{meta.name}&nbsp;<Link to={`/audit/${data.attestationId}`}>
 					<b style={{ color: '#2a2a72' }}>{shortenString(data.attestationId, 20)}</b>
 				</Link>
@@ -161,13 +104,6 @@ export default function ExplorerCard(props: any) {
 					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					{extraCard}
 				</>}
-				*/}
-				</div>
-				<div style={{ textAlign: 'left', marginLeft: 90 }}>
-							{extraCard && <>
-								{extraCard}
-							</>}
-						</div>
 			</div>
 		</>
 	)

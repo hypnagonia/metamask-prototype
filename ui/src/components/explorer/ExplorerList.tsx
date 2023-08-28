@@ -6,7 +6,7 @@ import { useSnaps } from '../hooks/UseSnaps'
 export default function ExplorerList(props: any) {
 	const attestations = props.attestations || []
 	const gridType = props.type || ''
-	const showSearch = props.showSearch !== undefined ? props.showSearch : true
+	const showSearch = props.showSearch !== undefined ? props.showSearch : false
 	const { snaps } = useSnaps()
 	const [inputValue, setInputValue] = useState('')
 	const handleInputChange = useCallback((event: any) => {

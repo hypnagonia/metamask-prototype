@@ -209,14 +209,12 @@ main {}
 }
 
 header {
-	padding-top: 280px;
+	padding-top: 40px;
 	text-align: center;
 
 	color: var(--c-white);
 	text-align: center;
-	padding: 1%;
-	background-color: #2a2a72;
-	background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+	
 }
 
 .logo-container {
@@ -226,22 +224,23 @@ header {
 
 .logo {
 	position: absolute;
-	top: 20px;
-	left: 20px;
+	top: 30px;
+	left: 40px;
 	margin-bottom: 20px;
 }
 
 .logo-menu {
-	color: white;
+	color: #7000FF;
+	font-size: 14px;
 	font-weight: bold;
-	position: absolute;
+	text-align: center;
 	top: 27px;
-	left: 220px;
+
 	cursor: pointer;
 }
 
 .logo-menu a {
-	text-decoration: underline;
+	color: #7000FF;
 }
 
 .logo-lens {

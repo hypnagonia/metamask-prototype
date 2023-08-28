@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { explorerNFTURL, formatPrice, setWindowParam, getWindowParam, tweet } from '../utils'
 import { getSnaps } from '../api/registry'
 import { useSignMessage, useAccount } from 'wagmi'
+import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 
 import { SnapCard } from './SnapCard'
 
@@ -44,12 +45,28 @@ export default function List(props: any) {
 	}, [variables?.message])
 
 	return (
-		<main>
-			<div className="container" style={{ marginTop: 30 }}>
+		<>
+			<div className="container">
 
 
-				<div className="scroll">
-					<div className="profiles-container">
+				<div>
+					<div style={{ height: 130, marginTop: -20 }}>
+						<div className="color2" style={{
+							fontSize: 26, fontWeight: 'bold', cursor: 'pointer',
+							lineHeight: 1
+						}}>
+							<br />
+							<span style={{ fontSize: 36 }}>Permissionless Snaps Store</span><br />
+							<span style={{ fontSize: 18, fontWeight: 'normal', color: '#491789A6' }}
+							>Powered by <b>Karma3Labs</b></span>
+						</div>
+					</div>
+				</div>
+
+				<div className="scroll2">
+					<div className="profiles-container" style={{paddingBottom: 100}}>
+
+
 						{Object.values(data).length === 0 && <>Loading...</>}
 
 						{Object.values(data).map((e: any, i) => {
@@ -79,19 +96,19 @@ export default function List(props: any) {
 					</div>
 				</div>
 			</div>
-		</main >
+		</ >
 	)
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
 	return (
-		<main>
+		<>
 			<div className="container">
 				<h1>Error</h1>
 				<p>{error.message}</p>
 				<p>The stack trace is:</p>
 				<pre>{error.stack}</pre>
 			</div>
-		</main>
+		</>
 	)
 }

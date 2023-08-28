@@ -50,33 +50,48 @@ export const SnapDetailPage = (props: any) => {
 
 
     return <>
-        <div className="post-full">
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <div style={{ width: '80%' }}>
-                    <Link to={"/snap/" + id}> <h3>{snap.meta.name}<span style={{ color: 'lightgrey', fontWeight: 'normal' }}>&nbsp;|&nbsp;</span>{version.versionNumber}<br />
-                        <span style={{ color: 'orange' }}>
-                            {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
+        <div className="post-full2">
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <div className="snap-img-placeholder-big"></div>
+                <div style={{ width: '53%', textAlign: 'left' }}>
 
-                        </span>
-                        <span style={{ color: 'lightgrey' }}>
-                            {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
+                    <Link to={"/snap/" + id}>
 
-                        </span>
+                        <h3 style={{ color: '#543A69', lineHeight: 1 }}>
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                <span style={{ fontSize: 36 }}>{snap.meta.name}</span>
+                                &nbsp;&nbsp;<img src={'/shield.svg'} style={{ width: 26, height: 26 }} />
+                            </div>
+                            {/*&nbsp;{version.versionNumber}*/}
+                            <br />
 
-                        &nbsp;<b style={{ fontSize: 13 }}>{score === 0 ? score : score.toFixed(2)}</b>
-                    </h3></Link>
+                            <span style={{ fontWeight: 400, fontSize: 14, color: 'rgba(84, 58, 105, 0.65)' }}>
+                                By {snap.meta.author}</span><br />
+
+                            <span style={{ color: '#543A69' , fontSize: 25 }}>
+                                {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
+
+                            </span>
+                            <span style={{ color: '#F3E3FF', fontSize: 25 }}>
+                                {[...Array(5 - ~~score)].map((a: any) => <>&#11089;</>)}
+
+                            </span>
+
+                            &nbsp;<b style={{ fontSize: 13 }}>{score === 0 ? score : score.toFixed(2)}</b>
+                        </h3>
+                        <br />
+                        <span style={{ color: 'rgba(84, 58, 105, 0.80)' }}>{snap.meta.description}</span>
+                    </Link>
                 </div>
                 <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>
-                    <img src={'/shield.svg'} style={{ width: 26, height: 26 }} />
+
                 </div>
             </div>
-            <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
+
 
             <div className="small-font">
-                {snap.meta.description}<br />
 
-                <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
-                Developer: <b>{snap.meta.author}</b><br />
+                {/* 
                 {versionsArr.length === 0 && <>No versions found<br /></>}
                 {versionsArr.length > 0 && <>
                     Versions: <b>{versionsArr.map((v: any) => <>
@@ -86,9 +101,9 @@ export const SnapDetailPage = (props: any) => {
                 Audits: <b>{getCounts(version.shasum).audits}</b><br />
                 Reviews: <b>{getCounts(version.shasum).reviews}</b><br />
 
-                <div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
 
                 <div className="small-font">
+
                     Version:  <b>{version.versionNumber}</b><br />
 
                     Checksum:  <b>{shortenString(version.shasum, 20)}</b><br />
@@ -96,7 +111,7 @@ export const SnapDetailPage = (props: any) => {
                     Signature:  <b>{shortenString('', 20)}</b><br />
                     Change Log:  <b>{shortenString(version.changeLog, 20)}</b><br />
                     <br />
-                    <div className="delimiter"></div><br />
+                    
 
                     <div><Link to={`/attestation/new/${version.shasum}`}>
                         <span
@@ -111,25 +126,58 @@ export const SnapDetailPage = (props: any) => {
                     </div>
 
 
+            </div>
+*/}
+            </div>
+        </div >
+
+        <div>
+
+            <div style={{
+                display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+                paddingBottom: 15,
+                marginTop: 30,
+                width: '100%',
+                borderBottom: '1px solid rgba(112, 0, 255, 0.25)'
+            }}>
+                <div>
+                    <div style={{ }}>
+                        
+                        <span
+                            className={'tab-slot '}
+                            style={{ marginRight: 10 }}
+                            onClick={() => {
+                                setTab('audits')
+                            }}>Audits ({getCounts(version.shasum).audits})</span>&nbsp;&nbsp;
+                            <span className={(tab === 'audits' ? ' primary-tab' : '')}></span>
+                        <span
+                            className={'tab-slot'}
+                            style={{ marginRight: 10 }}
+                            onClick={() => {
+                                setTab('reviews')
+                            }}>Reviews ({getCounts(version.shasum).reviews})</span>
+                            <span className={(tab === 'reviews' ? ' primary-tab' : '')}></span>
+                    </div>
                 </div>
 
+
+                <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
+                    <div><Link to={`/attestation/new/${version.shasum}`}>
+                        <span
+                            className="strategy-btn secondary"><b>&#43;</b>&nbsp;Audit</span>&nbsp;&nbsp;
+                    </Link>
+
+                        &nbsp;&nbsp;
+                        <Link to={`/review/new/${version.shasum}`}>
+                            <span
+                                className="strategy-btn secondary"><b>&#43;</b>&nbsp;Review</span>&nbsp;&nbsp;
+                        </Link>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div style={{ width: '100%', textAlign: 'left', fontSize: 13, marginBottom: 15 }}>
-            <br />
-            <span
-                className={'strategy-btn ' + (tab === 'audits' ? ' primary' : '')}
-                style={{ marginRight: 10 }}
-                onClick={() => {
-                    setTab('audits')
-                }}>Audits ({getCounts(version.shasum).audits})</span>&nbsp;&nbsp;
-            <span
-                className={'strategy-btn ' + (tab === 'reviews' ? ' primary' : '')}
-                style={{ marginRight: 10 }}
-                onClick={() => {
-                    setTab('reviews')
-                }}>Reviews ({getCounts(version.shasum).reviews})</span>&nbsp;&nbsp;
-        </div>
+        </div >
+                            <br/>
+
         <div>
             <ExplorerList attestations={filteredAttestations} type='' showSearch={false} />
         </div>

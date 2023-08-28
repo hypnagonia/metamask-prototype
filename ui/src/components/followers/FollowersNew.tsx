@@ -119,10 +119,23 @@ export default function FollowersNew(props: any) {
 
 	return (
 		<>
-			<div className="container" style={{ marginTop: 30 }}>
-				<div className="post-full small-font" >
-					<b>New Follow Attestation</b>
-					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
+			<div className="container" style={{ marginTop: 30, width:800 }}>
+				<div className="post-full2 small-font" >
+					
+					<div>
+					<div style={{ height: 100, marginTop: -20 }}>
+						<div className="color2" style={{
+							fontSize: 26, fontWeight: 'bold', cursor: 'pointer',
+							lineHeight: 1
+						}}>
+							<br />
+							<span style={{ fontSize: 36 }}><b>New Follow Attestation</b></span><br />
+							
+						</div>
+					</div>
+				</div>
+
+					<div className="" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<div>
 						<input
 							value={inputValue}

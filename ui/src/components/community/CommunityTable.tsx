@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 import { useAttestations } from '../hooks/UseAttestations'
 import { Address } from '../common/Address'
-
+import { CommunityCard } from './CommunityCard'
 export default function CommunityTable(props: any) {
     const { attestations } = useAttestations()
 
@@ -18,6 +18,32 @@ export default function CommunityTable(props: any) {
     })
 
     const u = [...users]
+
+    return (<>
+        <div>
+            <div style={{ height: 130, marginTop: -20 }}>
+                <div className="color2" style={{
+                    fontSize: 26, fontWeight: 'bold', cursor: 'pointer',
+                    lineHeight: 1
+                }}>
+                    <br />
+                    <span style={{ fontSize: 36 }}>Community</span>
+                </div>
+            </div>
+        </div>
+        <div className="profiles-container" style={{ paddingBottom: 100, textAlign: 'center' }}>
+            <div>
+            </div>
+            {u.map((a: any) => {
+                return <>
+                    <CommunityCard data={a} />
+                </>
+            })
+
+            }
+        </div>
+    </>)
+
     return (<>
         <div style={{ marginTop: 30 }}>
             <h2>Community</h2>

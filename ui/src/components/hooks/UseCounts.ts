@@ -19,6 +19,7 @@ const initialCount = {
 export function UseCounts() {
     const { attestations } = useAttestations()
     const [counts, setCounts] = useState({} as any)
+    const [groups, setGroups] = useState({} as any)
     const { snaps } = useSnaps()
 
     const getSnapId = (shasum: string) => {
@@ -37,6 +38,21 @@ export function UseCounts() {
         return counts['' + key]
     }
 
+    const getGroups = (key: any) => {
+        if (!groups['' + key]) {
+            return {
+                audits: [],
+                reviews: [],
+                following: [],
+                followers: []
+            }
+        }
+
+        return groups['' + key]
+    }
+
+    console.log({ groups, counts })
+
     useEffect(() => {
         if (!snaps || !Object.keys(snaps).length) {
             return
@@ -44,7 +60,15 @@ export function UseCounts() {
         if (!attestations.length) {
             return
         }
+
+        const initialGroups = {
+            audits: [],
+            reviews: [],
+            following: [],
+            followers: []
+        }
         const o = {} as any
+        const g = {} as any
 
         attestations.forEach((a: any) => {
             const address = a.attester.toLowerCase()
@@ -59,6 +83,10 @@ export function UseCounts() {
                 o[shasum].audits = o[shasum].audits + 1
                 o[address] = o[address] || { ...initialCount }
                 o[address].audits++
+
+                g[address] = g[address] || {}
+                g[address].audits = g[address].audits || []
+                g[address].audits.push(a)
                 return
             }
 
@@ -71,6 +99,10 @@ export function UseCounts() {
                 o[shasum].reviews++
                 o[address] = o[address] || { ...initialCount }
                 o[address].reviews++
+
+                g[address] = g[address] || {}
+                g[address].reviews = g[address].reviews || []
+                g[address].reviews.push(a)
                 return
             }
 
@@ -115,15 +147,24 @@ export function UseCounts() {
                 const attestee = a.attestee.toLowerCase()
                 o[attestee] = o[attestee] || { ...initialCount }
                 o[attestee].followers++
+
+                g[address] = g[address] || {}
+                g[address].following = g[address].following || []
+                g[address].following.push(a)
+
+                g[attestee] = g[attestee] || {}
+                g[attestee].followers = g[attestee].followers || []
+                console.log('what', g[attestee].followers)
+                g[attestee].followers.push(a)
                 return
             }
         })
 
-        console.log({ o })
         setCounts(o)
+        setGroups(g)
     }, [attestations, snaps])
 
-    return { counts, getCounts }
+    return { counts, getCounts, getGroups }
 }
 
 

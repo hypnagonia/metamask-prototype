@@ -22,10 +22,23 @@ export default function AttestationNew(props: any) {
 
 	return (
 		<>
-			<div className="container" style={{ marginTop: 30 }}>
-				<div className="post-full small-font" >
-					<b>New Attestation for {shasum}</b>
-					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
+			<div className="container" style={{ marginTop: 30, width: 800 }}>
+				<div className="post-full2 small-font" >
+
+				<div>
+					<div style={{ height: 80, marginTop: -20 }}>
+						<div className="color2" style={{
+							fontSize: 26, fontWeight: 'bold', cursor: 'pointer',
+							lineHeight: 1
+						}}>
+							<br />
+							<span style={{ fontSize: 36 }}><b>New Attestation for {shasum}</b></span><br />
+							
+						</div>
+					</div>
+				</div>
+					
+					<div className="" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<br />
 					<div>
 						<span
@@ -46,13 +59,13 @@ export default function AttestationNew(props: any) {
 						<input
 							value={inputValue}
 							onChange={handleInputChange}
-							placeholder="Report"
+							placeholder="Enter audit notes..."
 							className="normal-input"
-							style={{ width: '100%' }}
+							style={{ width: 400 }}
 						/>
 					</div>
 					<br />
-					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
+					<div className="" style={{ marginTop: 15, marginBottom: 15 }}></div>
 					<div>
 						<span
 							className="strategy-btn primary"
