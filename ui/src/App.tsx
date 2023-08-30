@@ -25,7 +25,9 @@ import AttestationNew from './components/forms/AttestationNew'
 import ReviewNew from './components/forms/ReviewNew'
 import { useLocation } from 'react-router-dom'
 import { UseCreateAttestations } from './components/hooks/UseCreateAttestation'
-
+// @ts-ignore
+import {NotificationContainer, NotificationManager} from 'react-notifications'
+import 'react-notifications/lib/notifications.css'
 
 const harmonyOneTestnet = {
   id: 1666700000,
@@ -200,6 +202,7 @@ function App() {
 
         </div>
         <Web3Modal projectId={projectId} ethereumClient={ethereumClient} /><br />
+        <NotificationContainer/>
       </BrowserRouter>
     </>
   );

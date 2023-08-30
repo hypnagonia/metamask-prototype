@@ -10,7 +10,7 @@ export default function ExplorerPage(props: any) {
     const { attestations } = useAttestations()
     const { snaps } = useSnaps()
 
-    return (
+    return (<>
         <div className="container" style={{ marginTop: 30 }}>
             <div>
                 {/*<h2>Explorer</h2>*/}
@@ -46,7 +46,7 @@ export default function ExplorerPage(props: any) {
             </div>
             <br />
         </div>
-    )
+        </>)
 }
 
 

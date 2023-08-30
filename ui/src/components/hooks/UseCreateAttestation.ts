@@ -5,6 +5,8 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { createAttestation, create, getAttestationHash } from '../../api/api'
 import { ethers } from "ethers"
 import { useAttestations } from './UseAttestations';
+// @ts-ignore
+import {NotificationContainer, NotificationManager} from 'react-notifications'
 
 export function UseCreateAttestations() {
     const [attestation, setAttestation] = useState({} as any)
@@ -66,7 +68,9 @@ export function UseCreateAttestations() {
 
             const res = await create(attestation.attestation, attestation.extraData, signature)
 
-            window.alert(JSON.stringify(res))
+            // window.alert(JSON.stringify(res))
+            console.log('new attestation',{res})
+            NotificationManager.success('Attestation created')
             await new Promise((r) => setTimeout(r, 1000))
             loadAttestations()
         }

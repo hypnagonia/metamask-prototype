@@ -25,7 +25,7 @@ export default function ExplorerList(props: any) {
 			: attestations
 
 	if (attestations.length === 0) {
-		return <>No records found</>
+		return <div>No records found</div>
 	}
 
 	const searchComponent = showSearch ? <>

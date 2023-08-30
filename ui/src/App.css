@@ -357,3 +357,37 @@ th {
   min-width: 30px;
   padding: 5px;
 }
+
+.search-input {
+  padding: 8px 16px;
+  align-items: center;
+  gap: 16px;
+  border-radius: 48px;
+  border: 1px solid rgba(112, 0, 255, 0.25);
+  background: #FFF;
+  color: #7000FF;
+  font-size: 16px;
+}
+
+.search-input-inner {
+  color: #7000FF;
+  font-size: 16px;
+  border: 0;
+  padding: 0
+}
+
+.dropdown {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 32px;
+  border-radius: 48px;
+  border: 1px solid rgba(112, 0, 255, 0.25);
+  background: #FFF;
+  color: #7000FF;
+  font-weight: 600;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+}

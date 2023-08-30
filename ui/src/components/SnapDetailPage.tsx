@@ -13,7 +13,7 @@ import { useAttestations } from './hooks/UseAttestations'
 export const SnapDetailPage = (props: any) => {
     const { getCounts } = UseCounts()
     const { attestations } = useAttestations()
-    const [tab, setTab] = useState('audits')
+    const [tab, setTab] = useState('all')
     const { snaps } = useSnaps()
 
     const id = +(props.id)
@@ -35,7 +35,12 @@ export const SnapDetailPage = (props: any) => {
                 return false
             }
 
-            if (tab === 'audits' && a.schemaId !== schemas.KarmaAuditAttestorSchemaId) {
+            if (tab === 'all' && (a.schemaId !== schemas.KarmaAuditAttestorSchemaId 
+                && a.schemaId !== schemas.KarmaReviewAttestorSchemaId)) {
+                return false
+            }
+
+            if ((tab === 'audits') && a.schemaId !== schemas.KarmaAuditAttestorSchemaId) {
                 return false
             }
 
@@ -141,8 +146,17 @@ export const SnapDetailPage = (props: any) => {
                 borderBottom: '1px solid rgba(112, 0, 255, 0.25)'
             }}>
                 <div>
-                    <div style={{ }}>
-                        
+                    <div style={{overflow:'hidden' }}>
+                    <span
+                            className={'tab-slot '}
+                            style={{ marginRight: 10 }}
+                            onClick={() => {
+                                setTab('all')
+                            }}>All&nbsp;({getCounts(version.shasum).audits + getCounts(version.shasum).reviews})&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;
+                            <span className={(tab === 'all' ? ' primary-tab' : '')} 
+                            style={tab === 'all'  ? { marginLeft: -65} : {}}
+                            ></span>
+
                         <span
                             className={'tab-slot '}
                             style={{ marginRight: 10 }}

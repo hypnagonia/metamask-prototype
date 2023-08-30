@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
-import { create as saveRecordToBackend, getAll } from '../api/api'
+import { create as saveRecordToBackend, getAll, schemas } from '../api/api'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { getAuditorScore } from '../api/mockCompute'
 import ExplorerList from './explorer/ExplorerList'
@@ -10,14 +10,16 @@ import { shortenString } from '../utils'
 import { UseCreateAttestations } from './hooks/UseCreateAttestation'
 import { useAttestations } from './hooks/UseAttestations'
 import { Address } from './common/Address'
+import { AvatarList } from './common/AvatarList'
 
 export const AuditorDetailPage = (props: any) => {
     const { id } = useParams() as any
     const a = id.toLowerCase()
     const [gridView, setGridView] = useState('cards')
+    const [tab, setTab] = useState('audits')
 
     const { attestations } = useAttestations()
-    const { getCounts } = UseCounts()
+    const { getCounts, getGroups } = UseCounts()
     const { issueAttestation } = UseCreateAttestations()
 
 
@@ -25,7 +27,17 @@ export const AuditorDetailPage = (props: any) => {
         issueAttestation('follow', id, ["1"])
     }
 
-    const filteredAttestations = attestations.filter((attestation: any) => attestation.attester.toLowerCase() === a)
+    const filteredAttestations = attestations.filter((attestation: any) => {
+        console.log({ attestation })
+        if (tab === 'audits' && attestation.schemaId !== schemas.KarmaAuditAttestorSchemaId) {
+            return false
+        }
+
+        if (tab === 'reviews' && attestation.schemaId !== schemas.KarmaReviewAttestorSchemaId) {
+            return false
+        }
+        return attestation.attester.toLowerCase() === a
+    })
 
     const auditorScore = getAuditorScore(id)
 
@@ -90,7 +102,56 @@ export const AuditorDetailPage = (props: any) => {
             <br />
         </> : null}
          */}
-        <div className="delimiter" style={{ backgroundColor: '#7000FF40', marginTop:30 }}></div>
+
+        <div>
+            <div style={{
+                marginTop: 30,
+                height: 1,
+                width: '100%',
+                borderBottom: '1px solid rgba(112, 0, 255, 0.25)'
+            }}></div>
+
+            <div style={{
+                display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+                paddingBottom: 18,
+                marginTop: 30,
+                width: '100%',
+                borderBottom: '1px solid rgba(112, 0, 255, 0.25)'
+            }}>
+                <div>
+                    <div style={{}}>
+
+                        <span
+                            className={'tab-slot '}
+                            style={{ marginRight: 10 }}
+                            onClick={() => {
+                                setTab('audits')
+                            }}>Audits ({getCounts(id).audits})</span>&nbsp;&nbsp;
+                        <span className={(tab === 'audits' ? ' primary-tab' : '')}></span>
+                        <span
+                            className={'tab-slot'}
+                            style={{ marginRight: 10 }}
+                            onClick={() => {
+                                setTab('reviews')
+                            }}>Reviews ({getCounts(id).reviews})</span>
+                        <span className={(tab === 'reviews' ? ' primary-tab' : '')}></span>
+                    </div>
+                </div>
+
+
+                <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
+                    <div style={{ fontSize: 12, marginRight: 30 }}>
+                        <b>{getCounts(id).followers}</b>&nbsp;Followers<br />
+                        <AvatarList attestations={getGroups(id).followers} />
+                    </div>
+                    <div style={{ fontSize: 12 }}>
+                        <b>{getCounts(id).following}</b>&nbsp;Following<br />
+                        <AvatarList attestations={getGroups(id).following} />
+                    </div>
+                </div>
+            </div>
+        </div >
+
         <br /><br />
 
         {

@@ -46,13 +46,17 @@ export default function AttestationNew(props: any) {
 							style={{ marginRight: 10, backgroundColor: safe ? 'lightgreen' : 'white' }}
 							onClick={() => {
 								setSafe(true)
-							}}>Safe</span>
+							}}>
+								<img src='/shield.svg' style={{width:20,height:20}}/>&nbsp;
+								Safe</span>
 						<span
 							className="strategy-btn"
 							style={{ marginRight: 10, backgroundColor: !safe ? '#FFCCCB' : 'white' }}
 							onClick={() => {
 								setSafe(false)
-							}}>Unsafe</span>
+							}}>
+								<img src='/unsafe.svg' style={{width:20,height:20}}/>&nbsp;
+								Unsafe</span>
 						<br />
 						<br />
 						<br />

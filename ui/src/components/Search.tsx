@@ -6,6 +6,7 @@ const throttled = throttle(500)
 export const Search = (props: any) => {
     const strategy = props.strategy
     const cb = props.onSearch
+    const placeholder = props.placeholder || 'Search...'
     const [search, setSearch] = useState(props.initialValue || '')
     const [suggestions, setSuggestions] = useState([] as any)
 
@@ -21,24 +22,31 @@ export const Search = (props: any) => {
     }, [search])
 
     const handleSuggestionClick = (suggestion: any) => {
-        cb(suggestion)
+        if (cb) {
+            cb(suggestion)
+        }
         setSearch(suggestion)
         setSuggestions([])
     }
 
     return (
-        <div className="search">
-            <input
-                type="text"
-                name="handle"
-                placeholder="Search stani.lens"
-                value={search}
-                onChange={(e) => {
-                    const v = e.target.value.toLowerCase()
-                    setSearch(v)
-                    throttled(() => cb(v))
-                }}
-            />
+        <div className="search" style={{ display: 'flex' }}>
+            <img src='/search.svg' style={{ position: 'absolute', marginTop: 10, marginLeft: 10 }} />
+            <div className='search-input'>
+                <input
+                    className='search-input-inner'
+                    type="text"
+                    name="handle"
+                    style={{ marginLeft: 25 }}
+                    placeholder={placeholder}
+                    value={search}
+                    onChange={(e) => {
+                        const v = e.target.value.toLowerCase()
+                        setSearch(v)
+                        throttled(() => cb && cb(v))
+                    }}
+                />
+            </div>
             {false && suggestions.length > 0 && (
                 <div className="suggestions">
                     {suggestions.map((s: any) => (
@@ -50,7 +58,7 @@ export const Search = (props: any) => {
             )}
 
 
-            {(
+            {/*(
                 <button
                     className="btn"
                     type="button"
@@ -61,7 +69,7 @@ export const Search = (props: any) => {
                 >
                     Clear
                 </button>
-            )}
+                )*/}
 
         </div>
     )

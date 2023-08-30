@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import { useAttestations } from '../hooks/UseAttestations'
 import { Address } from '../common/Address'
 import { CommunityCard } from './CommunityCard'
+import { Search } from '../Search'
 export default function CommunityTable(props: any) {
     const { attestations } = useAttestations()
 
@@ -31,9 +32,13 @@ export default function CommunityTable(props: any) {
                 </div>
             </div>
         </div>
+
+        <div style={{ marginBottom: 30, marginTop:0, width: '100%', textAlign: 'left' }}>
+            <Search />
+        </div>
+
         <div className="profiles-container" style={{ paddingBottom: 100, textAlign: 'center' }}>
-            <div>
-            </div>
+
             {u.map((a: any) => {
                 return <>
                     <CommunityCard data={a} />

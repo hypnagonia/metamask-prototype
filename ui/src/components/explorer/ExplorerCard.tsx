@@ -81,6 +81,8 @@ export default function ExplorerCard(props: any) {
 
 	let text = null
 
+	const d = data.attestationData.map((a: any) => ethers.toUtf8String(a))
+
 	if (meta.name === 'Follow') {
 		text = <><b>
 			<Address shorten={true} address={data.attester} /></b>&nbsp;followed&nbsp;<b><Address shorten={true} address={data.attestee} /></b>
@@ -88,25 +90,30 @@ export default function ExplorerCard(props: any) {
 	}
 
 	if (meta.name === 'Audit') {
-		const d = data.attestationData.map((a: any) => ethers.toUtf8String(a))
 		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;audited&nbsp;<b>{d[0]}</b>&nbsp;as&nbsp;<b>
+			<Address shorten={true} address={data.attester} /></b>&nbsp;audited&nbsp;<b>{shortenString(d[0], 20)}</b>&nbsp;as&nbsp;<b>
 				{+d[3] ? 'Safe' : 'Unsafe'}</b><br />
 			{d[1]}
 		</>
 	}
 
 	if (meta.name === 'Review Approval') {
-		return null
+		text = <><b>
+			<Address shorten={true} address={data.attester} /></b> gives {+d[1] ? '👍' : '👎'} to&nbsp;
+			<b>{shortenString(d[0], 20)}</b>
+			</>
+
 	}
 	if (meta.name === 'Audit Approval') {
-		return null
+		text = <><b>
+			<Address shorten={true} address={data.attester} /></b> gives {+d[1] ? '👍' : '👎'} to&nbsp;
+			<b>{shortenString(d[0], 20)}</b>
+			</>
 	}
 
 	if (meta.name === 'Review') {
-		const d = data.attestationData.map((a: any) => ethers.toUtf8String(a))
 		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;reviewed&nbsp;<b>{d[0]}</b>&nbsp;as&nbsp;<b>
+			<Address shorten={true} address={data.attester} /></b>&nbsp;reviewed&nbsp;<b>{shortenString(d[0], 20)}</b>&nbsp;as&nbsp;<b>
 				{d[2]}/5</b><br />
 			{d[1]}
 		</>
@@ -122,18 +129,22 @@ export default function ExplorerCard(props: any) {
 					marginBottom: 10,
 					alignItems: 'center', width: '100%'
 				}}>
-					<div >
+					<div style={{width: '100px'}}>
 						<Link to={`/audit/${data.attestationId}`}>
 							<Avatar id={attester}></Avatar>
 						</Link>
 					</div>
-					<div style={{ fontSize: 14, color: '#543A69', textAlign: 'left', width: '70%', marginLeft: 10 }}>
+					<div style={{ fontSize: 14, color: '#543A69', textAlign: 'left', width: '700px', marginLeft: 10 }}>
 						{text}
 						
 					</div>
-					<div style={{ justifyContent: 'flex-end', display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
+					<div style={{ justifyContent: 'flex-end', alignItems: 'center',
+					width: '200px',
+					display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
 						{/*date.toLocaleString()*/}
-						{ago}&nbsp;ago
+						{ago}&nbsp;ago&nbsp;&nbsp;<a href={`https://explorer.testnet.harmony.one/tx/${data.transactionHash}`} target='blank'>
+							<img src='/explorerLogo.svg'  />
+						</a>
 					</div>
 					{/*
 				<b>{meta.name}&nbsp;<Link to={`/audit/${data.attestationId}`}>
