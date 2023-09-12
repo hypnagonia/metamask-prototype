@@ -51,8 +51,6 @@ export function UseCounts() {
         return groups['' + key]
     }
 
-    console.log({ groups, counts })
-
     useEffect(() => {
         if (!snaps || !Object.keys(snaps).length) {
             return
@@ -154,7 +152,7 @@ export function UseCounts() {
 
                 g[attestee] = g[attestee] || {}
                 g[attestee].followers = g[attestee].followers || []
-                console.log('what', g[attestee].followers)
+                
                 g[attestee].followers.push(a)
                 return
             }

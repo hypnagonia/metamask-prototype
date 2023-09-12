@@ -1,8 +1,13 @@
 import { getAuditorScore } from '../../api/mockCompute'
+import { Tooltip } from '../Tooltip'
+import { Address } from './Address'
 
 export const AvatarList = (props: any) => {
     const attestations = props.attestations || []
     const previewCount = props.count || 3
+    const tooltip = props.tooltip || false
+    const list = tooltip ? attestations.map((a: any) => <div><Address address={a.attester} /></div>) : []
+    const listDisplay = list.length ? <>{list}</> : null
 
     const previews = attestations.filter((a: any, i: number) => i < previewCount)
 
@@ -11,22 +16,24 @@ export const AvatarList = (props: any) => {
     }
 
     return (<>
-        <div style={{
-            display: 'flex', flexDirection: 'row',
-        }}>
-            {previews.map((p: any) => {
-                const id = getAuditorScore(p.attester)
-                return <div style={{ marginRight: -5 }}>
-                    <img src={`/avatar${id}.png`} className="circle-avatar-small" />
-                </div>
-            })}
-            {attestations.length > previewCount && <>
-                <div style={{ marginRight: -5 }}>
-                    <div className="circle-avatar-small circle-avatar-placeholder" >
-                        +{attestations.length}
+        <Tooltip text={listDisplay}>
+            <div style={{
+                display: 'flex', flexDirection: 'row',
+            }}>
+                {previews.map((p: any) => {
+                    const id = getAuditorScore(p.attester)
+                    return <div style={{ marginRight: -5 }}>
+                        <img src={`/avatar${id}.png`} className="circle-avatar-small" />
                     </div>
-                </div>
-            </>}
-        </div>
+                })}
+                {attestations.length > previewCount && <>
+                    <div style={{ marginRight: -5 }}>
+                        <div className="circle-avatar-small circle-avatar-placeholder" >
+                            +{attestations.length}
+                        </div>
+                    </div>
+                </>}
+            </div>
+        </Tooltip>
     </>)
 }

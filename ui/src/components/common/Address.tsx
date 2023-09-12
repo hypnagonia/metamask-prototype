@@ -1,14 +1,65 @@
+
+import { useEffect, useState, useCallback } from 'react'
 import { shortenString } from '../../utils'
+import { UseIdentity } from '../hooks/UseIdentity'
+import { SnapScoreBadge } from './SnapScoreBadge'
+import { UseCompute, getAddressScore } from '../hooks/UseCompute'
+
+const images: any = {
+    lens: '/LensAddress.svg'
+}
 
 export const Address = (props: any) => {
-    const address = props.address
+    const address = props.address.toLowerCase()
     const isShorten = props.shorten
+    const { identities, loadAttestations } = UseIdentity(address)
+    const { attestations: computeAttestations } = UseCompute()
+    const [identityState, setIdentityState] = useState({} as any)
+    const scoreCompute = getAddressScore(address, computeAttestations)
 
+    useEffect(() => {
+
+        const load = async () => {
+            await loadAttestations(address)
+        }
+
+        load()
+    }, [address])
+
+    const identity = identities[address] || identityState[address]
+
+    let displayString = address
+    let DisplayExtra = null
+
+    if (identity) {
+        try {
+            const socials = identity.Wallet.socials
+
+            if (socials) {
+                const app = socials[0].dappName || ''
+                if (images[app]) {
+                    DisplayExtra = <><img src={images[app]} /></>
+                    displayString = socials[0].profileName
+                } else {
+                    displayString = `${app}:${socials[0].profileName}`
+                }
+            }
+        } catch (e) { }
+    } else {
+
+
+    }
     if (isShorten) {
-        return <>{shortenString(address, 16)}</>
+        displayString = shortenString(displayString, 16)
+    }
+
+
+    if (DisplayExtra) {
+        return <div style={{display: 'flex'}}>{DisplayExtra}&nbsp;{displayString}</div>
     }
 
     return (<>
-        {address}
+        {displayString}&nbsp;
+        {/*<SnapScoreBadge score={scoreCompute}/>*/}
     </>)
 }

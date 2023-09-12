@@ -426,7 +426,7 @@ button:focus {
 	left: 50%;
 	margin-left: -60px;
 	padding: 8px;
-	width: 120px;
+	min-width: 120px;
 	background-color: black;
 	color: white;
 	border-radius: 6px;

@@ -1,17 +1,20 @@
 import { useEffect, useState, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { shortenString } from '../../utils'
-import { getType } from '../../api/api'
+import { getType, schemas } from '../../api/api'
 import { UseCreateAttestations } from '../hooks/UseCreateAttestation'
 import { ethers } from 'ethers'
 import { UseCounts } from '../hooks/UseCounts'
 import { Address } from '../common/Address'
 import { Avatar } from '../common/Avatar'
 import moment from 'moment'
+import { Tooltip } from '../Tooltip'
+import { useAttestations } from '../hooks/UseAttestations'
 
 export default function ExplorerCard(props: any) {
 	const { issueAttestation } = UseCreateAttestations()
-	const { getCounts } = UseCounts()
+	const { getCounts, getGroups } = UseCounts()
+	const { attestations } = useAttestations()
 
 	const createAttestation = (name: string, attestationId: string, upvote = true) => {
 		issueAttestation(name.toLowerCase() + 'Approve', "", [attestationId, upvote ? '1' : '0'])
@@ -25,28 +28,53 @@ export default function ExplorerCard(props: any) {
 	let extraCard: any = null
 
 	if (meta.name === 'Audit' || meta.name === 'Review') {
+
+		const list = attestations.filter((a: any) => {
+
+			if (data.attestationId !== a.attestationDataHex[0]) {
+				return false
+			}
+
+			if (meta.name === 'Audit') {
+				return a.schemaId === schemas.KarmaAuditApprovalAttestorSchemaId
+			}
+
+
+			if (meta.name === 'Review') {
+				return a.schemaId === schemas.KarmaReviewApprovalAttestorSchemaId
+			}
+		}).map((a: any) => { return { attester: a.attester, vote: a.attestationDataHex[1] } })
+		const listUpvotes = list.filter((a: any) => a.vote === '1').map((a: any) => <div><Address address={a.attester}/></div>)
+		const listDownvotes =list.filter((a: any) => a.vote === '0').map((a: any) => <div><Address address={a.attester}/></div>)
+
+		const listUpvotesDisplay = listUpvotes.length ? <>{listUpvotes}</>: null
+		const listDownvotesDisplay = listDownvotes.length ? <>{listDownvotes}</>: null
+
 		extraCard = <>
-			<span
-				className="strategy-btn small-btn"
-				style={{}}
-				onClick={() => {
-					createAttestation(meta.name, data.attestationId, true)
-				}}>👍&nbsp;{(meta.name === 'Audit'
-					? getCounts(data.attestationId).auditApprovals
-					: getCounts(data.attestationId).reviewApprovals) || ''
-				}</span>
+			<Tooltip text={listUpvotesDisplay}>
+				<span
+					className="strategy-btn small-btn"
+					style={{}}
+					onClick={() => {
+						createAttestation(meta.name, data.attestationId, true)
+					}}>👍&nbsp;{(meta.name === 'Audit'
+						? getCounts(data.attestationId).auditApprovals
+						: getCounts(data.attestationId).reviewApprovals) || ''
+					}</span>
+
+			</Tooltip>
 			&nbsp;&nbsp;
-
-			<span
-				className="strategy-btn small-btn"
-				style={{}}
-				onClick={() => {
-					createAttestation(meta.name, data.attestationId, false)
-				}}>👎&nbsp;{(meta.name === 'Audit'
-					? getCounts(data.attestationId).auditDisapprovals
-					: getCounts(data.attestationId).reviewDisapprovals) || ''
-				}</span>
-
+			<Tooltip text={listDownvotesDisplay}>
+				<span
+					className="strategy-btn small-btn"
+					style={{}}
+					onClick={() => {
+						createAttestation(meta.name, data.attestationId, false)
+					}}>👎&nbsp;{(meta.name === 'Audit'
+						? getCounts(data.attestationId).auditDisapprovals
+						: getCounts(data.attestationId).reviewDisapprovals) || ''
+					}</span>
+			</Tooltip>
 		</>
 	}
 
@@ -99,16 +127,14 @@ export default function ExplorerCard(props: any) {
 
 	if (meta.name === 'Review Approval') {
 		text = <><b>
-			<Address shorten={true} address={data.attester} /></b> gives {+d[1] ? '👍' : '👎'} to&nbsp;
-			<b>{shortenString(d[0], 20)}</b>
-			</>
+			<Address shorten={true} address={data.attester} /></b> rated <b>{shortenString(d[0], 20)}</b> review as {+d[1] ? '👍' : '👎'}
+		</>
 
 	}
 	if (meta.name === 'Audit Approval') {
 		text = <><b>
-			<Address shorten={true} address={data.attester} /></b> gives {+d[1] ? '👍' : '👎'} to&nbsp;
-			<b>{shortenString(d[0], 20)}</b>
-			</>
+			<Address shorten={true} address={data.attester} /></b> rated <b>{shortenString(d[0], 20)}</b> audit as {+d[1] ? '👍' : '👎'}
+		</>
 	}
 
 	if (meta.name === 'Review') {
@@ -129,56 +155,32 @@ export default function ExplorerCard(props: any) {
 					marginBottom: 10,
 					alignItems: 'center', width: '100%'
 				}}>
-					<div style={{width: '100px'}}>
-						<Link to={`/audit/${data.attestationId}`}>
+					<div style={{ width: '100px' }}>
+						<Link to={`/auditor/${data.attester.toLowerCase()}`}>
 							<Avatar id={attester}></Avatar>
 						</Link>
 					</div>
 					<div style={{ fontSize: 14, color: '#543A69', textAlign: 'left', width: '700px', marginLeft: 10 }}>
 						{text}
-						
+
 					</div>
-					<div style={{ justifyContent: 'flex-end', alignItems: 'center',
-					width: '200px',
-					display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
+					<div style={{
+						justifyContent: 'flex-end', alignItems: 'center',
+						width: '200px',
+						display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right'
+					}}>
 						{/*date.toLocaleString()*/}
 						{ago}&nbsp;ago&nbsp;&nbsp;<a href={`https://explorer.testnet.harmony.one/tx/${data.transactionHash}`} target='blank'>
-							<img src='/explorerLogo.svg'  />
+							<img src='/explorerLogo.svg' />
 						</a>
 					</div>
-					{/*
-				<b>{meta.name}&nbsp;<Link to={`/audit/${data.attestationId}`}>
-					<b style={{ color: '#2a2a72' }}>{shortenString(data.attestationId, 20)}</b>
-				</Link>
-				</b>&nbsp;{date.toLocaleString()}<br />
-				Transaction Hash: <b>{shortenString(data.transactionHash, 20)}</b>
-				<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
-				<div>
-					{meta.name !== 'Follow' && <>Attester:&nbsp;</>}
-					<Link to={`/auditor/${data.attester}`}>
-						<b style={{ color: '#2a2a72' }}><Address address={data.attester}/></b>
-					</Link>
-					{meta.name === 'Follow' && <>&nbsp;&rarr;&nbsp;
-						<Link to={`/auditor/${data.attestee}`}>
-							<b style={{ color: '#2a2a72' }}><Address address={data.attestee}/></b>
-						</Link></>}
-				</div>
-				<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
-				<div>
-					{displayData(data.attestationData)}
-				</div>
 
-				{extraCard && <>
-					<div className="delimiter" style={{ marginTop: 15, marginBottom: 15 }}></div>
-					{extraCard}
-				</>}
-				*/}
 				</div>
 				<div style={{ textAlign: 'left', marginLeft: 90 }}>
-							{extraCard && <>
-								{extraCard}
-							</>}
-						</div>
+					{extraCard && <>
+						{extraCard}
+					</>}
+				</div>
 			</div>
 		</>
 	)

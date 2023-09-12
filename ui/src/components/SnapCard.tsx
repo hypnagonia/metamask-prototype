@@ -7,14 +7,22 @@ import { UseCounts } from './hooks/UseCounts'
 import { useAttestations } from './hooks/UseAttestations'
 import { ethers } from 'ethers'
 import { AvatarList } from './common/AvatarList'
+import { SnapScoreBadge } from './common/SnapScoreBadge'
+
+import { UseCompute, getSnapScore } from './hooks/UseCompute'
 
 export const SnapCard = (props: any) => {
     const id = props.id
     const e = props.snapData
     const { getCounts } = UseCounts()
     const { attestations } = useAttestations()
+    const { attestations: computeAttestations } = UseCompute()
 
-    const score: number = 5
+    const latestVersion = e.versionList[e.versionList.length - 1]
+    const scoreCompute = getSnapScore(latestVersion, computeAttestations)
+
+    const score: number = scoreCompute.review
+    const auditScore: number = scoreCompute.audit
 
     const devIcon = `
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="23" viewBox="0 0 20 23" fill="none">
@@ -53,7 +61,7 @@ export const SnapCard = (props: any) => {
         <div className="post-internal-container">
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <div className="snap-img-placeholder"></div>
+                <div className="snap-img-placeholder"><img src={`/Snap${~~(id % 4+ 1)}.png`}/></div>
                 <div style={{ width: '50%' }}>
 
                     <Link to={"/snap/" + id}> <h3 style={{ fontSize: 16, color: '#543A69' }}>{e.meta.name}<br />
@@ -71,7 +79,7 @@ export const SnapCard = (props: any) => {
                     </h3></Link>
                 </div>
                 <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>
-                    <img src={'/shield.svg'} style={{ width: 26, height: 26 }} />
+                    <SnapScoreBadge score={auditScore} />
                 </div>
             </div>
 

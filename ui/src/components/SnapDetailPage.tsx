@@ -9,12 +9,15 @@ import { ethers } from 'ethers'
 import { useSnaps } from './hooks/UseSnaps'
 import { UseCounts } from './hooks/UseCounts'
 import { useAttestations } from './hooks/UseAttestations'
+import { SnapScoreBadge } from './common/SnapScoreBadge'
+import { UseCompute, getSnapScore } from './hooks/UseCompute'
 
 export const SnapDetailPage = (props: any) => {
     const { getCounts } = UseCounts()
     const { attestations } = useAttestations()
     const [tab, setTab] = useState('all')
     const { snaps } = useSnaps()
+    const { attestations: computeAttestations } = UseCompute()
 
     const id = +(props.id)
 
@@ -24,10 +27,15 @@ export const SnapDetailPage = (props: any) => {
         return null
     }
 
-    const versionShasum = props.versionShasum || ''
 
+    const versionShasum = props.versionShasum || ''
     const versionsArr = Object.values(snap.versions)
     const version: any = versionShasum ? versionsArr.find((a: any) => a.shasum === versionShasum) : versionsArr[versionsArr.length - 1]
+
+
+    const scoreCompute = getSnapScore(version.shasum, computeAttestations)
+    const score: number = scoreCompute.review
+    const auditScore: number = scoreCompute.audit
 
     const filteredAttestations = attestations
         .filter((a: any) => {
@@ -35,7 +43,7 @@ export const SnapDetailPage = (props: any) => {
                 return false
             }
 
-            if (tab === 'all' && (a.schemaId !== schemas.KarmaAuditAttestorSchemaId 
+            if (tab === 'all' && (a.schemaId !== schemas.KarmaAuditAttestorSchemaId
                 && a.schemaId !== schemas.KarmaReviewAttestorSchemaId)) {
                 return false
             }
@@ -48,16 +56,22 @@ export const SnapDetailPage = (props: any) => {
                 return false
             }
 
+            if (tab === 'votes') {
+                if (a.schemaId !== schemas.KarmaReviewApprovalAttestorSchemaId 
+                    && a.schemaId !== schemas.KarmaAuditApprovalAttestorSchemaId) {
+                    return false
+                }
+            }
+
             return true
         }
         )
-    const score: number = 5
 
 
     return <>
         <div className="post-full2">
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <div className="snap-img-placeholder-big"></div>
+                <div className="snap-img-placeholder-big" style={{background: 'none'}}><img style={{width: '100%'}} src={`/Snap${~~(id % 4+ 1)}.png`}/></div>
                 <div style={{ width: '53%', textAlign: 'left' }}>
 
                     <Link to={"/snap/" + id}>
@@ -65,7 +79,9 @@ export const SnapDetailPage = (props: any) => {
                         <h3 style={{ color: '#543A69', lineHeight: 1 }}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <span style={{ fontSize: 36 }}>{snap.meta.name}</span>
-                                &nbsp;&nbsp;<img src={'/shield.svg'} style={{ width: 26, height: 26 }} />
+                                &nbsp;&nbsp;
+                                <SnapScoreBadge score={auditScore} /> {versionShasum}
+                                {/*<img src={'/shield.svg'} style={{ width: 26, height: 26 }} />*/}
                             </div>
                             {/*&nbsp;{version.versionNumber}*/}
                             <br />
@@ -73,7 +89,7 @@ export const SnapDetailPage = (props: any) => {
                             <span style={{ fontWeight: 400, fontSize: 14, color: 'rgba(84, 58, 105, 0.65)' }}>
                                 By {snap.meta.author}</span><br />
 
-                            <span style={{ color: '#543A69' , fontSize: 25 }}>
+                            <span style={{ color: '#543A69', fontSize: 25 }}>
                                 {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
                             </span>
@@ -146,16 +162,16 @@ export const SnapDetailPage = (props: any) => {
                 borderBottom: '1px solid rgba(112, 0, 255, 0.25)'
             }}>
                 <div>
-                    <div style={{overflow:'hidden' }}>
-                    <span
+                    <div style={{ overflow: 'hidden' }}>
+                        <span
                             className={'tab-slot '}
                             style={{ marginRight: 10 }}
                             onClick={() => {
                                 setTab('all')
                             }}>All&nbsp;({getCounts(version.shasum).audits + getCounts(version.shasum).reviews})&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;
-                            <span className={(tab === 'all' ? ' primary-tab' : '')} 
-                            style={tab === 'all'  ? { marginLeft: -65} : {}}
-                            ></span>
+                        <span className={(tab === 'all' ? ' primary-tab' : '')}
+                            style={tab === 'all' ? { marginLeft: -65 } : {}}
+                        ></span>
 
                         <span
                             className={'tab-slot '}
@@ -163,14 +179,16 @@ export const SnapDetailPage = (props: any) => {
                             onClick={() => {
                                 setTab('audits')
                             }}>Audits ({getCounts(version.shasum).audits})</span>&nbsp;&nbsp;
-                            <span className={(tab === 'audits' ? ' primary-tab' : '')}></span>
+                        <span className={(tab === 'audits' ? ' primary-tab' : '')}></span>
                         <span
                             className={'tab-slot'}
                             style={{ marginRight: 10 }}
                             onClick={() => {
                                 setTab('reviews')
                             }}>Reviews ({getCounts(version.shasum).reviews})</span>
-                            <span className={(tab === 'reviews' ? ' primary-tab' : '')}></span>
+                        <span className={(tab === 'reviews' ? ' primary-tab' : '')}></span>
+
+                       
                     </div>
                 </div>
 
@@ -190,7 +208,7 @@ export const SnapDetailPage = (props: any) => {
                 </div>
             </div>
         </div >
-                            <br/>
+        <br />
 
         <div>
             <ExplorerList attestations={filteredAttestations} type='' showSearch={false} />

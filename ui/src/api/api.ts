@@ -48,6 +48,20 @@ export const getType = (schema: string) => {
 }
 
 
+const cacheIdentity = new Map()
+export const getIdentity = async (address: string) => {
+	if (cacheIdentity.has(address)) {
+		return cacheIdentity.get(address)
+	}
+	
+	const res = await fetch(`${backendUrl}/identity/${address}`).then(r => r.json())
+	if (res.error) {
+		console.error({res})
+	}
+
+	cacheIdentity.set(address, res.data)
+	return res.data
+}
 
 
 export const createAttestation = (type: string, attestation: any) => {
@@ -107,18 +121,26 @@ export const create = async (
 let cachedEvents: any
 
 export const getAll = async (ignoreCache = false) => {
-	if (!ignoreCache && cachedEvents) {
+	if (cachedEvents) {
 		return cachedEvents
 	}
 
 	const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
-	
+
+	console.log({ res })
 	const events = res
 		.map((r: any) => {
+			try {
 			const o = JSON.parse(r)
+			// console.log({ o })
 			
-			o.attestation = JSON.parse(o.attestation)
-			return o
+				o.attestation = JSON.parse(o.attestation)
+				return o
+			} catch (e) {
+				return {
+					attestation: []
+				}
+			}
 		})
 		.filter((r: any) => r.attestation.length && Array.isArray(r.attestation))
 		.map((res: any) => {
@@ -136,10 +158,13 @@ export const getAll = async (ignoreCache = false) => {
 				isPrivate: r[9],
 				revoked: r[10],
 				attestationData: r[11],
+				attestationDataHex: r[11].map((a: any) => ethers.toUtf8String(a)),
 				transactionHash: res.data.transactionHash
 			}
 		}).sort((a: any, b: any) => b.attestedDate - a.attestedDate)
 
+	
+	setTimeout(() => cachedEvents = null, 5000)
 	cachedEvents = events
 	return events
 }
@@ -176,7 +201,7 @@ export const getAttestationHash = async (attestation: any) => {
 	const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_PROVIDER_URL)
 	const a = new ethers.Contract(process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS || '', karmaAttestorABI.abi, provider)
 
-	
+
 	const hash = await a.getStructHash(attestation)
 	return hash
 }

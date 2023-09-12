@@ -62,7 +62,10 @@ export const AuditorDetailPage = (props: any) => {
                 </div>
     </div><br />*/}
             <div ><img src={`/avatar${auditorScore}.png`} style={{ width: 128, height: 128, borderRadius: 136 }} /></div>
-            <div style={{ width: '60%', textAlign: 'left', marginLeft: 30, marginTop: 20, fontWeight: 'bold' }}>{id}</div>
+            <div style={{ width: '60%', textAlign: 'left', marginLeft: 30, marginTop: 20, fontWeight: 'bold' }}>
+
+                <Address address={id} />
+            </div>
             <div style={{ marginTop: 20, justifyContent: 'flex-end', display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
 
 
@@ -142,11 +145,11 @@ export const AuditorDetailPage = (props: any) => {
                 <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
                     <div style={{ fontSize: 12, marginRight: 30 }}>
                         <b>{getCounts(id).followers}</b>&nbsp;Followers<br />
-                        <AvatarList attestations={getGroups(id).followers} />
+                        <AvatarList tooltip={true} attestations={getGroups(id).followers} />
                     </div>
                     <div style={{ fontSize: 12 }}>
                         <b>{getCounts(id).following}</b>&nbsp;Following<br />
-                        <AvatarList attestations={getGroups(id).following} />
+                        <AvatarList tooltip={true} attestations={getGroups(id).following} />
                     </div>
                 </div>
             </div>

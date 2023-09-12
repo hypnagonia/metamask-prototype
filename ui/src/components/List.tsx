@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { Search } from './Search'
 import { SnapCard } from './SnapCard'
 import { Select } from '../components/common/Select'
+import { UseCompute, getSnapScore } from './hooks/UseCompute'
 
 import { shortenString } from '../utils'
 import { computeSnapScore } from '../api/mockCompute'
@@ -14,6 +15,7 @@ const dateToString = (d: string) => {
 	if (!d) {
 		return ''
 	}
+
 
 	const date = new Date(d)
 	return date.toLocaleString('en-US', { month: '2-digit', year: '2-digit' }).replace(',', '/')
@@ -30,8 +32,13 @@ export default function List(props: any) {
 	const reviews = props.reviews
 
 	const [data, setData] = useState([])
+	const [sortBy, setSortBy] = useState('Audit Score')
 	const [search, setSearch] = useState('')
+	const { attestations: computeAttestations } = UseCompute()
 
+	const onSelectSortBy = useCallback((option: any) => {
+		setSortBy(option)
+	}, [sortBy])
 
 	useEffect(() => {
 		const run = async () => {
@@ -66,17 +73,20 @@ export default function List(props: any) {
 				</div>
 
 				<div style={{ marginBottom: 30, marginTop: 15, width: '100%', textAlign: 'left', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-					<div style={{ alignItems: 'center',
+					<div style={{
+						alignItems: 'center',
 						width: '200px',
-						display: 'flex'}}>
-					<Search onSearch={setSearch} />
+						display: 'flex'
+					}}>
+						<Search onSearch={setSearch} />
 					</div>
 					<div style={{
 						justifyContent: 'flex-end', alignItems: 'center',
 						width: '200px',
 						display: 'flex'
 					}}>
-						<Select />
+						<Select currentOption={sortBy} option={['Audit Score', 'Review Score', 'Most Audits', 'Most Reviews']}
+							onSelect={(o: any) => { onSelectSortBy(o) }} />
 					</div>
 				</div>
 
@@ -95,7 +105,7 @@ export default function List(props: any) {
 								return e.meta.name.toLowerCase().indexOf(search) !== -1
 							})
 							.map((e: any, i) => {
-								const score = 1 // computeSnapScore(i + 1, reviewsForSnap)
+								const score = getSnapScore(e.versionList[0], computeAttestations)
 
 
 								const component = () => {
@@ -107,7 +117,16 @@ export default function List(props: any) {
 									component
 								}
 							})
-							.sort((b, a) => a.score - b.score)
+							.sort((b, a) => {
+								if (sortBy === 'Score') {
+									return a.score.audit - b.score.audit
+								}
+								if (sortBy === 'Reviews') {
+									return a.score.review - b.score.review
+								}
+								return 0
+							}
+							)
 							.map((a: any) => a.component())}
 
 						<div>

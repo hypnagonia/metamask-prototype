@@ -6,7 +6,7 @@ export const Tooltip = (props: any) => {
 
     return (
         <div className="tooltip-container"
-            onMouseEnter={() => setShowTooltip(true)}
+            onMouseEnter={() => props.text && setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}>
             {props.children}
             {showTooltip &&

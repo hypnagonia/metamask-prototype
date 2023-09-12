@@ -8,6 +8,7 @@ import { useAttestations } from '../hooks/UseAttestations'
 import { ethers } from 'ethers'
 import { AvatarList } from '../common/AvatarList'
 import { Avatar } from '../common/Avatar'
+import { Address } from '../common/Address'
 import { shortenString } from '../../utils'
 
 export const CommunityCard = (props: any) => {
@@ -26,7 +27,7 @@ export const CommunityCard = (props: any) => {
                 <div style={{ width: '50%' }}>
 
                     <Link to={"/auditor/" + e}> <h3 style={{ fontSize: 16, color: '#543A69' }}>
-                        {shortenString(e, 18)}<br />
+                    <Address address={e} shorten={true}/><br />
                     </h3></Link>
                 </div>
                 <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>
