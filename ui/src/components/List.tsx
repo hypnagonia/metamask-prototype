@@ -7,7 +7,7 @@ import { Search } from './Search'
 import { SnapCard } from './SnapCard'
 import { Select } from '../components/common/Select'
 import { UseCompute, getSnapScore } from './hooks/UseCompute'
-
+import { UseCounts } from './hooks/UseCounts'
 import { shortenString } from '../utils'
 import { computeSnapScore } from '../api/mockCompute'
 
@@ -31,19 +31,43 @@ export default function List(props: any) {
 	const { data: dataSign, error, isLoading, signMessage, variables } = useSignMessage()
 	const reviews = props.reviews
 
-	const [data, setData] = useState([])
+	const [d, setData] = useState([] as any)
 	const [sortBy, setSortBy] = useState('Audit Score')
 	const [search, setSearch] = useState('')
 	const { attestations: computeAttestations } = UseCompute()
+	const { getCounts } = UseCounts()
 
 	const onSelectSortBy = useCallback((option: any) => {
 		setSortBy(option)
 	}, [sortBy])
 
+	const data = d.sort((a: any, b: any) => {
+		const checksumA = a.versionList[a.versionList.length - 1]
+		const checksumB = b.versionList[b.versionList.length - 1]
+		const scoreA = getSnapScore(checksumA, computeAttestations)
+		const scoreB = getSnapScore(checksumB, computeAttestations)
+
+		if (sortBy === 'Audit Score') {
+			return scoreB.audit - scoreA.audit
+		}
+		if (sortBy === 'Review Score') {
+			return scoreB.review - scoreA.review
+		}
+
+		if (sortBy === 'Most Reviews') {
+			return getCounts(checksumB).reviews - getCounts(checksumA).reviews
+		}
+		if (sortBy === 'Most Audits') {
+			return getCounts(checksumB).audits - getCounts(checksumA).audits
+		}
+		return 0
+	})
+
 	useEffect(() => {
 		const run = async () => {
 			const d = await getSnaps()
-			setData(d)
+			const data = Object.values(d)
+			setData(data)
 		}
 
 		run()
@@ -85,7 +109,7 @@ export default function List(props: any) {
 						width: '200px',
 						display: 'flex'
 					}}>
-						<Select currentOption={sortBy} option={['Audit Score', 'Review Score', 'Most Audits', 'Most Reviews']}
+						<Select currentOption={sortBy} options={['Audit Score', 'Review Score', 'Most Audits', 'Most Reviews']}
 							onSelect={(o: any) => { onSelectSortBy(o) }} />
 					</div>
 				</div>
@@ -94,9 +118,9 @@ export default function List(props: any) {
 					<div className="profiles-container" style={{ paddingBottom: 100 }}>
 
 
-						{Object.values(data).length === 0 && <>Loading...</>}
+						{data.length === 0 && <>Loading...</>}
 
-						{Object.values(data)
+						{data
 							.filter((e: any) => {
 								if (!search) {
 									return true
@@ -104,12 +128,11 @@ export default function List(props: any) {
 
 								return e.meta.name.toLowerCase().indexOf(search) !== -1
 							})
-							.map((e: any, i) => {
+							.map((e: any) => {
 								const score = getSnapScore(e.versionList[0], computeAttestations)
 
-
 								const component = () => {
-									return <><SnapCard id={i + 1} snapData={e} /></>
+									return <><SnapCard id={e.meta.id} snapData={e} /></>
 								}
 
 								return {
@@ -117,16 +140,6 @@ export default function List(props: any) {
 									component
 								}
 							})
-							.sort((b, a) => {
-								if (sortBy === 'Score') {
-									return a.score.audit - b.score.audit
-								}
-								if (sortBy === 'Reviews') {
-									return a.score.review - b.score.review
-								}
-								return 0
-							}
-							)
 							.map((a: any) => a.component())}
 
 						<div>

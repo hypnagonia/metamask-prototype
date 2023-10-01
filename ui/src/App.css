@@ -286,14 +286,16 @@ th {
   border-radius: 8px;
   width: 64px;
   height: 64px;
-  background-color: var(--color5);
+  
+  display: flex;
+  justify-content: center;
 }
 
 .snap-img-placeholder {
   border-radius: 8px;
   width: 64px;
   height: 64px;
-  background-color: var(--color5);
+  
 }
 
 .snap-img-placeholder-big {

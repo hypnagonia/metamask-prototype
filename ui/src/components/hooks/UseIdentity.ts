@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getIdentity } from '../../api/api'
 
-
 export function UseIdentity(address: string) {
     const [identities, setIdentities] = useState({} as any)
 

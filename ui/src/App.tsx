@@ -10,6 +10,7 @@ import { useSignMessage, useAccount } from 'wagmi'
 import { EthereumClient, w3mConnectors } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
+import { lineaTestnet} from '@wagmi/core/chains'
 
 import { publicProvider } from 'wagmi/providers/public'
 
@@ -54,7 +55,8 @@ const harmonyOneTestnet = {
   }
 }
 
-const chains = [harmonyOneTestnet]
+//const chains = [harmonyOneTestnet]
+const chains = [lineaTestnet]
 const projectId = '38b351b40e21b5c081bd0a25d34dfac4'
 
 const { publicClient } = configureChains(chains, [publicProvider()])

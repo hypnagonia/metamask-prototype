@@ -8,6 +8,7 @@ import { useAttestations } from './hooks/UseAttestations'
 import { ethers } from 'ethers'
 import { AvatarList } from './common/AvatarList'
 import { SnapScoreBadge } from './common/SnapScoreBadge'
+import { liveSnapsData } from '../api/liveSnaps'
 
 import { UseCompute, getSnapScore } from './hooks/UseCompute'
 
@@ -57,14 +58,18 @@ export const SnapCard = (props: any) => {
         }
         )
 
+    const imageIcon = liveSnapsData.find(a => a.name === e.meta.name)  
+    // @ts-ignore  
+    const img: string = imageIcon ? imageIcon.icon : `/Snap${~~(id % 4+ 1)}.png`
+    
     return <><div className="post">
         <div className="post-internal-container">
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <div className="snap-img-placeholder"><img src={`/Snap${~~(id % 4+ 1)}.png`}/></div>
+                <div className="snap-img-placeholder"><img src={img}/></div>
                 <div style={{ width: '50%' }}>
 
-                    <Link to={"/snap/" + id}> <h3 style={{ fontSize: 16, color: '#543A69' }}>{e.meta.name}<br />
+                    <Link to={e.versionList.length ? "/snap/" + id : '/'}> <h3 style={{ fontSize: 16, color: '#543A69' }}>{e.meta.name}<br />
                         <span style={{ color: '#543A69' }}>
                             {[...Array(~~score)].map((a: any) => <>&#11089;</>)}
 
@@ -75,7 +80,7 @@ export const SnapCard = (props: any) => {
                         </span>
 
                         &nbsp;<span style={{ fontSize: 13 }}>{score === 0 ?
-                            <span style={{ color: 'gray' }}>&nbsp;Not Audited</span> : score.toFixed(2)}</span>
+                            <span style={{ color: 'gray' }}>&nbsp;Not Reviewed</span> : score.toFixed(2)}</span>
                     </h3></Link>
                 </div>
                 <div style={{ width: '20%', display: 'flex', justifyContent: 'flex-end' }}>

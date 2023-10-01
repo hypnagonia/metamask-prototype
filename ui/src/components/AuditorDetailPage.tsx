@@ -11,6 +11,8 @@ import { UseCreateAttestations } from './hooks/UseCreateAttestation'
 import { useAttestations } from './hooks/UseAttestations'
 import { Address } from './common/Address'
 import { AvatarList } from './common/AvatarList'
+import { UseCompute } from './hooks/UseCompute'
+import { ethers } from 'ethers'
 
 export const AuditorDetailPage = (props: any) => {
     const { id } = useParams() as any
@@ -18,17 +20,28 @@ export const AuditorDetailPage = (props: any) => {
     const [gridView, setGridView] = useState('cards')
     const [tab, setTab] = useState('audits')
 
+    const { topUsers, attestations: compute } = UseCompute()
+
+
+    const isTopAuditor = !!topUsers.topUsersAudits.find((a: any) => a.address === id)
+    const isTopReviewer = !!topUsers.topUsersReviews.find((a: any) => a.address === id)
+
     const { attestations } = useAttestations()
     const { getCounts, getGroups } = UseCounts()
     const { issueAttestation } = UseCreateAttestations()
 
+    const key = `did:ethr:${ethers.getAddress(id)}`
+    // @ts-ignore
+    const auditScore = compute.audits[key] || '-'
+    // @ts-ignore
+    const reviewScore = compute.reviews[key] || '-'
 
     const createFollowAttestation = () => {
         issueAttestation('follow', id, ["1"])
     }
 
     const filteredAttestations = attestations.filter((attestation: any) => {
-        console.log({ attestation })
+        // console.log({ attestation })
         if (tab === 'audits' && attestation.schemaId !== schemas.KarmaAuditAttestorSchemaId) {
             return false
         }
@@ -64,8 +77,36 @@ export const AuditorDetailPage = (props: any) => {
             <div ><img src={`/avatar${auditorScore}.png`} style={{ width: 128, height: 128, borderRadius: 136 }} /></div>
             <div style={{ width: '60%', textAlign: 'left', marginLeft: 30, marginTop: 20, fontWeight: 'bold' }}>
 
-                <Address address={id} />
+                <Address address={id} /><br />
+
+                <div style={{ marginBottom: (isTopAuditor || isTopReviewer) ? 15 : 0 }}>
+                    <span style={{ fontSize: 15, fontWeight: 'bold' }}>
+                        Audit Score: <b style={{ color: '#7000FF' }}>{auditScore}</b><br />
+                        Review Score: <b style={{ color: '#7000FF' }}>{reviewScore}</b>
+                    </span>
+                </div>
+                <div>
+
+                    <div style={{ display: 'flex', color: '#7000FF', fontSize: 10, alignItems: 'center' }}>
+
+
+
+                        {isTopAuditor ? <>
+                            <img src={'/Union.svg'} />&nbsp;
+                            <span style={{ color: '#00A94F' }}>
+                                TOP AUDITOR
+                            </span></> : null}
+
+                        {isTopReviewer && <>&nbsp;&nbsp;
+                            <img src={'/Star1.svg'} />&nbsp;
+                            TOP REVIEWER</>}
+                    </div>
+
+
+                </div>
             </div>
+
+
             <div style={{ marginTop: 20, justifyContent: 'flex-end', display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
 
 

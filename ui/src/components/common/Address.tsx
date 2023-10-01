@@ -12,6 +12,7 @@ const images: any = {
 export const Address = (props: any) => {
     const address = props.address.toLowerCase()
     const isShorten = props.shorten
+    let shortenLength = 16
     const { identities, loadAttestations } = UseIdentity(address)
     const { attestations: computeAttestations } = UseCompute()
     const [identityState, setIdentityState] = useState({} as any)
@@ -31,17 +32,27 @@ export const Address = (props: any) => {
     let displayString = address
     let DisplayExtra = null
 
+    console.log({identity, address})
     if (identity) {
+        
         try {
-            const socials = identity.Wallet.socials
+            if (typeof identity === 'string') {
+                shortenLength = 24
+                displayString = `${identity}`
+            } else {
 
-            if (socials) {
-                const app = socials[0].dappName || ''
-                if (images[app]) {
-                    DisplayExtra = <><img src={images[app]} /></>
-                    displayString = socials[0].profileName
-                } else {
-                    displayString = `${app}:${socials[0].profileName}`
+                const socials = identity.Wallet.socials
+                
+                if (socials) {
+                    console.log({socials, address})
+                    shortenLength = 24
+                    const app = socials[0].dappName || ''
+                    if (images[app]) {
+                        DisplayExtra = <><img src={images[app]} /></>
+                        displayString = socials[0].profileName
+                    } else {
+                        displayString = `${app}:${socials[0].profileName}`
+                    }
                 }
             }
         } catch (e) { }
@@ -50,12 +61,12 @@ export const Address = (props: any) => {
 
     }
     if (isShorten) {
-        displayString = shortenString(displayString, 16)
+        displayString = shortenString(displayString, shortenLength)
     }
 
 
     if (DisplayExtra) {
-        return <div style={{display: 'flex'}}>{DisplayExtra}&nbsp;{displayString}</div>
+        return <div style={{ display: 'flex' }}>{DisplayExtra}&nbsp;{displayString}</div>
     }
 
     return (<>

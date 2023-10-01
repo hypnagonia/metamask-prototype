@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getAll } from '../../api/compute'
+import { getAll, getTopUsers } from '../../api/compute'
 
 export function UseCompute() {
-    const [attestations, setAttestations] = useState({reviews: {}, audits: {}})
+    const [attestations, setAttestations] = useState({ reviews: {}, audits: {} })
+    const [topUsers, setTopUsers] = useState({ topUsersReviews: [], topUsersAudits: [] })
 
     const loadAttestations = async () => {
         const result = await getAll()
-        console.log('---', { result })
+
+        const tu = getTopUsers()
+        setTopUsers(tu)
         setAttestations(result)
 
     }
@@ -15,7 +18,7 @@ export function UseCompute() {
         loadAttestations()
     }, [])
 
-    return { attestations, loadAttestations }
+    return { attestations, loadAttestations, topUsers }
 }
 
 export const getSnapScore = (checksum = '', attestations) => {
@@ -39,7 +42,7 @@ export const getAddressScore = (address, attestations) => {
     const str = `did:ethr:${address}`
 
     const score = attestations.audits[str] || 0
-    
+
     return score
 }
 

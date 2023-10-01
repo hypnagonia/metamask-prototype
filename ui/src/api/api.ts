@@ -3,6 +3,7 @@
 import masterRegistryAbi from './masterRegistry.json'
 import karmaAttestorABI from './KarmaAuditAttestor.json'
 import { ethers, hashMessage } from 'ethers'
+import { AnyNaptrRecord } from 'dns'
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://nft-api.k3l.io/metamask'
 // const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000/metamask'
@@ -47,20 +48,56 @@ export const getType = (schema: string) => {
 	return meta
 }
 
+const pretrust = [
+	{ name: 'Ethereum Guild', address: '0xf1Dc13B78600EaCc74D2273B91eff3Ac6F4c0D92'.toLowerCase() },
+	{ name: 'MMG DAO', address: '0x31FC127F09524388bbf45CE15Cb4F3d9BEaF1416'.toLowerCase() },
+	{ name: 'Metamask', address: '0x1739E92A3fFf87C1028337DfCE481e1e08d50fc9'.toLowerCase() },
+	{ name: 'Karma3', address: '0x9856e79Bc92383fAb39677772080Cb4FBcB8adf4'.toLowerCase() }
+]
 
-const cacheIdentity = new Map()
+const identityLSKey = 'identities'
+const diskCacheIdentity = window.localStorage.getItem(identityLSKey)
+const cacheIdentity = diskCacheIdentity ? JSON.parse(diskCacheIdentity) : {} as any
+const promisesIdentity = {} as any
+
 export const getIdentity = async (address: string) => {
-	if (cacheIdentity.has(address)) {
-		return cacheIdentity.get(address)
-	}
-	
-	const res = await fetch(`${backendUrl}/identity/${address}`).then(r => r.json())
-	if (res.error) {
-		console.error({res})
+	const addressLowerCase = address.toLowerCase()
+	const pretrustEntry = pretrust.find(a => a.address === addressLowerCase)
+	if (pretrustEntry) {
+		return pretrustEntry.name
 	}
 
-	cacheIdentity.set(address, res.data)
-	return res.data
+	if (cacheIdentity[address] && !cacheIdentity[address].Wallet) {
+		return null
+	}
+
+	if (cacheIdentity[address]) {
+		return cacheIdentity[address]
+	}
+
+	if (promisesIdentity[address]) {
+		return promisesIdentity[address]
+	}
+
+	const run = async () => {
+		const res = await fetch(`${backendUrl}/identity/${address}`).then(r => r.json())
+		if (res.error) {
+			console.error({ res })
+		}
+
+		if (!res.data) {
+			cacheIdentity[address] = {}
+			window.localStorage.setItem(identityLSKey, JSON.stringify(cacheIdentity))
+			return res.data
+		}
+
+		cacheIdentity[address] = res.data
+		window.localStorage.setItem(identityLSKey, JSON.stringify(cacheIdentity))
+		return res.data
+	}
+	promisesIdentity[address] = run()
+
+	return promisesIdentity
 }
 
 
@@ -70,6 +107,8 @@ export const createAttestation = (type: string, attestation: any) => {
 	let schema
 	let extraData
 	let meta = {} as any
+
+
 	switch (type) {
 		case 'audit':
 			address = process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS
@@ -119,54 +158,67 @@ export const create = async (
 }
 
 let cachedEvents: any
+let pendingCacheEvents: any
 
 export const getAll = async (ignoreCache = false) => {
 	if (cachedEvents) {
 		return cachedEvents
 	}
+	if (pendingCacheEvents) {
+		return pendingCacheEvents
+	}
 
-	const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
+	const run = async () => {
+		const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
 
-	console.log({ res })
-	const events = res
-		.map((r: any) => {
-			try {
-			const o = JSON.parse(r)
-			// console.log({ o })
-			
-				o.attestation = JSON.parse(o.attestation)
-				return o
-			} catch (e) {
-				return {
-					attestation: []
+		// console.log({ res })
+		const events = res
+			.map((r: any) => {
+				try {
+					const o = JSON.parse(r)
+
+					o.attestation = JSON.parse(o.attestation)
+					return o
+				} catch (e) {
+					return {
+						attestation: []
+					}
 				}
-			}
-		})
-		.filter((r: any) => r.attestation.length && Array.isArray(r.attestation))
-		.map((res: any) => {
-			const r = res.attestation
-			return {
-				attestationId: r[0],
-				schemaId: r[1],
-				parentId: r[2],// The unique identifier of the parent attestation (see DAG).
-				attester: r[3],
-				attestee: r[4], // The Attestee address (receiving attestation).
-				attestor: r[5], // The Attestor smart contract address.
-				attestedDate: r[6], // The expiration date of the attestation.
-				updatedDate: r[7], // The expiration date of the attestation.
-				expirationDate: r[8], // The expiration date of the attestation.
-				isPrivate: r[9],
-				revoked: r[10],
-				attestationData: r[11],
-				attestationDataHex: r[11].map((a: any) => ethers.toUtf8String(a)),
-				transactionHash: res.data.transactionHash
-			}
-		}).sort((a: any, b: any) => b.attestedDate - a.attestedDate)
+			})
+			.filter((r: any) => r.attestation.length && Array.isArray(r.attestation))
+			.map((res: any) => {
+				const r = res.attestation
+				return {
+					attestationId: r[0],
+					schemaId: r[1],
+					parentId: r[2],// The unique identifier of the parent attestation (see DAG).
+					attester: r[3],
+					attestee: r[4], // The Attestee address (receiving attestation).
+					attestor: r[5], // The Attestor smart contract address.
+					attestedDate: r[6], // The expiration date of the attestation.
+					updatedDate: r[7], // The expiration date of the attestation.
+					expirationDate: r[8], // The expiration date of the attestation.
+					isPrivate: r[9],
+					revoked: r[10],
+					attestationData: r[11],
+					attestationDataHex: r[11].map((a: any) => ethers.toUtf8String(a)),
+					transactionHash: res.data.transactionHash
+				}
+			})
+			// wrong attestations
+			.filter((a: any) => a.schemaId !== '0x10c726e009df01b52c34e06ae120b926a01773bfe71d51f4e1b99deaedad5831')
+			.sort((a: any, b: any) => b.attestedDate - a.attestedDate)
 
-	
-	setTimeout(() => cachedEvents = null, 5000)
-	cachedEvents = events
-	return events
+		// console.log({ events })
+
+		pendingCacheEvents = null
+		setTimeout(() => cachedEvents = null, 5000)
+		cachedEvents = events
+		return JSON.parse(JSON.stringify(events))
+	}
+
+	pendingCacheEvents = run()
+	return pendingCacheEvents
 }
 
 
@@ -198,6 +250,7 @@ export const getAllByType = async (type: string) => {
 }
 
 export const getAttestationHash = async (attestation: any) => {
+	// console.log('getAttestationHash', { attestation })
 	const provider = new ethers.JsonRpcProvider(process.env.REACT_APP_PROVIDER_URL)
 	const a = new ethers.Contract(process.env.REACT_APP_ATTESTATION_ATTESTOR_ADDRESS || '', karmaAttestorABI.abi, provider)
 

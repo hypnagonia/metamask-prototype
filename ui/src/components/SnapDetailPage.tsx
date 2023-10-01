@@ -11,6 +11,7 @@ import { UseCounts } from './hooks/UseCounts'
 import { useAttestations } from './hooks/UseAttestations'
 import { SnapScoreBadge } from './common/SnapScoreBadge'
 import { UseCompute, getSnapScore } from './hooks/UseCompute'
+import { liveSnapsData } from '../api/liveSnaps'
 
 export const SnapDetailPage = (props: any) => {
     const { getCounts } = UseCounts()
@@ -31,7 +32,6 @@ export const SnapDetailPage = (props: any) => {
     const versionShasum = props.versionShasum || ''
     const versionsArr = Object.values(snap.versions)
     const version: any = versionShasum ? versionsArr.find((a: any) => a.shasum === versionShasum) : versionsArr[versionsArr.length - 1]
-
 
     const scoreCompute = getSnapScore(version.shasum, computeAttestations)
     const score: number = scoreCompute.review
@@ -57,7 +57,7 @@ export const SnapDetailPage = (props: any) => {
             }
 
             if (tab === 'votes') {
-                if (a.schemaId !== schemas.KarmaReviewApprovalAttestorSchemaId 
+                if (a.schemaId !== schemas.KarmaReviewApprovalAttestorSchemaId
                     && a.schemaId !== schemas.KarmaAuditApprovalAttestorSchemaId) {
                     return false
                 }
@@ -67,11 +67,15 @@ export const SnapDetailPage = (props: any) => {
         }
         )
 
+    const imageIcon = liveSnapsData.find(a => a.name === snap.meta.name)
+    // @ts-ignore
+    const img: string = imageIcon ? imageIcon.icon : `/Snap${~~(id % 4 + 1)}.png`
 
     return <>
         <div className="post-full2">
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <div className="snap-img-placeholder-big" style={{background: 'none'}}><img style={{width: '100%'}} src={`/Snap${~~(id % 4+ 1)}.png`}/></div>
+                <div className="snap-img-placeholder-big" style={{ background: 'none' }}>
+                    <img style={{ width: '100%' }} src={img} /></div>
                 <div style={{ width: '53%', textAlign: 'left' }}>
 
                     <Link to={"/snap/" + id}>
@@ -188,7 +192,7 @@ export const SnapDetailPage = (props: any) => {
                             }}>Reviews ({getCounts(version.shasum).reviews})</span>
                         <span className={(tab === 'reviews' ? ' primary-tab' : '')}></span>
 
-                       
+
                     </div>
                 </div>
 

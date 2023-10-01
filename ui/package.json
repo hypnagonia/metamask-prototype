@@ -29,11 +29,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "startLinea": "export NODE_ENV=production && export PORT=3001 && react-scripts start",
     "start": "export PORT=3001 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "f": "npm run build && firebase deploy"
+    "f": "npm run build && firebase use karma-metamask && firebase deploy",
+    "p": "npm run build && firebase use p2p && firebase deploy"
   },
   "eslintConfig": {
     "extends": [

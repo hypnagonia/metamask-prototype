@@ -1,6 +1,5 @@
 import registryABIJSON from './registryABI.json'
 import { ethers } from 'ethers'
-import SignClient from '@walletconnect/sign-client'
 
 //more rpc providers
 //https://rpc.info/#goerli
@@ -42,7 +41,7 @@ export const getSnaps = async () => {
 let cachedData: any
 
 export const getSnapData = async (ignoreCache = false) => {
-    if (!ignoreCache && cachedData) {
+    if (cachedData) {
         return cachedData
     }
 
@@ -53,7 +52,7 @@ export const getSnapData = async (ignoreCache = false) => {
     } catch (e) {
         count = await registry.getSnapTotalSupply()//.then(r => r.toString())
     }
-    // console.log('snaps total', count)
+    
     const snaps = {} as any
     for (let i = 1; i <= count; i++) {
         snaps[i] = {} as any
@@ -69,7 +68,6 @@ export const getSnapData = async (ignoreCache = false) => {
             publisher: meta[5],
             creationTime: meta[6],
         }
-        // console.log('getSnap ' + i, snaps[i].meta)
     }
 
     for (let i = 1; i <= count; i++) {
