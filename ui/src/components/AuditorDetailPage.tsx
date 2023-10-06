@@ -13,15 +13,18 @@ import { Address } from './common/Address'
 import { AvatarList } from './common/AvatarList'
 import { UseCompute } from './hooks/UseCompute'
 import { ethers } from 'ethers'
+import { UseIdentity, getSocials, getEns } from './hooks/UseIdentity'
+import { pretrustAccounts } from '../api/pretrustAccounts'
 
 export const AuditorDetailPage = (props: any) => {
     const { id } = useParams() as any
     const a = id.toLowerCase()
     const [gridView, setGridView] = useState('cards')
     const [tab, setTab] = useState('audits')
-
+    const { identities } = UseIdentity(id)
     const { topUsers, attestations: compute } = UseCompute()
 
+    const identity = identities[id] || ''
 
     const isTopAuditor = !!topUsers.topUsersAudits.find((a: any) => a.address === id)
     const isTopReviewer = !!topUsers.topUsersReviews.find((a: any) => a.address === id)
@@ -54,6 +57,10 @@ export const AuditorDetailPage = (props: any) => {
 
     const auditorScore = getAuditorScore(id)
 
+    const socials = getSocials(identity)
+    const lens = socials.find((a: any) => a.dappName === 'lens')
+    const farcaster = socials.find((a: any) => a.dappName === 'farcaster')
+
 
 
     return <><div className="container" style={{ marginTop: 30 }}>
@@ -64,20 +71,32 @@ export const AuditorDetailPage = (props: any) => {
             width: '100%'
         }}>
 
-            {/*<div style={{ display: 'flex', flexDirection: 'row' }}>
-                <h3>{<Address address={id} />}</h3>
+         
+            <div ><img src={`/avatar${auditorScore}.png`} style={{ width: 128, height: 128, borderRadius: 136 }} />
+                <div>
 
-                <div style={{ textAlign: 'right', width: '100%', fontWeight: 'bold', fontSize: 15 }}>
-                    <span> Score:&nbsp;</span>
-                    <span style={{ textAlign: 'right', width: '100%', fontWeight: 'bold', fontSize: 15, color: '#2a2a72' }}>
-                        {auditorScore}
-                    </span>
-                </div>
-    </div><br />*/}
-            <div ><img src={`/avatar${auditorScore}.png`} style={{ width: 128, height: 128, borderRadius: 136 }} /></div>
+                    {
+                        //@ts-ignore
+                        pretrustAccounts[a] ?
+                            <div style={{ fontSize: 12, marginTop: 10, marginLeft: 0, color: 'green', fontWeight: 'bold' }}>
+                                <span style={{ color: 'green' }}>&nbsp;&#10003;&nbsp;</span>
+                                {//@ts-ignore
+                                    pretrustAccounts[a]
+                                }
+                            </div>
+                            : ''
+                    }</div>
+            </div>
             <div style={{ width: '60%', textAlign: 'left', marginLeft: 30, marginTop: 20, fontWeight: 'bold' }}>
 
-                <Address address={id} /><br />
+                <h3>
+                    <Address address={a} shorten={true} shortenLength={50} isIconHidden={true} />
+                </h3>
+                <span style={{ fontSize: 12 }}>
+                    {id}
+                </span><br />
+                
+                <br />
 
                 <div style={{ marginBottom: (isTopAuditor || isTopReviewer) ? 15 : 0 }}>
                     <span style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -110,16 +129,18 @@ export const AuditorDetailPage = (props: any) => {
             <div style={{ marginTop: 20, justifyContent: 'flex-end', display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right' }}>
 
 
+                {lens ? <div style={{ marginLeft: 20, marginTop: 4, fontSize: 12, textAlign: 'center' }}>
+                    <img style={{ width: 30, height: 30, margin: 'auto' }} src={'/LensAddress.svg'} />
+                    {lens.profileName}
+                </div> : null}
+                {farcaster ? <div style={{ marginLeft: 20, marginTop: 4, fontSize: 12, textAlign: 'center' }}>
+                    <img style={{ width: 30, height: 30, margin: 'auto' }} src={'/farcaster.svg'} />
+                    {farcaster.profileName}
+                </div> : null}
 
-                <div style={{ marginLeft: 20, width: '70%' }}>
-                    {/*
-                    Audits: <b>{getCounts(a).audits}</b><br />
-                    Reviews: <b>{getCounts(a).reviews}</b><br />
-                    Upvotes: <b>{getCounts(a).auditApprovals + getCounts(a).reviewApprovals}</b><br />
-                    Downvotes: <b>{getCounts(a).auditDisapprovals + getCounts(a).reviewDisapprovals}</b><br />
-                    Followers: <b>{getCounts(a).followers + getCounts(a).followers}</b><br />
-                    <br />
-                     */}
+                <div style={{ marginLeft: 20, width: '60%' }}>
+                 
+
                     <div className="strategy-btn primary"
                         onClick={createFollowAttestation}
                     ><b>&#43;</b>&nbsp;Follow</div>
@@ -186,11 +207,11 @@ export const AuditorDetailPage = (props: any) => {
                 <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
                     <div style={{ fontSize: 12, marginRight: 30 }}>
                         <b>{getCounts(id).followers}</b>&nbsp;Followers<br />
-                        <AvatarList tooltip={true} attestations={getGroups(id).followers} />
+                        <AvatarList tooltip={true} attestations={getGroups(id).followers} from={1} />
                     </div>
                     <div style={{ fontSize: 12 }}>
                         <b>{getCounts(id).following}</b>&nbsp;Following<br />
-                        <AvatarList tooltip={true} attestations={getGroups(id).following} />
+                        <AvatarList tooltip={true} attestations={getGroups(id).following} to={1} />
                     </div>
                 </div>
             </div>

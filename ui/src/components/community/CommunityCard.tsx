@@ -43,10 +43,10 @@ export const CommunityCard = (props: any) => {
             }}>
                 <div>Followers
                     <br />
-                    {<AvatarList attestations={metrics.followers} />}
+                    {<AvatarList attestations={metrics.followers} from={1}/>}
                 </div>
                 <div>Following<br />    
-                <AvatarList attestations={metrics.following} />
+                <AvatarList attestations={metrics.following} to={1}/>
                 </div>
                 <div>Audits
                     <br />

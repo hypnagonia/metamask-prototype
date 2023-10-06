@@ -9,6 +9,7 @@ import { CommunityCard } from './CommunityCard'
 import { Search } from '../Search'
 export default function CommunityTable(props: any) {
     const { attestations } = useAttestations()
+    const [search, setSearch] = useState('')
 
     const users = new Set() as any
     attestations.forEach((a: any) => {
@@ -18,7 +19,13 @@ export default function CommunityTable(props: any) {
         users.add(a.attester)
     })
 
-    const u = [...users]
+    const u = [...users].filter((a: any) => {
+        if (!search) {
+            return true
+        }
+
+        return a.toLowerCase().indexOf(search) !== -1 
+    })
 
     return (<>
         <div>
@@ -34,7 +41,7 @@ export default function CommunityTable(props: any) {
         </div>
 
         <div style={{ marginBottom: 30, marginTop:0, width: '100%', textAlign: 'left' }}>
-            <Search />
+            <Search onSearch={setSearch}/>
         </div>
 
         <div className="profiles-container" style={{ paddingBottom: 100, textAlign: 'center' }}>

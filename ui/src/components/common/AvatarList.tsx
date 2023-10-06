@@ -6,7 +6,8 @@ export const AvatarList = (props: any) => {
     const attestations = props.attestations || []
     const previewCount = props.count || 3
     const tooltip = props.tooltip || false
-    const list = tooltip ? attestations.map((a: any) => <div><Address address={a.attester} /></div>) : []
+    const isFrom = props.from && !props.to
+    const list = tooltip ? attestations.map((a: any) => <div><Address address={isFrom ? a.attester : a.attestee} /></div>) : []
     const listDisplay = list.length ? <>{list}</> : null
 
     const previews = attestations.filter((a: any, i: number) => i < previewCount)
@@ -21,7 +22,7 @@ export const AvatarList = (props: any) => {
                 display: 'flex', flexDirection: 'row',
             }}>
                 {previews.map((p: any) => {
-                    const id = getAuditorScore(p.attester)
+                    const id = getAuditorScore(isFrom ? p.attester : p.attestee)
                     return <div style={{ marginRight: -5 }}>
                         <img src={`/avatar${id}.png`} className="circle-avatar-small" />
                     </div>

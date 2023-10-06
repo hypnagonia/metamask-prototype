@@ -1,18 +1,21 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { shortenString } from '../../utils'
-import { UseIdentity } from '../hooks/UseIdentity'
+import { UseIdentity,getSocial, getEns } from '../hooks/UseIdentity'
 import { SnapScoreBadge } from './SnapScoreBadge'
 import { UseCompute, getAddressScore } from '../hooks/UseCompute'
 
 const images: any = {
-    lens: '/LensAddress.svg'
+    lens: '/LensAddress.svg',
+    farcaster: '/farcaster.svg'
 }
+
 
 export const Address = (props: any) => {
     const address = props.address.toLowerCase()
     const isShorten = props.shorten
-    let shortenLength = 16
+    const isIconHidden = props.isIconHidden
+    let shortenLength = props.shortenLength || 16
     const { identities, loadAttestations } = UseIdentity(address)
     const { attestations: computeAttestations } = UseCompute()
     const [identityState, setIdentityState] = useState({} as any)
@@ -32,34 +35,27 @@ export const Address = (props: any) => {
     let displayString = address
     let DisplayExtra = null
 
-    console.log({identity, address})
-    if (identity) {
-        
-        try {
-            if (typeof identity === 'string') {
-                shortenLength = 24
-                displayString = `${identity}`
-            } else {
+   //  console.log({ identity, address })
 
-                const socials = identity.Wallet.socials
-                
-                if (socials) {
-                    console.log({socials, address})
-                    shortenLength = 24
-                    const app = socials[0].dappName || ''
-                    if (images[app]) {
-                        DisplayExtra = <><img src={images[app]} /></>
-                        displayString = socials[0].profileName
-                    } else {
-                        displayString = `${app}:${socials[0].profileName}`
-                    }
-                }
-            }
-        } catch (e) { }
-    } else {
-
+    const social = getSocial(identity)
+    const ens = getEns(identity)
+    if (typeof identity === 'string') {
+        shortenLength = props.shortenLength || 24
+        displayString = `${identity}`
+    } else if (ens) {
+        displayString = ens.profileName
+    } else if (social) {
+        shortenLength = props.shortenLength || 24
+        const app = social.dappName || ''
+        if (!isIconHidden && images[app]) {
+            DisplayExtra = <><img src={images[app]} /></>
+            displayString = social.profileName
+        } else {
+            displayString = `${app}:${social.profileName}`
+        }
 
     }
+
     if (isShorten) {
         displayString = shortenString(displayString, shortenLength)
     }

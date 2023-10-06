@@ -1,9 +1,8 @@
-// process.env.NODE_ENV === 'development'
-// 
 import masterRegistryAbi from './masterRegistry.json'
 import karmaAttestorABI from './KarmaAuditAttestor.json'
 import { ethers, hashMessage } from 'ethers'
 import { AnyNaptrRecord } from 'dns'
+import { getSnaps } from './registry'
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://nft-api.k3l.io/metamask'
 // const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000/metamask'
@@ -67,7 +66,7 @@ export const getIdentity = async (address: string) => {
 		return pretrustEntry.name
 	}
 
-	if (cacheIdentity[address] && !cacheIdentity[address].Wallet) {
+	if (cacheIdentity[address] && !cacheIdentity[address].Wallet && !cacheIdentity[address].Domains) {
 		return null
 	}
 
@@ -169,6 +168,9 @@ export const getAll = async (ignoreCache = false) => {
 	}
 
 	const run = async () => {
+		const snapsO = await getSnaps()
+		const snaps = Object.values(snapsO)
+
 		const res = await fetch(`${backendUrl}/getAll`).then(r => r.json())
 
 		// console.log({ res })
@@ -204,6 +206,14 @@ export const getAll = async (ignoreCache = false) => {
 					attestationDataHex: r[11].map((a: any) => ethers.toUtf8String(a)),
 					transactionHash: res.data.transactionHash
 				}
+			})
+			.map((a: any) => {
+				if (a.schemaId !== schemas.KarmaAuditAttestorSchemaId && a.schemaId !== schemas.KarmaReviewAttestorSchemaId) {
+					return a
+				}
+
+				const snap = snaps.find((b: any) => b.versionList.includes(a.attestationDataHex[0]))
+				return { ...a, snap }
 			})
 			// wrong attestations
 			.filter((a: any) => a.schemaId !== '0x10c726e009df01b52c34e06ae120b926a01773bfe71d51f4e1b99deaedad5831')

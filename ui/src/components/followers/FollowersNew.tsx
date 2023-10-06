@@ -129,7 +129,7 @@ export default function FollowersNew(props: any) {
 							lineHeight: 1
 						}}>
 							<br />
-							<span style={{ fontSize: 36 }}><b>New Follow Attestation</b></span><br />
+							<span style={{ fontSize: 36 }}><b>Follow User</b></span><br />
 							
 						</div>
 					</div>

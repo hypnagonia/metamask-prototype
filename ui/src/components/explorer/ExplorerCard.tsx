@@ -11,6 +11,8 @@ import moment from 'moment'
 import { Tooltip } from '../Tooltip'
 import { useAttestations } from '../hooks/UseAttestations'
 
+// const explorerTxLink = 'https://explorer.testnet.harmony.one/tx/'
+const explorerTxLink = 'https://explorer.goerli.linea.build/tx/'
 export default function ExplorerCard(props: any) {
 	const { issueAttestation } = UseCreateAttestations()
 	const { getCounts, getGroups } = UseCounts()
@@ -78,48 +80,24 @@ export default function ExplorerCard(props: any) {
 		</>
 	}
 
-	const displayData = (data: string[]) => {
-		const d = data.map((a: any) => ethers.toUtf8String(a))
-		if (meta.name === 'Follow') {
-			return <>Weight: <b>{d[0]}</b></>
-		}
-
-		if (meta.name === 'Audit') {
-			return <>
-				Snap Checksum: <b>{d[0]}</b><br />
-				Report: <b>{d[1]}</b><br />
-				Safe: <b>{+d[3] ? 'Yes' : 'No'}</b>
-			</>
-		}
-		if (meta.name === 'Review') {
-			return <>
-				Snap Checksum: <b>{d[0]}</b><br />
-				Report: <b>{d[1]}</b><br />
-				Score: <b>{d[2]}</b>
-			</>
-		}
-
-		return <>
-			Attestation Id: <b>{shortenString(d[0], 20)}</b><br />
-			<b>{+d[1] ? 'Upvote' : 'Downvote'}</b>
-		</>
-	}
-
 	const attester = data.attester.toLowerCase()
 
 	let text = null
 
 	const d = data.attestationData.map((a: any) => ethers.toUtf8String(a))
+	const snap = data.snap
 
 	if (meta.name === 'Follow') {
 		text = <><b>
 			<Address shorten={true} address={data.attester} /></b>&nbsp;followed&nbsp;<b><Address shorten={true} address={data.attestee} /></b>
 		</>
 	}
-
 	if (meta.name === 'Audit') {
+		const version = snap.versions[d[0]].versionNumber
+		const snapLabel = snap ? snap.meta.name + ' ' + version : d[0]
+
 		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;audited&nbsp;<b>{shortenString(d[0], 20)}</b>&nbsp;as&nbsp;<b>
+			<Address shorten={true} address={data.attester} /></b>&nbsp;audited&nbsp;<b>{snapLabel}</b>&nbsp;as&nbsp;<b>
 				{+d[3] ? 'Safe' : 'Unsafe'}</b><br />
 			{d[1]}
 		</>
@@ -138,8 +116,10 @@ export default function ExplorerCard(props: any) {
 	}
 
 	if (meta.name === 'Review') {
+		const version = snap.versions[d[0]].versionNumber
+		const snapLabel = snap ? snap.meta.name + ' ' + version : d[0]
 		text = <><b>
-			<Address shorten={true} address={data.attester} /></b>&nbsp;reviewed&nbsp;<b>{shortenString(d[0], 20)}</b>&nbsp;as&nbsp;<b>
+			<Address shorten={true} address={data.attester} /></b>&nbsp;reviewed&nbsp;<b>{snapLabel}</b>&nbsp;as&nbsp;<b>
 				{d[2]}/5</b><br />
 			{d[1]}
 		</>
@@ -170,7 +150,7 @@ export default function ExplorerCard(props: any) {
 						display: 'flex', fontSize: 14, color: '#543A69', textAlign: 'right'
 					}}>
 						{/*date.toLocaleString()*/}
-						{ago}&nbsp;ago&nbsp;&nbsp;<a href={`https://explorer.testnet.harmony.one/tx/${data.transactionHash}`} target='blank'>
+						{ago}&nbsp;ago&nbsp;&nbsp;<a href={`${explorerTxLink}${data.transactionHash}`} target='blank'>
 							<img src='/explorerLogo.svg' />
 						</a>
 					</div>
