@@ -12,6 +12,7 @@ import { useAttestations } from './hooks/UseAttestations'
 import { SnapScoreBadge } from './common/SnapScoreBadge'
 import { UseCompute, getSnapScore } from './hooks/UseCompute'
 import { liveSnapsData } from '../api/liveSnaps'
+import { HistoricalScores } from './common/HistoricalScores'
 
 export const SnapDetailPage = (props: any) => {
     const { getCounts } = UseCounts()
@@ -85,9 +86,12 @@ export const SnapDetailPage = (props: any) => {
                                 <span style={{ fontSize: 36 }}>{snap.meta.name}</span>
                                 &nbsp;&nbsp;
                                 <SnapScoreBadge score={auditScore} /> {versionShasum}
-                                {/*<img src={'/shield.svg'} style={{ width: 26, height: 26 }} />*/}
+                                <div style={{ marginLeft: 10, marginTop: 2 }}>
+                                    <HistoricalScores computeId={`did:snapver:${version.shasum}`}/>
+                                </div>
+
                             </div>
-                            {/*&nbsp;{version.versionNumber}*/}
+
                             <br />
 
                             <span style={{ fontWeight: 400, fontSize: 14, color: 'rgba(84, 58, 105, 0.65)' }}>

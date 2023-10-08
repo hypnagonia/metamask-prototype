@@ -15,6 +15,7 @@ import { UseCompute } from './hooks/UseCompute'
 import { ethers } from 'ethers'
 import { UseIdentity, getSocials, getEns } from './hooks/UseIdentity'
 import { pretrustAccounts } from '../api/pretrustAccounts'
+import { HistoricalScores } from './common/HistoricalScores'
 
 export const AuditorDetailPage = (props: any) => {
     const { id } = useParams() as any
@@ -22,22 +23,28 @@ export const AuditorDetailPage = (props: any) => {
     const [gridView, setGridView] = useState('cards')
     const [tab, setTab] = useState('audits')
     const { identities } = UseIdentity(id)
-    const { topUsers, attestations: compute } = UseCompute()
+    const { attestations: compute } = UseCompute()
 
     const identity = identities[id] || ''
-
-    const isTopAuditor = !!topUsers.topUsersAudits.find((a: any) => a.address === id)
-    const isTopReviewer = !!topUsers.topUsersReviews.find((a: any) => a.address === id)
 
     const { attestations } = useAttestations()
     const { getCounts, getGroups } = UseCounts()
     const { issueAttestation } = UseCreateAttestations()
 
     const key = `did:ethr:${ethers.getAddress(id)}`
+
+    const scorePostfix = ' / 10'
+    const noScore = '-'
     // @ts-ignore
-    const auditScore = compute.audits[key] || '-'
+    const auditScore = compute.audits[key]
+    const displayAduitScore = auditScore ? auditScore + scorePostfix : noScore
     // @ts-ignore
-    const reviewScore = compute.reviews[key] || '-'
+    const reviewScore = compute.reviews[key]
+    const displayReviewScore = reviewScore ? reviewScore + scorePostfix : noScore
+
+    const isTopAuditor = auditScore === 10
+    const isTopReviewer = reviewScore === 10
+
 
     const createFollowAttestation = () => {
         issueAttestation('follow', id, ["1"])
@@ -71,7 +78,7 @@ export const AuditorDetailPage = (props: any) => {
             width: '100%'
         }}>
 
-         
+
             <div ><img src={`/avatar${auditorScore}.png`} style={{ width: 128, height: 128, borderRadius: 136 }} />
                 <div>
 
@@ -95,32 +102,28 @@ export const AuditorDetailPage = (props: any) => {
                 <span style={{ fontSize: 12 }}>
                     {id}
                 </span><br />
-                
+                <div style={{ display: 'flex', color: '#7000FF', fontSize: 10, alignItems: 'center' }}>
+
+                    {isTopAuditor ? <>
+                        <img src={'/Union.svg'} />&nbsp;
+                        <span style={{ color: '#00A94F' }}>
+                            TOP AUDITOR
+                        </span></> : null}
+
+                    {isTopReviewer && <>&nbsp;&nbsp;
+                        <img src={'/Star1.svg'} />&nbsp;
+                        TOP REVIEWER</>}
+                </div>
                 <br />
 
                 <div style={{ marginBottom: (isTopAuditor || isTopReviewer) ? 15 : 0 }}>
                     <span style={{ fontSize: 15, fontWeight: 'bold' }}>
-                        Audit Score: <b style={{ color: '#7000FF' }}>{auditScore}</b><br />
-                        Review Score: <b style={{ color: '#7000FF' }}>{reviewScore}</b>
+                        Audit Score: <b style={{ color: '#7000FF' }}>{displayAduitScore}</b><br />
+                        Review Score: <b style={{ color: '#7000FF' }}>{displayReviewScore}</b><br/>
+                        <HistoricalScores computeId={key}/>
                     </span>
                 </div>
                 <div>
-
-                    <div style={{ display: 'flex', color: '#7000FF', fontSize: 10, alignItems: 'center' }}>
-
-
-
-                        {isTopAuditor ? <>
-                            <img src={'/Union.svg'} />&nbsp;
-                            <span style={{ color: '#00A94F' }}>
-                                TOP AUDITOR
-                            </span></> : null}
-
-                        {isTopReviewer && <>&nbsp;&nbsp;
-                            <img src={'/Star1.svg'} />&nbsp;
-                            TOP REVIEWER</>}
-                    </div>
-
 
                 </div>
             </div>
@@ -139,7 +142,7 @@ export const AuditorDetailPage = (props: any) => {
                 </div> : null}
 
                 <div style={{ marginLeft: 20, width: '60%' }}>
-                 
+
 
                     <div className="strategy-btn primary"
                         onClick={createFollowAttestation}
@@ -149,25 +152,7 @@ export const AuditorDetailPage = (props: any) => {
             </div>
 
         </div></div>
-        {/*
-        {filteredAttestations.length ? <>
-            <div style={{ width: '100%', textAlign: 'left' }}>
-                <span
-                    className={'strategy-btn ' + (gridView === 'table' ? ' primary' : '')}
-                    onClick={() => {
-                        setGridView('table')
-                    }}>Table</span>
-                &nbsp;&nbsp;
-                <span
-                    className={'strategy-btn ' + (gridView !== 'table' ? ' primary' : '')}
-                    onClick={() => {
-                        setGridView('cards')
-                    }}>Cards</span>
-            </div>
-            <br />
-        </> : null}
-         */}
-
+        
         <div>
             <div style={{
                 marginTop: 30,

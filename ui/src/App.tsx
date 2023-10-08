@@ -3,6 +3,7 @@ import List from './components/List'
 import SnapPage from './components/SnapPage'
 import { AuditorDetailPage } from './components/AuditorDetailPage'
 import { AuditorListPage } from './components/AuditorListPage'
+import {FetchPatchLoader} from './components/common/FetchPatchLoader'
 
 import { useEffect, useState } from 'react'
 import { useSignMessage, useAccount } from 'wagmi'
@@ -201,7 +202,8 @@ function App() {
 
             </div>
           </WagmiConfig>
-
+          
+           <FetchPatchLoader/>     
         </div>
         <Web3Modal projectId={projectId} ethereumClient={ethereumClient} /><br />
         <NotificationContainer/>

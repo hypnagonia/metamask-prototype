@@ -4,11 +4,11 @@ import { Tooltip } from '../Tooltip'
 
 const rates = [
     //{ color: 'grey', score: -1, img: '/UnknownBadge.svg' },
-    { color: 'red', score: 0, img: '/unsafe.svg'  },
+    { color: 'grey', score: 0, img: '/UnknownBadge.svg'  },
     { color: 'red', score: 1 / 3, img: '/unsafe.svg'  },
     { color: 'orange', score: 2 / 3, img: '/PossiblySafe.svg'  },
     { color: 'green', score: 1, img: '/SafeBadge.svg'  }
-]// .reverse()
+]
 
 export const SnapScoreBadge = (props: any) => {
     const score = props.score

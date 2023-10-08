@@ -11283,6 +11283,11 @@ signal-exit@^3.0.2, signal-exit@^3.0.3:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.7.tgz#a9a1767f8af84155114eaabd73f99273c8f59ad9"
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
 
+simple-react-modal@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/simple-react-modal/-/simple-react-modal-0.5.1.tgz#a32bce2418d527a48dfe1b7cc343c7a57a00af10"
+  integrity sha512-jMVR+PTH8cmZ+2eqEDJPDKCgdSOJSz5/YC3v05vhnWRJ8LczjEiA0UGNLDjSjQHbynQpn/WrNFbbkrjFc0ueLQ==
+
 sisteransi@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"

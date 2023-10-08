@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { getAll, getTopUsers } from '../../api/compute'
+import { getAll } from '../../api/compute'
 
 export function UseCompute() {
     const [attestations, setAttestations] = useState({ reviews: {}, audits: {} })
-    const [topUsers, setTopUsers] = useState({ topUsersReviews: [], topUsersAudits: [] })
 
     const loadAttestations = async () => {
         const result = await getAll()
-
-        const tu = getTopUsers()
-        setTopUsers(tu)
         setAttestations(result)
-
     }
 
     useEffect(() => {
         loadAttestations()
     }, [])
 
-    return { attestations, loadAttestations, topUsers }
+    return { attestations, loadAttestations }
 }
 
 export const getSnapScore = (checksum = '', attestations) => {

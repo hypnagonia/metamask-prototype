@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { shortenString } from '../../utils'
-import { UseIdentity,getSocial, getEns } from '../hooks/UseIdentity'
+import { UseIdentity, getSocial, getEns } from '../hooks/UseIdentity'
 import { SnapScoreBadge } from './SnapScoreBadge'
 import { UseCompute, getAddressScore } from '../hooks/UseCompute'
 
@@ -35,7 +35,7 @@ export const Address = (props: any) => {
     let displayString = address
     let DisplayExtra = null
 
-   //  console.log({ identity, address })
+    //  console.log({ identity, address })
 
     const social = getSocial(identity)
     const ens = getEns(identity)
@@ -47,12 +47,19 @@ export const Address = (props: any) => {
     } else if (social) {
         shortenLength = props.shortenLength || 24
         const app = social.dappName || ''
-        if (!isIconHidden && images[app]) {
-            DisplayExtra = <><img src={images[app]} /></>
-            displayString = social.profileName
+
+        if (!isIconHidden) {
+            if (images[app]) {
+                DisplayExtra = <><img src={images[app]} /></>
+                displayString = social.profileName
+            } else {
+                displayString = `${app}:${social.profileName}`
+            }
         } else {
-            displayString = `${app}:${social.profileName}`
+            displayString = `${social.profileName}`
         }
+
+
 
     }
 
